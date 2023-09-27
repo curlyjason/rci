@@ -50,4 +50,11 @@ class FirstTableTest extends TestCase
 
         parent::tearDown();
     }
+
+    public function testDatabaseConnection()
+    {
+        $result = $this->First->find()->toArray();
+        debug($result);
+        $this->assertIsArray($result);
+    }
 }
