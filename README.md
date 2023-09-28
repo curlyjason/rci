@@ -7,7 +7,7 @@
     - The short project name, database port, and web port keep this particular docker container from stepping on other docker containers
 - Run `docker compose up --build -d`
 - Run `bin/db_setup.sh`
-- Run `bin/migration.sh`
+- Run `bin/migrations.sh`
 ### Php Interpretor setup in PhpStorm
 - Go to the menu `PhpStorm/Preferences...`
 - Choose `> PHP`
