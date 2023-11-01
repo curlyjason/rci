@@ -4,7 +4,7 @@ return
 [
     'paths' => [
         'migrations' => '%%PHINX_CONFIG_DIR%%/db/migrations',
-        'seeds' => '%%PHINX_CONFIG_DIR%%/db/seeds'
+        'seeds' => '%%PHINX_CONFIG_DIR%%/db/seeds',
     ],
     'environments' => [
         'default_migration_table' => 'phinxlog',
@@ -20,22 +20,22 @@ return
         ],
         'development' => [
             'adapter' => 'mysql',
-            'host' => 'localhost',
-            'name' => 'development_db',
-            'user' => 'root',
-            'pass' => '',
-            'port' => '3306',
+            'host' => '127.0.0.1',
+            'name' => 'my_app',
+            'user' => 'my_app',
+            'pass' => 'secret',
+            'port' => '9011',
             'charset' => 'utf8',
         ],
-        'testing' => [
+        'test' => [
             'adapter' => 'mysql',
-            'host' => 'localhost',
-            'name' => 'testing_db',
+            'host' => '127.0.0.1',
+            'name' => 'test_my_app',
             'user' => 'root',
-            'pass' => '',
-            'port' => '3306',
+            'pass' => 'root',
+            'port' => '9011',
             'charset' => 'utf8',
-        ]
+        ],
     ],
-    'version_order' => 'creation'
+    'version_order' => 'creation',
 ];

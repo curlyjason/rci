@@ -1,10 +1,7 @@
 services:
-    arguments:
-        $DB_SERVICE: ${DB_SERVICE}
-    $DB_SERVICE:
+    mysql:
         image: mysql:8
         restart: always
-        container_name: ${DB_SERVICE}
         environment:
             MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
             MYSQL_DATABASE: ${SHORT_NAME}
@@ -15,10 +12,9 @@ services:
         ports:
             - "${DB_PORT}:3306"
 
-    ${WEB_SERVICE}:
+    cakephp:
         build:
             dockerfile: php/Dockerfile
-        container_name: ${WEB_SERVICE}
         working_dir: /application/webroot
         volumes:
             - ./:/application

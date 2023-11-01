@@ -1,0 +1,34 @@
+services:
+    c5d_mysql:
+        image: mysql:8
+        restart: always
+        container_name: c5d_mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: my_app
+            MYSQL_USER: my_app
+            MYSQL_PASSWORD: secret
+        volumes:
+            - ./:/application
+        ports:
+            - '9011:3306'
+
+    c5d_cakephp:
+        build:
+            dockerfile: php/Dockerfile
+        container_name: c5d_cakephp
+        working_dir: /application/webroot
+        volumes:
+            - ./:/application
+        environment:
+            - WEB_DOCUMENT_ROOT=/application/webroot
+            - DATABASE_URL=mysql://my_app:secret@c5d_mysql/my_app
+            - DATABASE_TEST_URL=mysql://root:root@c5d_mysql/my_app
+            - SHORT_NAME=c5d
+            - WEB_PORT=8011
+            - DB_PORT=9011
+        ports:
+            - "8011:80"
+
+#volumes:
+#    mysqldata:
