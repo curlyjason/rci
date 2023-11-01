@@ -7,7 +7,6 @@ services:
             MYSQL_DATABASE: ${SHORT_NAME}
             MYSQL_USER: ${DB_USERNAME}
             MYSQL_PASSWORD: ${DB_USER_PASS}
-#        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
         volumes:
             - ./docker/mysql:/docker-entrypoint-initdb.d
             - ./:/application
@@ -22,8 +21,8 @@ services:
             - ./:/application
         environment:
             - WEB_DOCUMENT_ROOT=/application/webroot
-            - DATABASE_URL=mysql://my_app:secret@${DB_SERVICE}/${SHORT_NAME}
-            - DATABASE_TEST_URL=mysql://root:root@${DB_SERVICE}/test_${SHORT_NAME}
+            - DATABASE_URL=mysql://${DB_USERNAME}:${DB_USER_PASS}@${DB_SERVICE}/${SHORT_NAME}
+            - DATABASE_TEST_URL=mysql://root:${DB_ROOT_PASS}@${DB_SERVICE}/test
             - SHORT_NAME=${SHORT_NAME}
             - WEB_PORT=${WEB_PORT}
             - DB_PORT=${DB_PORT}

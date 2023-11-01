@@ -7,6 +7,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use mysql_xdevapi\Collection;
 
 class EditYamlCommand extends Command
 {
@@ -37,21 +38,23 @@ class EditYamlCommand extends Command
 
     public function execute(Arguments $args, ConsoleIo $io): int
     {
-//        $spn = $args->getArgument('spn');
-        $a_short_name = $io->ask('Short project name (try to keep under 5 letters):');
-        $a_dbport = $io->ask('Database port (default is 3011):');
-        $a_webport = $io->ask('Web port (default is 80, we typically increment from 8010):');
-        $io->out("Short Name: $a_short_name");
-        $io->out("DB Port: $a_dbport");
-        $io->out("Webport: $a_webport");
 
-        $a_db_user = $io->ask('DB Username (not root):');
-        $a_db_password = $this->matchStrings("DB $a_db_user password", $io);
-        $a_db_root_password = $this->matchStrings("DB root password" , $io);
+        $ok = 'No';
+        $variables = [];
+        while ($ok !== 'Yes') {
+            $variables['SHORT_NAME'] = $io->ask('Short project name (try to keep under 5 letters):', $variables['SHORT_NAME']??'');
+            $variables['DB_PORT'] = $io->ask('Database port (default is 3011):', $variables['DB_PORT']??'');
+            $variables['WEB_PORT'] = $io->ask('Web port (default is 80, we typically increment from 8010):', $variables['WEB_PORT']??'');
+            $variables['DB_USERNAME'] = $io->ask('DB Username (not root):',$variables['DB_USERNAME']??'');
+            $variables['DB_USER_PASS'] = $this->matchStrings("DB {$variables['DB_USERNAME']} password", $io);
+            $variables['DB_ROOT_PASS'] = $this->matchStrings("DB root password", $io);
+            foreach ($variables as $variable => $value) {
+                $io->out("$variable: $value");
+            }
+            $ok = $io->askChoice("Values OK?", ['Yes', 'No'], 'Yes');
+        }
 
-        $io->out($a_db_user);
-        $io->out($a_db_password);
-        $io->out($a_db_root_password);
+        $this->writeEnvironmentFile($variables, $io);
 //        if (!$spn) {
 //            $io->out('Must provide short project name');
 //
@@ -111,5 +114,15 @@ class EditYamlCommand extends Command
             $match_prompt = 'Strings must match';
         }
         return $input;
+    }
+
+    private function writeEnvironmentFile(array $variables, ConsoleIo $io)
+    {
+        $out = '';
+        foreach ($variables as $variable => $value) {
+            $out .= "$variable: $value\n";
+        }
+        $io->createFile(ROOT . DS . '.env_test', $out, true);
+
     }
 }
