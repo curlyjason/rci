@@ -9,29 +9,34 @@ final class $className extends $baseClassName
     use PhinxHelperTrait;
 
     /**
-     * Change Method.
+     * Typical trait usage:
+     * <pre>
+     *   $graphs = $this->table('graphs');
+     *     $graphs
+     *       ->addColumn('name', 'char', ['limit' => 255])
+     *       ->create();
+     *     $this->requiredCakeNormColumns($graphs)
+     *       ->update();
      *
-     * Write your reversible migrations using this method.
+     * In a separate file (usually)
      *
-     * More information on writing migrations is available here:
+     *   $table = $this->table('nodes');
+     *   $this->requiredForeignKey($table, 'graphs');
+     *   $this->optionalForeignKey($table, 'edges')->save();
+     * </pre>
+     *
      * https://book.cakephp.org/phinx/0/en/migrations.html#the-change-method
      *
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change()
+    public function change(): void
     {
 
     }
 
-//    public function up()
-//    {
+//    public function up(): void {}
 //
-//    }
-//
-//    public function down()
-//    {
-//
-//    }
+//    public function down(): void {}
 
 }
