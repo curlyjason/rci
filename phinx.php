@@ -1,4 +1,5 @@
 <?php
+include ROOT . '/conv.php';
 
 return
 [
@@ -24,7 +25,7 @@ return
             'name' => 'my_app',
             'user' => 'my_app',
             'pass' => 'secret',
-            'port' => '9011',
+            'port' => DB_PORT,
             'charset' => 'utf8',
         ],
         'test' => [
@@ -33,7 +34,7 @@ return
             'name' => 'test_my_app',
             'user' => 'root',
             'pass' => 'root',
-            'port' => '9011',
+            'port' => DB_PORT,
             'charset' => 'utf8',
         ],
     ],

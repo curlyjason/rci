@@ -55,6 +55,7 @@ class EditYamlCommand extends Command
         }
 
         $this->writeEnvironmentFile($variables, $io);
+        $this->writeConstantFile($variables, $io);
 //        if (!$spn) {
 //            $io->out('Must provide short project name');
 //
@@ -123,6 +124,16 @@ class EditYamlCommand extends Command
             $out .= "$variable: $value\n";
         }
         $io->createFile(ROOT . DS . '.env_test', $out, true);
+
+    }
+
+    private function writeConstantFile(array $variables, ConsoleIo $io)
+    {
+        $out = "<?php\n";
+        foreach ($variables as $variable => $value) {
+            $out .= "const $variable = '$value';\n";
+        }
+        $io->createFile(ROOT . DS . 'conv.php', $out, true);
 
     }
 }
