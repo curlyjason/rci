@@ -133,7 +133,7 @@ class EditYamlCommand extends Command
         foreach ($variables as $variable => $value) {
             $out .= "const $variable = '$value';\n";
         }
-        $io->createFile(ROOT . DS . 'conv.php', $out, true);
+        $io->createFile(CONFIG . DS . 'conv.php', $out, true);
 
     }
 }
