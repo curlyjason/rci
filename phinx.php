@@ -7,6 +7,9 @@ return
         'migrations' => '%%PHINX_CONFIG_DIR%%/db/migrations',
         'seeds' => '%%PHINX_CONFIG_DIR%%/db/seeds',
     ],
+    'templates' => [
+        'file' => 'src/Utilities/Phinx/Migration.template.php.dist',
+    ],
     'environments' => [
         'default_migration_table' => 'phinxlog',
         'default_environment' => 'development',
