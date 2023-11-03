@@ -1,6 +1,6 @@
 # Docker Setup Notes
 ## After Cloning the Repo
-- Run `composer install` to get all the dependencies in place
+- Run `composer install --ignore-platform-reqs` to get all the dependencies in place
 - Run `docker ps` to see current services and ports to avoid
 - Run `bin/cake EditYaml [options]`
     - Provide a short project name (2-3 letters) `-d {database port} -w {web port}`

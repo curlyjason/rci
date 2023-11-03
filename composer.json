@@ -1,5 +1,5 @@
 {
-    "name": "docker/cakephp/app",
+    "name": "origami_structures/rci",
     "description": "CakePHP skeleton app",
     "homepage": "https://cakephp.org",
     "type": "project",
