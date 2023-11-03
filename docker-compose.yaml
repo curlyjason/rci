@@ -21,8 +21,8 @@ services:
             - ./:/application
         environment:
             - WEB_DOCUMENT_ROOT=/application/webroot
-            - DATABASE_URL=mysql://${DB_USERNAME}:${DB_USER_PASS}@${DB_SERVICE}/${SHORT_NAME}
-            - DATABASE_TEST_URL=mysql://root:${DB_ROOT_PASS}@${DB_SERVICE}/test
+            - DATABASE_URL=mysql://${DB_USERNAME}:${DB_USER_PASS}@mysql/${SHORT_NAME}
+            - DATABASE_TEST_URL=mysql://root:${DB_ROOT_PASS}@mysql/test
             - SHORT_NAME=${SHORT_NAME}
             - WEB_PORT=${WEB_PORT}
             - DB_PORT=${DB_PORT}
