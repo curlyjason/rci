@@ -1,5 +1,5 @@
 <?php
-include CONFIG . DS . 'conv.php';
+include 'config/conv.php';
 
 return
 [
