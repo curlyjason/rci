@@ -1,5 +1,5 @@
 {
-    "name": "cakephp/app",
+    "name": "docker/cakephp/app",
     "description": "CakePHP skeleton app",
     "homepage": "https://cakephp.org",
     "type": "project",
