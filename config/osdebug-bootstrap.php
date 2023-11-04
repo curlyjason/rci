@@ -108,6 +108,9 @@ class OSDebug{
 
 		$label = is_null($label) ? '' : "<p>$label</p>";
 
+        echo '<style>
+            div.cake-debug + a.cake-debug-copy{ display:none }
+            </style>';
 		echo $this->debugDiv('open');
 		echo "<h6 class=\"cake-debug\"><span style=\"font-size: 125%;\">$label</span>"
 					. "<span $trace_link style=$line_style>"
@@ -117,11 +120,17 @@ class OSDebug{
 					. "line-height: 1; margin-bottom: 1em; \">$ggr</pre>";
         self::debug($var, null, true, $location);
         echo $this->debugDiv('close');
+        echo '</div>';
     }
 
 	private function debugDiv($mode = 'open') {
 		if (strtoupper($mode) === 'OPEN') {
-			return "<div style=\"margin-left:1em; padding:.5em; border:thin gray solid; width:75%; background-color: #ffa50080; \" class=\"cake-debug-output cake-debug\">";
+			return "<div
+style=\"margin-left:1em;
+padding:.5em; border:thin gray solid;
+width:75%;
+background-color: #ffa50080;
+\" class=\"cake-debug-output\">";
 		} else {
 			return "</div>";
 		}
