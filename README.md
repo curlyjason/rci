@@ -6,7 +6,7 @@
     - Provide a short project name (2-3 letters) `-d {database port} -w {web port}`
     - The short project name, database port, and web port keep this particular docker container from stepping on other docker containers
 - Run `docker compose up --build -d`
-- Run `bin/db_setup.sh`
+### If you want to verify the db testing environment
 - Run `bin/migrations.sh`
 ### Php Interpretor setup in PhpStorm
 - Go to the menu `PhpStorm/Preferences...`
@@ -21,6 +21,8 @@
 - `Apply` / `OK` your way back to the main Preferences dialog
 - The preferences `PHP` pane, `Path mappings:` should include the path `<Project root>→/application;` for PhpUnit configuration to work
 ### PhpUnit Configuration in PhpStorm
+Testing may work without these steps.
+If there are problems, follow these
 - Click `>` to expand the `PHP` preferences sub menu
 - Choose `Test Frameworks`
 - Choose `+` at the top left sidebar of the `PHP > Test Frameworks` pane
