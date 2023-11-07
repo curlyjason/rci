@@ -38,7 +38,7 @@ final class OrderLines extends AbstractMigration
             ->addColumn('sku', 'char', ['limit' => 255, 'comment' => 'QuickBook match item'])
             ->addColumn('vendor_sku', 'char', ['limit' => 255])
             ->addColumn('uom', 'char', ['limit' => 32])
-            ->addColumn('quantity', 'int')
+            ->addColumn('quantity', 'integer')
             ->create();
         $this->requiredCakeNormColumns($orderLines)
             ->update();
