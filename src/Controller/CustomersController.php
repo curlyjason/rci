@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Test\Factory\CustomerFactory;
+
 /**
  * Customers Controller
  *
@@ -10,6 +12,11 @@ namespace App\Controller;
  */
 class CustomersController extends AppController
 {
+
+    public function init()
+    {
+        CustomerFactory::make(5)->withItems(3)->persist();
+    }
     /**
      * Index method
      *
