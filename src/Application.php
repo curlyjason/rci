@@ -50,6 +50,7 @@ class Application extends BaseApplication
 
         if (PHP_SAPI === 'cli') {
             $this->bootstrapCli();
+            $this->addPlugin('CakephpFixtureFactories');
         } else {
             FactoryLocator::add(
                 'Table',
