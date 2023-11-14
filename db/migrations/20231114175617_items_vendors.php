@@ -4,7 +4,7 @@ declare(strict_types=1);
 use App\Utilities\Phinx\PhinxHelperTrait;
 use Phinx\Migration\AbstractMigration;
 
-final class Customers extends AbstractMigration
+final class ItemsVendors extends AbstractMigration
 {
     use PhinxHelperTrait;
 
@@ -32,19 +32,14 @@ final class Customers extends AbstractMigration
      */
     public function change(): void
     {
-        $tables = [
-            'customers',
-            'items',
-            'vendors',
-        ];
-        foreach ($tables as $table) {
-            $target = $this->table($table);
-            $target
-                ->addColumn('name', 'char', ['limit' => 255])
-                ->create();
-            $this->requiredCakeNormColumns($target)
-                ->update();
-        }
+        $ivs = $this->table('items_vendors');
+        $this->requiredCakeNormColumns($ivs)
+            ->create();
+
+        $this->requiredForeignKey($ivs, 'vendors', 'id');
+        $this->requiredForeignKey($ivs, 'items', 'id');
+
+        $ivs->update();
     }
 
 //    public function up(): void {}
