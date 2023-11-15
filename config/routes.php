@@ -50,6 +50,10 @@ return function (RouteBuilder $routes): void {
     $routes->setRouteClass(DashedRoute::class);
 
     $routes->scope('/', function (RouteBuilder $builder): void {
+
+        $builder->connect('take-inventory', ['controller' => 'CustomersItems', 'action' => 'takeInventory']);
+        $builder->connect('set-trigger-levels', ['controller' => 'CustomersItems', 'action' => 'setTriggerLevels']);
+        $builder->connect('order-now', ['controller' => 'CustomersItems', 'action' => 'orderNow']);
         /*
          * Here, we are connecting '/' (base path) to a controller called 'Pages',
          * its action called 'display', and we pass a param to select the view file

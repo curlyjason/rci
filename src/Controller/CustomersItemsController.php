@@ -10,6 +10,8 @@ namespace App\Controller;
  */
 class CustomersItemsController extends AppController
 {
+
+    //<editor-fold desc="Baked actions">
     /**
      * Index method
      *
@@ -101,5 +103,38 @@ class CustomersItemsController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+    //</editor-fold>
+
+    public function takeInventory()
+    {
+        $query = $this->CustomersItems->find()
+            ->contain(['Customers', 'Items']);
+        $customersItems = $this->paginate($query);
+
+        $this->set(compact('customersItems'));
+    }
+
+    public function setTriggerLevels()
+    {
+        $query = $this->CustomersItems->find()
+            ->contain(['Customers', 'Items']);
+        $customersItems = $this->paginate($query);
+
+        $this->set(compact('customersItems'));
+    }
+
+    public function orderNow()
+    {
+        $query = $this->CustomersItems->find()
+            ->contain(['Customers', 'Items']);
+        $customersItems = $this->paginate($query);
+
+        $customersItems = collection($customersItems)
+            ->reduce(function ($accum, $customerItem) {
+                $accum[$customerItem->item_id] = $customerItem->item->name;
+                return $accum;
+            }, []);
+        $this->set(compact('customersItems'));
     }
 }
