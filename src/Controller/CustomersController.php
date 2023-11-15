@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Test\Factory\CustomerFactory;
+use App\Test\Scenario\IntegrationDataScenario;
+use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
 
 /**
  * Customers Controller
@@ -12,10 +14,12 @@ use App\Test\Factory\CustomerFactory;
  */
 class CustomersController extends AppController
 {
+    use ScenarioAwareTrait;
 
     public function init()
     {
-        CustomerFactory::make(5)->withItems(3)->persist();
+        $this->loadFixtureScenario(IntegrationDataScenario::class);
+        return $this->redirect('customers');
     }
     /**
      * Index method
