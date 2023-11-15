@@ -16,7 +16,7 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Customer newEmptyEntity()
  * @method \App\Model\Entity\Customer newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Customer[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Customer get($primaryKey, $options = [])
+ * @method \App\Model\Entity\Customer get($primaryKey, $options = [], $contain = [])
  * @method \App\Model\Entity\Customer findOrCreate($search, ?callable $callback = null, $options = [])
  * @method \App\Model\Entity\Customer patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \App\Model\Entity\Customer[] patchEntities(iterable $entities, array $data, array $options = [])
