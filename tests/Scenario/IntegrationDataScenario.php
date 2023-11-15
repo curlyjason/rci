@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Test\Scenario;
+
+use App\Test\Factory\CustomerFactory;
+use App\Test\Factory\CustomersItemFactory;
+use App\Test\Factory\VendorFactory;
+
+class IntegrationDataScenario implements \CakephpFixtureFactories\Scenario\FixtureScenarioInterface
+{
+
+    /**
+     * @inheritDoc
+     */
+    public function load(...$args): mixed
+    {
+        $vendors = VendorFactory::make(3)->withItems(3)->persist();
+        $customers = CustomerFactory::make(3)->persist();
+        $cust_item = array_chunk(CustomersItemFactory::make(9)->getEntities(), 3);
+        /**
+         * $cust_item = [
+         *   [entity, entity, entity],
+         *   [entity, entity, entity],
+         *   [entity, entity, entity],
+         * ];
+         */
+        $CustTable = CustomersItemFactory::make()->getTable();
+
+        collection($vendors)
+            ->map(function ($vendor, $vi) use ($customers, $cust_item, $CustTable) {
+                $items = $vendor->items;
+                foreach ($customers as $ci => $customer) {
+                    $CustTable->patchEntity(
+                        $cust_item[$vi][$ci],
+                        [
+                            'customer_id' => $customer->id,
+                            'item_id' => $items[$ci]->id,
+                        ]);
+                    $CustTable->save($cust_item[$vi][$ci]);
+                }
+            })
+            ->toArray();
+        return null;
+    }
+}
+
