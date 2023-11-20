@@ -14,6 +14,8 @@
  * @var \App\View\AppView $this
  */
 
+use Cake\Core\Configure;
+
 $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_PORT');
 ?>
 <!DOCTYPE html>
@@ -35,8 +37,16 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
 </head>
 <body>
     <nav class="top-nav">
-        <div class="top-nav-title">
+        <div class="top-nav-titlex">
+            <a href="<?= $this->Url->build('/take-inventory') ?>">Take Inventory</a> |
+            <a href="<?= $this->Url->build('/set-trigger-levels') ?>">Set Trigger Levels</a> |
+            <a href="<?= $this->Url->build('/order-now') ?>">Order Now</a>
+            <?php if (Configure::read('debug')) : ?>
+                | <a href="<?= $this->Url->build('api/set-inventory.json') ?>">Set Inventory</a> |
+            <a href="<?= $this->Url->build('api/set-trigger.json') ?>">Set Trigger</a> |
+            <a href="<?= $this->Url->build('api/order-item.json') ?>">Order</a> |
             <a href="<?= $this->Url->build('/') ?>"><span>Cake</span>PHP</a>
+            <?php endif; ?>
         </div>
         <div class="top-nav-links">
             <a target="_blank" rel="noopener" href="https://book.cakephp.org/5/">Documentation</a>
