@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller\Api;
+namespace App\Controller;
 
 use Cake\View\JsonView;
 
-class AppApiController extends \App\Controller\AppController
+class ApiController extends \App\Controller\AppController
 {
     public function initialize(): void
     {
