@@ -82,19 +82,11 @@ return function (RouteBuilder $routes): void {
         $builder->fallbacks();
     });
 
-    /*
-     * If you need a different set of middleware or none at all,
-     * open new scope and define routes there.
-     *
-     * ```
-     * $routes->scope('/api', function (RouteBuilder $builder): void {
-     *     // No $builder->applyMiddleware() here.
-     *
-     *     // Parse specified extensions from URLs
-     *     // $builder->setExtensions(['json', 'xml']);
-     *
-     *     // Connect API actions here.
-     * });
-     * ```
-     */
+    $routes->prefix('api', function (RouteBuilder $routes): void {
+        $routes->setExtensions(['json']);
+//        $routes->resources('CustomersItems');
+        $routes->connect('/set-inventory', ['controller' => 'CustomersItems', 'action' => 'setInventory']);
+        $routes->connect('/set-trigger', ['controller' => 'CustomersItems', 'action' => 'setTrigger']);
+        $routes->connect('/order-item', ['controller' => 'CustomersItems', 'action' => 'orderItem']);
+    });
 };
