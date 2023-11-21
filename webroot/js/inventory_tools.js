@@ -4,4 +4,4 @@ const InventoryTools = {
     },
 };
 
-InventoryTools.init();
+$(document).ready(InventoryTools.init);

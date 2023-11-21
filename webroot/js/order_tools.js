@@ -1,7 +1,8 @@
+
 const OrderTools = {
     init: function () {
         alert('init OrderTools')
     },
 };
 
-OrderTools.init();
+$(document).ready(OrderTools.init);

@@ -4,4 +4,4 @@ const TriggerTools = {
     },
 };
 
-TriggerTools.init();
+$(document).ready(TriggerTools.init);
