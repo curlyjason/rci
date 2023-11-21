@@ -13,15 +13,32 @@ $description = function(CustomersItem $input):string {
 
     return sprintf($pattern, $itemName, $itemTrigger);
 };
-
 $postOnShelf = function(CustomersItem $input):string {
     $this->start('onShelfForm');
     echo $this->Form->create($input, ['id' => $input->id]);
-    echo $this->Form->control('quantity', ['label' => false, 'value' => $input->quantity]);
+    echo $this->Form->control('quantity', [
+        'label' => false,
+        'value' => $input->quantity,
+        'style' => 'font-size: 200%;',
+        'title' => 'Amount on shelf',
+        'id' => "quantity-$input->id",
+    ]);
     echo $this->Form->end();
     $this->end();
 
     return $this->fetch('onShelfForm');
+};
+$outputTableRow = function(bool $shouldOutput, $customersItem) use ($description, $postOnShelf) :string {
+    $this->start('tableRows');
+        if ($shouldOutput):
+            echo "<tr id=\"$customersItem->id\">";
+            echo "<td>{$description($customersItem)}</td>";
+            echo "<td>{$postOnShelf($customersItem)}</td>";
+            echo '</tr>';
+        endif;
+    $this->end();
+
+    return $this->fetch('tableRows');
 };
 
 $this->append('script', $this->Html->script('inventory_tools.js'));
@@ -30,7 +47,8 @@ $this->append('script', $this->Html->script('inventory_tools.js'));
 <div class="customersItems index content">
     <?= $this->element('new_item_button') ?>
     <h3><?= __('Customers Items (Filter top customer and name them here)') ?></h3>
-    <div class="table-responsive">
+    <h3>To Do</h3>
+    <div class="table-responsive todo">
         <table>
             <thead>
                 <tr>
@@ -39,12 +57,29 @@ $this->append('script', $this->Html->script('inventory_tools.js'));
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($customersItems as $customersItem): ?>
-                <tr id="<?= $customersItem->id ?> ">
-                    <td><?= $description($customersItem) ?></td>
-                    <td><?= $postOnShelf($customersItem) ?></td>
+            <?php
+            foreach ($customersItems as $customersItem):
+                echo $outputTableRow(!$customersItem->hasBeenInventoried(), $customersItem);
+            endforeach;
+            ?>
+            </tbody>
+        </table>
+    </div>
+    <h3>Complete</h3>
+    <div class="table-responsive complete">
+        <table>
+            <thead>
+                <tr>
+                    <th><?= $this->Paginator->sort('item_id') ?></th>
+                    <th><?= $this->Paginator->sort('quantity', 'On Shelf') ?></th>
                 </tr>
-                <?php endforeach; ?>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($customersItems as $customersItem):
+                echo $outputTableRow($customersItem->hasBeenInventoried(), $customersItem);
+            endforeach;
+            ?>
             </tbody>
         </table>
     </div>
