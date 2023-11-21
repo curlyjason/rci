@@ -4,6 +4,26 @@
  * @var iterable<\App\Model\Entity\CustomersItem> $customersItems
  */
 
+use App\Model\Entity\CustomersItem;
+
+$description = function(CustomersItem $input):string {
+    $itemName = $input?->item->name ?? 'Unknown';
+    $itemTrigger = $input->target_quantity ?? '?';
+    $pattern = '<span class="name">%s</span> <span style="font-size: small;">[Reorder trigger level: %s]';
+
+    return sprintf($pattern, $itemName, $itemTrigger);
+};
+
+$postOnShelf = function(CustomersItem $input):string {
+    $this->start('onShelfForm');
+    echo $this->Form->create($input, ['id' => $input->id]);
+    echo $this->Form->control('quantity', ['label' => false, 'value' => $input->quantity]);
+    echo $this->Form->end();
+    $this->end();
+
+    return $this->fetch('onShelfForm');
+};
+
 $this->append('script', $this->Html->script('inventory_tools.js'));
 
 ?>
@@ -14,17 +34,15 @@ $this->append('script', $this->Html->script('inventory_tools.js'));
         <table>
             <thead>
                 <tr>
-                    <th><?= $this->Paginator->sort('target_quantity') ?></th>
                     <th><?= $this->Paginator->sort('item_id') ?></th>
-                    <th><?= $this->Paginator->sort('quantity') ?></th>
+                    <th><?= $this->Paginator->sort('quantity', 'On Shelf') ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($customersItems as $customersItem): ?>
-                <tr>
-                    <td><?= $customersItem->target_quantity === null ? '' : $this->Number->format($customersItem->target_quantity) ?></td>
-                    <td><?= $customersItem->hasValue('item') ? $this->Html->link($customersItem->item->name, ['controller' => 'Items', 'action' => 'view', $customersItem->item->id]) : '' ?></td>
-                    <td><?= $this->Form->postLink($this->Number->format($customersItem->quantity),'take-inventory',[]) ?></td>
+                <tr id="<?= $customersItem->id ?> ">
+                    <td><?= $description($customersItem) ?></td>
+                    <td><?= $postOnShelf($customersItem) ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
