@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
+use Cake\I18n\DateTime;
 use Cake\ORM\Entity;
 
 /**
@@ -11,6 +12,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int|null $quantity
  * @property int|null $target_quantity
+ * @property \Cake\I18n\DateTime|null $next_inventory
  * @property int $customer_id
  * @property int $item_id
  * @property \Cake\I18n\DateTime|null $created
@@ -41,4 +43,9 @@ class CustomersItem extends Entity
         'customer' => true,
         'item' => true,
     ];
+
+    public function hasBeenInventoried(): bool
+    {
+        return new DateTime() < new DateTime($this->next_inventory);
+    }
 }
