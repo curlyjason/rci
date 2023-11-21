@@ -33,6 +33,7 @@ class CustomersItem extends Entity
     protected array $_accessible = [
         'quantity' => true,
         'target_quantity' => true,
+        'next_inventory' => true,
         'customer_id' => true,
         'item_id' => true,
         'created' => true,
