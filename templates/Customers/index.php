@@ -3,6 +3,10 @@
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\Customer> $customers
  */
+
+use Cake\I18n\DateTime;
+
+debug((new DateTime())->firstOfMonth()->modify('first day of next month')->format('Y-m-d 00:00:01'));
 ?>
 <div class="customers index content">
     <?= $this->Html->link(__('New Customer'), ['action' => 'add'], ['class' => 'button float-right']) ?>
