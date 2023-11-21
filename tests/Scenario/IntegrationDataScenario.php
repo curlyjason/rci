@@ -5,6 +5,7 @@ namespace App\Test\Scenario;
 use App\Test\Factory\CustomerFactory;
 use App\Test\Factory\CustomersItemFactory;
 use App\Test\Factory\VendorFactory;
+use Cake\I18n\DateTime;
 
 class IntegrationDataScenario implements \CakephpFixtureFactories\Scenario\FixtureScenarioInterface
 {
@@ -35,6 +36,9 @@ class IntegrationDataScenario implements \CakephpFixtureFactories\Scenario\Fixtu
                         [
                             'customer_id' => $customer->id,
                             'item_id' => $items[$ci]->id,
+                            'quantity' => 5,
+                            'trigger_quantity' => 10,
+                            'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
                         ]);
                     $CustTable->save($cust_item[$vi][$ci]);
                 }
