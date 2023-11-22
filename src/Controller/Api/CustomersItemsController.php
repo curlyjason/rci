@@ -12,7 +12,7 @@ class CustomersItemsController extends ApiController
     public function initialize(): void
     {
         parent::initialize();
-        $this->allowed_methods = ['patch', 'get'];
+        $this->allowed_methods = ['post', 'patch', 'get'];
     }
 
     public function setInventory()
