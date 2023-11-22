@@ -9,7 +9,7 @@ use App\Model\Entity\CustomersItem;
 $description = function(CustomersItem $input):string {
     $itemName = $input?->item->name ?? 'Unknown';
     $itemTrigger = $input->target_quantity ?? '?';
-    $pattern = '<span class="name">%s</span> <span style="font-size: small;">[Reorder trigger level: %s]';
+    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">[Reorder trigger level: %s]';
 
     return sprintf($pattern, $itemName, $itemTrigger);
 };
@@ -19,9 +19,10 @@ $postOnShelf = function(CustomersItem $input):string {
     echo $this->Form->control('quantity', [
         'label' => false,
         'value' => $input->quantity,
-        'style' => 'font-size: 200%;',
+        'style' => 'font-size: 200%; max-width: 7rem;',
         'title' => 'Amount on shelf',
         'id' => "quantity-$input->id",
+        'type' => 'char',
     ]);
     echo $this->Form->end();
     $this->end();
@@ -56,7 +57,7 @@ $this->append('script', $this->Html->script('inventory_tools.js'));
                     <th><?= $this->Paginator->sort('quantity', 'On Shelf') ?></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="todo">
             <?php
             foreach ($customersItems as $customersItem):
                 echo $outputTableRow(!$customersItem->hasBeenInventoried(), $customersItem);
@@ -74,7 +75,7 @@ $this->append('script', $this->Html->script('inventory_tools.js'));
                     <th><?= $this->Paginator->sort('quantity', 'On Shelf') ?></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="complete">
             <?php
             foreach ($customersItems as $customersItem):
                 echo $outputTableRow($customersItem->hasBeenInventoried(), $customersItem);
