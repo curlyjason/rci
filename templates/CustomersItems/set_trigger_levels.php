@@ -2,7 +2,12 @@
 /**
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\CustomersItem> $customersItems
+ * @var object $masterFilterMap
+ * @var array $items
  */
+
+osd($masterFilterMap);
+osd($items);
 
 $this->append('script', $this->Html->script('trigger_tools.js'));
 
