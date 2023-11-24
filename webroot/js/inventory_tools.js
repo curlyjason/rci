@@ -53,7 +53,7 @@ const InventoryTools = {
     moveRowToComplete: function (id) {
         let row = $('tr[id="' + id + '"]');
         let tableBody = $('tbody.complete');
-        tableBody.append(row);
+        tableBody.prepend(row);
     },
 };
 
