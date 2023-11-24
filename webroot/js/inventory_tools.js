@@ -1,7 +1,9 @@
 const InventoryTools = {
     initialize: function () {
         InventoryTools.attachQuantityChangeHandlers(InventoryTools.getQuantityInputs());
+        InventoryTools.attachOkButtonHanders(InventoryTools.getOkButtons());
     },
+
     getQuantityInputs: function () {
         return $('input[name="quantity"]');
     },
@@ -27,11 +29,19 @@ const InventoryTools = {
                 }
             });
     },
-    moveRowToComplete: function (id) {
-        let row = $('tr[id="' + id + '"]');
-        let tableBody = $('tbody.complete');
-        tableBody.append(row);
+
+    getOkButtons: function () {
+        return $('.ok-button');
     },
+    attachOkButtonHanders: function (buttons) {
+        buttons.each(function (index, button) {
+            $(button).on('click', InventoryTools.okButtonHandler);
+        });
+    },
+    okButtonHandler: function (e) {
+        $(e.target).parents('form').find('input[name="quantity"]').trigger('change');
+    },
+
     preparePostData: function (input) {
         let f = $(input).parents('form');
         return {
@@ -39,6 +49,11 @@ const InventoryTools = {
             "_csrfToken": f.find('input[name="_csrfToken"]').val(),
             "quantity": $(input).val(),
         }
+    },
+    moveRowToComplete: function (id) {
+        let row = $('tr[id="' + id + '"]');
+        let tableBody = $('tbody.complete');
+        tableBody.append(row);
     },
 };
 
