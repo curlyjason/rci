@@ -19,10 +19,18 @@ $postOnShelf = function(CustomersItem $input):string {
     echo $this->Form->control('quantity', [
         'label' => false,
         'value' => $input->quantity,
-        'style' => 'font-size: 200%; max-width: 7rem;',
+        'style' => 'font-size: 200%; max-width: 7rem; margin-bottom: 5px;',
         'title' => 'Amount on shelf',
         'id' => "quantity-$input->id",
         'type' => 'char',
+    ]);
+//    echo $this->Form->checkbox($input->quantity . 'is correct');
+//    echo $this->Form->control('ok', ['type' => 'checkbox', 'label'=>$input->quantity . ' is correct','value' => 1]);
+//    echo $this->Form->control('ok', ['type' => 'checkbox', 'label'=> "$input->quantity OK",'value' => 1, 'style' => 'width: 24px; height: 24px;']);
+        echo $this->Form->button("$input->quantity ✓", [
+        'class' => 'button ok-button',
+        'style' => 'border-color: darkgreen; background-color: white; color: green; height: 2.8rem; line-height: 2.8rem; padding: 0 2rem;',
+        'type' => 'button',
     ]);
     echo $this->Form->end();
     $this->end();
