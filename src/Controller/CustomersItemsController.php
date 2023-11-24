@@ -118,10 +118,23 @@ class CustomersItemsController extends AppController
     public function setTriggerLevels()
     {
         $query = $this->CustomersItems->find()
-            ->contain(['Customers', 'Items']);
+            ->contain(['Customers', 'Items.Vendors']);
         $customersItems = $this->paginate($query);
 
-        $this->set(compact('customersItems'));
+        $result = collection($customersItems)
+            ->reduce(function ($accum, $customerItem) {
+                $id = $customerItem->item_id;
+                $accum['masterFilterMap']->$id = $customerItem->item->name
+                    . ' ' . $customerItem->item->description
+                    . ' ' . $customerItem->item->vendors[0]->_joinData->sku;
+                $accum['items'][$id] = $customerItem->item->name;
+
+                return $accum;
+            }, ['masterFilterMap' => new \stdClass(), 'items' => []]);
+
+        extract($result);
+
+        $this->set(compact('masterFilterMap', 'items', 'customersItems'));
     }
 
     public function orderNow()
