@@ -6,6 +6,42 @@
 
 use App\Model\Entity\CustomersItem;
 
+//<editor-fold desc="SPECIALIZED PAGE STYLES : viewblock = style">
+$style_overrides = [
+    'tbody.todo input.quantity, tbody.complete input.quantity' => [
+        'font-size'=>'200%',
+        'max-width'=>'7rem',
+        'margin-bottom'=>'5px',
+        'color'=>'darkred'
+    ],
+    'tbody.complete input.quantity' => [
+        'color' => 'green',
+    ],
+    'tbody.todo button.ok-button, tbody.complete button.ok-button' => [
+        'border-color'=>'darkgreen',
+        'background-color'=>'white',
+        'color'=>'green',
+        'height'=>'2.8rem',
+        'line-height'=>'2.8rem',
+        'padding'=>'0 2rem;'
+    ],
+    'tbody.complete button.ok-button' => [
+        'display' => 'none',
+        'background-color'=>'green',
+        'color'=>'white',
+    ],
+];
+
+$this->append('style');
+echo "\n<style>\n";
+foreach ($style_overrides as $selector => $override) {
+    echo $selector . ' { ' . $this->Html->style($override) . " }\n";
+}
+echo "</style>\n";
+$this->end();
+//</editor-fold>
+
+//<editor-fold desc="LOCAL HELPER FUNCTIONS">
 $description = function(CustomersItem $input):string {
     $itemName = $input?->item->name ?? 'Unknown';
     $itemTrigger = $input->target_quantity ?? '?';
@@ -17,9 +53,9 @@ $postOnShelf = function(CustomersItem $input):string {
     $this->start('onShelfForm');
     echo $this->Form->create($input, ['id' => $input->id]);
     echo $this->Form->control('quantity', [
+        'class' => 'quantity',
         'label' => false,
         'value' => $input->quantity,
-        'style' => 'font-size: 200%; max-width: 7rem; margin-bottom: 5px;',
         'title' => 'Amount on shelf',
         'id' => "quantity-$input->id",
         'type' => 'char',
@@ -29,7 +65,6 @@ $postOnShelf = function(CustomersItem $input):string {
 //    echo $this->Form->control('ok', ['type' => 'checkbox', 'label'=> "$input->quantity OK",'value' => 1, 'style' => 'width: 24px; height: 24px;']);
         echo $this->Form->button("$input->quantity ✓", [
         'class' => 'button ok-button',
-        'style' => 'border-color: darkgreen; background-color: white; color: green; height: 2.8rem; line-height: 2.8rem; padding: 0 2rem;',
         'type' => 'button',
     ]);
     echo $this->Form->end();
@@ -49,6 +84,7 @@ $outputTableRow = function(bool $shouldOutput, $customersItem) use ($description
 
     return $this->fetch('tableRows');
 };
+//</editor-fold>
 
 $this->append('script', $this->Html->script('inventory_tools.js'));
 
@@ -103,3 +139,4 @@ $this->append('script', $this->Html->script('inventory_tools.js'));
         <p><?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?></p>
     </div>
 </div>
+
