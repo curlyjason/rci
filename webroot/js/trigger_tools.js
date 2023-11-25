@@ -35,14 +35,9 @@ const TriggerTools = {
             e.preventDefault();
         });
     },
-    filter_map: function () {
-        return master_filter_map;
-    },
-    filter_rows: function() {
-        let search = new RegExp('ib', 'i')
-        let map = TriggerTools.filter_map();
-        for (let key in map) {
-            if(map[key].match(search)) {
+    keypressHandler: function(e) {
+        for (let key in itemMap) {
+            if(itemMap[key].match(e.target.value)) {
                 $('tr#' + key).removeClass('hide');
             }
             else {

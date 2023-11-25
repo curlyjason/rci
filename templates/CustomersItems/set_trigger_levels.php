@@ -112,5 +112,5 @@ $this->append('script', $this->Html->script('trigger_tools.js'));
     </div>
 </div>
 <script>
-    const master_filter_map = <?= json_encode($masterFilterMap) ?> ;
+    const itemMap = <?= json_encode($masterFilterMap) ?> ;
 </script>
