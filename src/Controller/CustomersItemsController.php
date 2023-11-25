@@ -123,7 +123,7 @@ class CustomersItemsController extends AppController
 
         $result = collection($customersItems)
             ->reduce(function ($accum, $customerItem) {
-                $id = $customerItem->item_id;
+                $id = $customerItem->id;
                 $accum['masterFilterMap']->$id = $customerItem->item->name
                     . ' ' . $customerItem->item->description
                     . ' ' . $customerItem->item->vendors[0]->_joinData->sku;
