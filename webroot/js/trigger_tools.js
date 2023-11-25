@@ -35,6 +35,21 @@ const TriggerTools = {
             e.preventDefault();
         });
     },
+    filter_map: function () {
+        return master_filter_map;
+    },
+    filter_rows: function() {
+        let search = new RegExp('ib', 'i')
+        let map = TriggerTools.filter_map();
+        for (let key in map) {
+            if(map[key].match(search)) {
+                $('tr#' + key).removeClass('hide');
+            }
+            else {
+                $('tr#' + key).addClass('hide');
+            }
+        }
+    },
 };
 
 $(document).ready(TriggerTools.init);
