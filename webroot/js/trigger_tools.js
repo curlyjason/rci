@@ -28,7 +28,12 @@
  */
 const TriggerTools = {
     init: function () {
-        alert('init TriggerTools')
+        TriggerTools.stopFormSubmission();
+    },
+    stopFormSubmission: function () {
+        $('form').submit(function(e){
+            e.preventDefault();
+        });
     },
 };
 
