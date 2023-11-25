@@ -29,7 +29,10 @@
 const TriggerTools = {
     init: function () {
         TriggerTools.stopFormSubmission();
+        $('input[name="filter"]').on('keyup', TriggerTools.keypressHandler);
+        TriggerTools.attachQuantityChangeHandlers(TriggerTools.getQuantityInputs());
     },
+
     stopFormSubmission: function () {
         $('form').submit(function(e){
             e.preventDefault();
@@ -45,6 +48,42 @@ const TriggerTools = {
             }
         }
     },
+
+    getQuantityInputs: function () {
+        return $('input[name="target_quantity"]');
+    },
+    attachQuantityChangeHandlers: function (inputs) {
+        inputs.each(function (index, input) {
+            $(input).on('change', TriggerTools.quantityChangeHandler);
+        });
+    },
+    quantityChangeHandler: function (e) {
+        $(e.target).parents('form').submit(function(e){
+            e.preventDefault();
+        });
+        let postData = TriggerTools.preparePostData(e.target)
+        $.post(
+            "http://localhost:8015/api/set-trigger.json", //url
+            postData,
+            function(data, status){ // callback to handle response
+                if (data.error !== undefined) {
+                    alert(data.error);
+                }
+                else {
+                    alert('trigger inventory level changed')
+                }
+            });
+    },
+
+    preparePostData: function (input) {
+        let f = $(input).parents('form');
+        return {
+            "id": f.attr('id'),
+            "_csrfToken": f.find('input[name="_csrfToken"]').val(),
+            "target_quantity": $(input).val(),
+        }
+    },
+
 };
 
 $(document).ready(TriggerTools.init);
