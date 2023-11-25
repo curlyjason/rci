@@ -13,7 +13,9 @@ $style_overrides = [
     'tbody input.target_quantity' => [
         'font-size'=>'200%',
         'max-width'=>'7rem',
-//        'margin-bottom'=>'5px',
+    ],
+    'tr.hide' => [
+        'display'=>'none',
     ],
 ];
 
@@ -109,3 +111,6 @@ $this->append('script', $this->Html->script('trigger_tools.js'));
         <p><?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?></p>
     </div>
 </div>
+<script>
+    const master_filter_map = <?= json_encode($masterFilterMap) ?> ;
+</script>
