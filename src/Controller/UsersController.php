@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Authentication\Controller\Component\AuthenticationComponent;
 use Cake\Event\EventInterface;
 
 /**
  * Users Controller
  *
  * @property \App\Model\Table\UsersTable $Users
- * @property
+ * @property AuthenticationComponent $Authentication
  */
 class UsersController extends AppController
 {
