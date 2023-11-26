@@ -44,6 +44,10 @@ class UsersTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->belongsTo('Customers', [
+            'foreignKey' => 'customer_id',
+        ]);
     }
 
     /**
@@ -65,6 +69,10 @@ class UsersTable extends Table
             ->requirePresence('password', 'create')
             ->notEmptyString('password');
 
+        $validator
+            ->nonNegativeInteger('customer_id')
+            ->allowEmptyString('customer_id');
+
         return $validator;
     }
 
@@ -78,6 +86,7 @@ class UsersTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['email']), ['errorField' => 'email']);
+        $rules->add($rules->existsIn('customer_id', 'Customers'), ['errorField' => 'customer_id']);
 
         return $rules;
     }

@@ -12,6 +12,7 @@ use Authentication\PasswordHasher\DefaultPasswordHasher;
  * @property int $id
  * @property string $email
  * @property string $password
+ * @property int|null $customer_id
  * @property \Cake\I18n\DateTime|null $created
  * @property \Cake\I18n\DateTime|null $modified
  */
@@ -29,6 +30,7 @@ class User extends Entity
     protected array $_accessible = [
         'email' => true,
         'password' => true,
+        'customer_id' => true,
         'created' => true,
         'modified' => true,
     ];
