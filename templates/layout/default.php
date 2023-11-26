@@ -58,7 +58,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
             <?php endif; ?>
         </div>
         <div class="top-nav-links">
-            <a href="#">Welcome <?= $this->request->getSession()->read('Auth')?->email ?> </a>
+            <a href="#" style="font-weight: normal">Welcome <?= $this->request->getSession()->read('Auth')?->email ?> </a>
             <?php if (!is_null($this->request->getSession()->read('Auth'))) : ?>
             <a href="users/logout">Logout</a>
             <?php endif; ?>
