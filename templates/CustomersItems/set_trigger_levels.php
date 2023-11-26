@@ -4,6 +4,7 @@
  * @var iterable<\App\Model\Entity\CustomersItem> $customersItems
  * @var object $masterFilterMap
  * @var array $items
+ * @var \App\Model\Entity\User $user
  */
 
 use App\Model\Entity\CustomersItem;
@@ -27,7 +28,6 @@ foreach ($style_overrides as $selector => $override) {
 echo "</style>\n";
 $this->end();
 //</editor-fold>
-
 
 //<editor-fold desc="LOCAL UTILITY FUNCTIONS">
 $getId = function($data) {
@@ -77,7 +77,8 @@ $this->append('script', $this->Html->script('trigger_tools.js'));
 ?>
 <div class="customersItems index content">
     <?= $this->element('new_item_button') ?>
-    <h3><?= __('Customers Items (Filter top customer and name them here)') ?></h3>
+    <h2><?= __('Set Reorder Trigger Levels') ?></h2>
+    <h3><?= __($user->customer->name) ?></h3>
     <?php
     echo $this->Form->create();
     echo $this->Form->control('filter');
