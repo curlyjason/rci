@@ -2,6 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\CustomersItem> $customersItems
+ * @var \App\Model\Entity\User $user
  */
 
 use App\Model\Entity\CustomersItem;
@@ -91,7 +92,7 @@ $this->append('script', $this->Html->script('inventory_tools.js'));
 ?>
 <div class="customersItems index content">
     <?= $this->element('new_item_button') ?>
-    <h3><?= __('Customers Items (Filter top customer and name them here)') ?></h3>
+    <h3><?= __($user->customer->name) ?></h3>
     <h3>To Do</h3>
     <div class="table-responsive todo">
         <table>

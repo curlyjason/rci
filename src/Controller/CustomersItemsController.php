@@ -108,13 +108,18 @@ class CustomersItemsController extends AppController
 
     public function takeInventory()
     {
+        $user = $this->fetchTable('Users')
+            ->find()
+            ->where(['Users.id' => $this->readSession('Auth')->id])
+            ->contain(['Customers'])
+            ->first();
         $customer_id = $this->request->getSession()->read('Auth')->customer_id;
         $query = $this->CustomersItems->find()
             ->where(['customer_id' => $customer_id])
             ->contain(['Customers', 'Items']);
         $customersItems = $this->paginate($query);
 
-        $this->set(compact('customersItems'));
+        $this->set(compact('customersItems', 'user'));
     }
 
     public function setTriggerLevels()
