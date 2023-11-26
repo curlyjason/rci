@@ -53,8 +53,8 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
             <a href="<?= $this->Url->build('/order-now') ?>">Order Now</a>
             <?php if (Configure::read('debug')) : ?>
                 | <a href="<?= $this->Url->build('api/set-inventory.json') ?>">Set Inventory</a> |
-            <a href="<?= $this->Url->build('api/set-trigger.json') ?>">Set Trigger</a> |
-            <a href="<?= $this->Url->build('api/order-item.json') ?>">Order</a> |
+                <a href="<?= $this->Url->build('api/set-trigger.json') ?>">Set Trigger</a> |
+                <a href="<?= $this->Url->build('api/order-item.json') ?>">Order</a>
             <?php endif; ?>
         </div>
         <div class="top-nav-links">
