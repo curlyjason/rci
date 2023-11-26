@@ -108,22 +108,19 @@ class CustomersItemsController extends AppController
 
     public function takeInventory()
     {
-        $user = $this->fetchTable('Users')
-            ->find()
-            ->where(['Users.id' => $this->readSession('Auth')->id])
-            ->contain(['Customers'])
-            ->first();
+        $this->setUserCustomerVariable();
         $customer_id = $this->request->getSession()->read('Auth')->customer_id;
         $query = $this->CustomersItems->find()
             ->where(['customer_id' => $customer_id])
             ->contain(['Customers', 'Items']);
         $customersItems = $this->paginate($query);
 
-        $this->set(compact('customersItems', 'user'));
+        $this->set(compact('customersItems'));
     }
 
     public function setTriggerLevels()
     {
+        $this->setUserCustomerVariable();
         $query = $this->CustomersItems->find()
             ->contain(['Customers', 'Items.Vendors']);
         $customersItems = $this->paginate($query);
@@ -156,5 +153,19 @@ class CustomersItemsController extends AppController
                 return $accum;
             }, []);
         $this->set(compact('customersItems'));
+    }
+
+    /**
+     * @return mixed
+     */
+    private function setUserCustomerVariable(): void
+    {
+        $user = $this->fetchTable('Users')
+            ->find()
+            ->where(['Users.id' => $this->readSession('Auth')->id])
+            ->contain(['Customers'])
+            ->first();
+
+        $this->set(compact('user'));
     }
 }
