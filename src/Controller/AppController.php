@@ -50,4 +50,9 @@ class AppController extends Controller
          */
         //$this->loadComponent('FormProtection');
     }
+
+    protected function readSession(string $string)
+    {
+        return $this->request->getSession()->read($string);
+    }
 }
