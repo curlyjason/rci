@@ -143,16 +143,25 @@ class CustomersItemsController extends AppController
 
     public function orderNow()
     {
+        $this->setUserCustomerVariable();
         $query = $this->CustomersItems->find()
-            ->contain(['Customers', 'Items']);
+            ->contain(['Customers', 'Items.Vendors']);
         $customersItems = $this->paginate($query);
 
-        $customersItems = collection($customersItems)
+        $result = collection($customersItems)
             ->reduce(function ($accum, $customerItem) {
-                $accum[$customerItem->item_id] = $customerItem->item->name;
+                $id = $customerItem->id;
+                $accum['masterFilterMap']->$id = $customerItem->item->name
+                    . ' ' . $customerItem->item->description
+                    . ' ' . $customerItem->item->vendors[0]->_joinData->sku;
+                $accum['items'][$id] = $customerItem->item->name;
+
                 return $accum;
-            }, []);
-        $this->set(compact('customersItems'));
+            }, ['masterFilterMap' => new \stdClass(), 'items' => []]);
+
+        extract($result);
+
+        $this->set(compact('masterFilterMap', 'items', 'customersItems'));
     }
 
     /**
