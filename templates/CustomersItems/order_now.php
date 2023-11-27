@@ -39,7 +39,7 @@ $getId = function($data) {
 };
 
 $selector = function(CustomersItem $input):string {
-    $selectLink = $this->Html->link('Add to order','#');
+    $selectLink = $this->Html->link('Add to order',"#ol-$input->id", ['class' => 'addToOrder']);
     $itemName = $input?->item->name ?? 'Unknown';
     $pattern = '<td>%s</td><td><span class="name">%s</span></td>';
 
@@ -79,7 +79,7 @@ $postOnShelf = function(CustomersItem $input):string {
 };
 $formTableRow = function($customersItem) use ($description, $postOnShelf) :string {
     $this->start('tableRows');
-        echo "<tr id=\"$customersItem->id\" class=\"hide\">";
+        echo "<tr id=\"ol-$customersItem->id\" class=\"hide\">";
         echo "<td>{$description($customersItem)}</td>";
         echo "<td>{$postOnShelf($customersItem)}</td>";
         echo '</tr>';
@@ -88,9 +88,6 @@ $formTableRow = function($customersItem) use ($description, $postOnShelf) :strin
     return $this->fetch('tableRows');
 };
 //</editor-fold>
-
-//osd($masterFilterMap);
-//osd($items);
 
 $this->append('script', $this->Html->script('order_tools.js'));
 
