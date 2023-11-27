@@ -54,6 +54,39 @@ $outputSelectorRow = function($customersItem) use ($selector, $getId):string {
 
     return $this->fetch('tableRows');
 };
+
+$description = function(CustomersItem $input):string {
+    $itemName = $input?->item->name ?? 'Unknown';
+    $itemTrigger = $input->target_quantity ?? '?';
+    $currInventory = $input->quantity;
+    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">[Reorder trigger level: %s | Current inventory: %s]';
+
+    return sprintf($pattern, $itemName, $itemTrigger, $currInventory);
+};
+$postOnShelf = function(CustomersItem $input):string {
+    $this->start('onShelfForm');
+    echo $this->Form->control('quantity', [
+        'class' => 'quantity',
+        'label' => false,
+        'value' => $input->quantity,
+        'title' => 'Amount on shelf',
+        'id' => "quantity-$input->id",
+        'type' => 'char',
+    ]);
+    $this->end();
+
+    return $this->fetch('onShelfForm');
+};
+$formTableRow = function($customersItem) use ($description, $postOnShelf) :string {
+    $this->start('tableRows');
+        echo "<tr id=\"$customersItem->id\" class=\"hide\">";
+        echo "<td>{$description($customersItem)}</td>";
+        echo "<td>{$postOnShelf($customersItem)}</td>";
+        echo '</tr>';
+    $this->end();
+
+    return $this->fetch('tableRows');
+};
 //</editor-fold>
 
 //osd($masterFilterMap);
@@ -100,6 +133,11 @@ $this->append('script', $this->Html->script('order_tools.js'));
             </tr>
             </thead>
             <tbody>
+            <?php
+            foreach ($customersItems as $customersItem):
+                echo $formTableRow($customersItem);
+            endforeach;
+            ?>
             </tbody>
         </table>
         <?= $this->Form->end(); ?>
