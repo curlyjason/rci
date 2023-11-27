@@ -84,7 +84,7 @@ $this->append('script', $this->Html->script('trigger_tools.js'));
     echo $this->Form->control('filter');
     echo $this->Form->end();
     ?>
-    <div class="table-responsive todo">
+    <div class="table-responsive">
         <table>
             <thead>
             <tr>
@@ -92,7 +92,7 @@ $this->append('script', $this->Html->script('trigger_tools.js'));
                 <th><?= $this->Paginator->sort('quantity', 'Target Level') ?></th>
             </tr>
             </thead>
-            <tbody class="todo">
+            <tbody>
             <?php
             foreach ($customersItems as $customersItem):
                 echo $outputTableRow($customersItem);
