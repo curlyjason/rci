@@ -109,9 +109,8 @@ class CustomersItemsController extends AppController
     public function takeInventory()
     {
         $this->setUserCustomerVariable();
-        $customer_id = $this->request->getSession()->read('Auth')->customer_id;
         $query = $this->CustomersItems->find()
-            ->where(['customer_id' => $customer_id])
+            ->where(['customer_id' => $this->readSession('Auth')->customer_id])
             ->contain(['Customers', 'Items']);
         $customersItems = $this->paginate($query);
 
@@ -122,6 +121,7 @@ class CustomersItemsController extends AppController
     {
         $this->setUserCustomerVariable();
         $query = $this->CustomersItems->find()
+            ->where(['customer_id' => $this->readSession('Auth')->customer_id])
             ->contain(['Customers', 'Items.Vendors']);
         $customersItems = $this->paginate($query);
 
@@ -145,6 +145,7 @@ class CustomersItemsController extends AppController
     {
         $this->setUserCustomerVariable();
         $query = $this->CustomersItems->find()
+            ->where(['customer_id' => $this->readSession('Auth')->customer_id])
             ->contain(['Customers', 'Items.Vendors']);
         $customersItems = $this->paginate($query);
 
