@@ -38,20 +38,17 @@ $getId = function($data) {
     return $data->id;
 };
 
-$description = function(CustomersItem $input):string {
+$selector = function(CustomersItem $input):string {
+    $selectLink = $this->Html->link('Add to order','#');
     $itemName = $input?->item->name ?? 'Unknown';
-    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">';
+    $pattern = '<td>%s</td><td><span class="name">%s</span></td>';
 
-    return sprintf($pattern, $itemName);
+    return sprintf($pattern, $selectLink, $itemName);
 };
-$postOnShelf = function(CustomersItem $input) use ($getId):string {
-    return $this->Html->link('Add to order','#');
-};
-$outputTableRow = function($customersItem) use ($description, $postOnShelf, $getId):string {
+$outputSelectorRow = function($customersItem) use ($selector, $getId):string {
     $this->start('tableRows');
     echo "<tr id=\"{$getId($customersItem)}\">";
-    echo "<td>{$postOnShelf($customersItem)}</td>";
-    echo "<td>{$description($customersItem)}</td>";
+    echo $selector($customersItem);
     echo '</tr>';
     $this->end();
 
@@ -62,7 +59,7 @@ $outputTableRow = function($customersItem) use ($description, $postOnShelf, $get
 //osd($masterFilterMap);
 //osd($items);
 
-$this->append('script', $this->Html->script('trigger_tools.js'));
+$this->append('script', $this->Html->script('order_tools.js'));
 
 ?>
 <div class="customersItems index content">
@@ -85,7 +82,7 @@ $this->append('script', $this->Html->script('trigger_tools.js'));
             <tbody>
             <?php
             foreach ($customersItems as $customersItem):
-                echo $outputTableRow($customersItem);
+                echo $outputSelectorRow($customersItem);
             endforeach;
             ?>
             </tbody>
