@@ -37,7 +37,7 @@ class CustomersItemsController extends ApiController
     public function setTrigger()
     {
         if ($this->request->is($this->allowed_methods)) {
-            $response = ['set trigger', 'item', 'value'];
+            $response = $this->updateTriggerValue();
         }
         else {
             $response = $this->badRequestMethod();
@@ -83,6 +83,31 @@ class CustomersItemsController extends ApiController
                     ->firstOfMonth()
                     ->modify('first day of next month')
                     ->format('Y-m-d 00:00:01'),
+            ]);
+
+            if ($this->CustomersItems->save($entity)) {
+                $response = $entity;
+            }
+            else {
+                $response = new \stdClass();
+                $response->error = $entity->getErrors();
+            }
+        } catch (\Exception $e) {
+            $response = $this->encodeExceptionForJson($e);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @return string[]
+     */
+    protected function updateTriggerValue(): object
+    {
+        try {
+            $entity = $this->CustomersItems->get($this->request->getdata('id'));
+            $this->CustomersItems->patchEntity($entity, [
+                'target_quantity' => $this->request->getData('target_quantity'),
             ]);
 
             if ($this->CustomersItems->save($entity)) {
