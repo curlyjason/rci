@@ -143,6 +143,9 @@ class CustomersItemsController extends AppController
 
     public function orderNow()
     {
+        if ($this->request->is('post')) {
+            osdd($this->request->getData());
+        }
         $this->setUserCustomerVariable();
         $query = $this->CustomersItems->find()
             ->where(['customer_id' => $this->readSession('Auth')->customer_id])

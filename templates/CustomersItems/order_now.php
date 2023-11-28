@@ -15,7 +15,7 @@ $style_overrides = [
         'font-size'=>'200%',
         'max-width'=>'7rem',
     ],
-    'tr.hide' => [
+    '.hide' => [
         'display'=>'none',
     ],
     'td' => [
@@ -70,14 +70,16 @@ $description = function(CustomersItem $input):string {
 };
 $postOnShelf = function(CustomersItem $input):string {
     $this->start('onShelfForm');
-    echo $this->Form->control('quantity', [
-        'class' => 'quantity',
+    echo $this->Form->control('order_quantity', [
+        'class' => 'order_quantity',
         'label' => false,
-        'value' => $input->quantity,
+        'name' => 'order_quantity[]',
+        'value' => '',
         'title' => 'Amount on shelf',
-        'id' => "quantity-$input->id",
+        'id' => "order_quantity-$input->id",
         'type' => 'char',
     ]);
+    echo $this->Form->control('id', ['name' => 'id[]', 'type' => 'hidden', 'value' => $input->id]);
     echo $this->Form->button('Remove from order',[
         'data-target' => "#ol-$input->id",
         'class' => 'toggleOnOrder button-clear',

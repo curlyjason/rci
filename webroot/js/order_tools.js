@@ -3,6 +3,7 @@ const OrderTools = {
     init: function () {
         $('input[name="filter"]').on('keyup', OrderTools.keypressHandler);
         OrderTools.setOrderLineToggleListeners(OrderTools.getOrderLineToggles());
+        $('div.submit').addClass('hide');
     },
 
     keypressHandler: function(e) {
@@ -15,6 +16,7 @@ const OrderTools = {
             }
         }
     },
+
     getOrderLineToggles: function () {
         return $('button.toggleOnOrder');
     },
@@ -30,7 +32,25 @@ const OrderTools = {
         } else {
             $('tr' + id).addClass('hide');
         }
+        OrderTools.checkSubmitButtonVisiblity();
     },
+
+    checkSubmitButtonVisiblity: function() {
+        let inputs = $('tr[id|="ol"][class!="hide"] input.order_quantity');
+        let result = true;
+        inputs.each(function(index,input) {
+            let value = $(input).val();
+            let number_length = value.match(/[0-9]*/)[0].length
+            let raw_length = value.length;
+            result = result && value !== '' && raw_length === number_length;
+        })
+        if (result) {
+            $('div.submit').removeClass('hide');
+        }
+        else {
+            $('div.submit').addClass('hide');
+        }
+    }
 };
 
 $(document).ready(OrderTools.init);
