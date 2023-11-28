@@ -4,6 +4,7 @@ namespace App\Test\Scenario;
 
 use App\Test\Factory\CustomerFactory;
 use App\Test\Factory\CustomersItemFactory;
+use App\Test\Factory\UserFactory;
 use App\Test\Factory\VendorFactory;
 use Cake\I18n\DateTime;
 
@@ -18,6 +19,19 @@ class IntegrationDataScenario implements \CakephpFixtureFactories\Scenario\Fixtu
         $vendors = VendorFactory::make(3)->withItems(3)->persist();
         $customers = CustomerFactory::make(3)->persist();
         $cust_item = array_chunk(CustomersItemFactory::make(9)->getEntities(), 3);
+        UserFactory::make([
+            [
+                'email' => 'ddrake@dreamingmind.com',
+                'password' => 'xx',
+                'customer_id' => $customers[0]->id,
+            ],
+            [
+                'email' => 'jason@curlymedia.com',
+                'password' => 'xx',
+                'customer_id' => $customers[0]->id,
+            ],
+        ])
+        ->persist();
         /**
          * $cust_item = [
          *   [entity, entity, entity],
