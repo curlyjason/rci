@@ -5,7 +5,7 @@ const OrderTools = {
         OrderTools.setOrderLineToggleListeners(OrderTools.getOrderLineToggles());
         $('div.submit').addClass('hide');
         OrderTools.setOrderLineInputListeners(OrderTools.getOrderLineInputs());
-        this.checkSubmitButtonVisiblity();
+        OrderTools.checkSubmitButtonVisiblity();
     },
 
     keypressHandler: function(e) {
