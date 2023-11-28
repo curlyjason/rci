@@ -11,9 +11,10 @@ use App\Model\Entity\CustomersItem;
 
 //<editor-fold desc="SPECIALIZED PAGE STYLES : viewblock = style">
 $style_overrides = [
-    'tbody input.target_quantity' => [
+    'tbody input.order_quantity' => [
         'font-size'=>'200%',
         'max-width'=>'7rem',
+        'margin-top' => '1rem',
     ],
     '.hide' => [
         'display'=>'none',
@@ -80,18 +81,21 @@ $postOnShelf = function(CustomersItem $input):string {
         'type' => 'char',
     ]);
     echo $this->Form->control('id', ['name' => 'id[]', 'type' => 'hidden', 'value' => $input->id]);
-    echo $this->Form->button('Remove from order',[
-        'data-target' => "#ol-$input->id",
-        'class' => 'toggleOnOrder button-clear',
-        'type' => 'button',
-    ]);
     $this->end();
 
     return $this->fetch('onShelfForm');
 };
-$formTableRow = function($customersItem) use ($description, $postOnShelf) :string {
+$removeButton = function(CustomersItem $input):string {
+    return $this->Form->button('Remove from order',[
+        'data-target' => "#ol-$input->id",
+        'class' => 'toggleOnOrder button-clear',
+        'type' => 'button',
+    ]);
+};
+$formTableRow = function($customersItem) use ($description, $postOnShelf, $removeButton) :string {
     $this->start('tableRows');
         echo "<tr id=\"ol-$customersItem->id\" class=\"\">";
+        echo "<td>{$removeButton($customersItem)}</td>";
         echo "<td>{$description($customersItem)}</td>";
         echo "<td>{$postOnShelf($customersItem)}</td>";
         echo '</tr>';
@@ -137,8 +141,9 @@ $this->append('script', $this->Html->script('order_tools.js'));
         <table>
             <thead>
             <tr>
-                <th>Quantity</th>
+                <th>&nbsp;</th>
                 <th><?= $this->Paginator->sort('item_id') ?></th>
+                <th>Quantity</th>
             </tr>
             </thead>
             <tbody>
