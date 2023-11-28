@@ -115,9 +115,7 @@ $this->append('script', $this->Html->script('order_tools.js'));
 
 ?>
 <div class="customersItems index content">
-    <?= $this->element('new_item_button') ?>
-    <h2><?= __('Make an Order') ?></h2>
-    <h3><?= __($user->customer->name) ?></h3>
+    <h3><?= __('Make an Order') ?></h3>
     <?php
     echo $this->Form->create();
     echo $this->Form->control('filter');

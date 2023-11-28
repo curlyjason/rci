@@ -91,9 +91,7 @@ $this->append('script', $this->Html->script('inventory_tools.js'));
 
 ?>
 <div class="customersItems index content">
-    <?= $this->element('new_item_button') ?>
-    <h2><?= __('Take Inventory') ?></h2>
-    <h3><?= __($user->customer->name) ?></h3>
+    <h3><?= __('Take Inventory') ?></h3>
     <h4>To Do</h4>
     <div class="table-responsive todo">
         <table>
