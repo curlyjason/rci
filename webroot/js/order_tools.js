@@ -4,6 +4,8 @@ const OrderTools = {
         $('input[name="filter"]').on('keyup', OrderTools.keypressHandler);
         OrderTools.setOrderLineToggleListeners(OrderTools.getOrderLineToggles());
         $('div.submit').addClass('hide');
+        OrderTools.setOrderLineInputListeners(OrderTools.getOrderLineInputs());
+        this.checkSubmitButtonVisiblity();
     },
 
     keypressHandler: function(e) {
@@ -40,7 +42,7 @@ const OrderTools = {
         let result = true;
         inputs.each(function(index,input) {
             let value = $(input).val();
-            let number_length = value.match(/[0-9]*/)[0].length
+            let number_length = value.match(/[0-9 ]*/)[0].length
             let raw_length = value.length;
             result = result && value !== '' && raw_length === number_length;
         })
@@ -50,7 +52,19 @@ const OrderTools = {
         else {
             $('div.submit').addClass('hide');
         }
-    }
+    },
+
+    getOrderLineInputs: function () {
+        return $('.order_quantity')
+    },
+    setOrderLineInputListeners: function (inputs) {
+        $(inputs).each(function(index, input) {
+            $(input).on('change', OrderTools.checkSubmitButtonVisiblity);
+        });
+    },
+    numbersOnly: function(e) {
+
+    },
 };
 
 $(document).ready(OrderTools.init);
