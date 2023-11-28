@@ -41,7 +41,7 @@ $getId = function($data) {
 $selector = function(CustomersItem $input):string {
     $selectLink = $this->Form->button('Add to order',[
         'data-target' => "#ol-$input->id",
-        'class' => 'toggleOnOrder, button-clear',
+        'class' => 'toggleOnOrder button-clear',
         'type' => 'button',
     ]);
 ;
@@ -80,7 +80,7 @@ $postOnShelf = function(CustomersItem $input):string {
     ]);
     echo $this->Form->button('Remove from order',[
         'data-target' => "#ol-$input->id",
-        'class' => 'toggleOnOrder, button-clear',
+        'class' => 'toggleOnOrder button-clear',
         'type' => 'button',
     ]);
     $this->end();
