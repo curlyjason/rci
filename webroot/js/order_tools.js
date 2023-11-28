@@ -10,11 +10,12 @@ const OrderTools = {
 
     keypressHandler: function(e) {
         for (let key in itemMap) {
+            let row = $('tr#' + key);
             if(itemMap[key].match(e.target.value)) {
-                $('tr#' + key).removeClass('hide');
+                row.removeClass('hide');
             }
             else {
-                $('tr#' + key).addClass('hide');
+                row.addClass('hide');
             }
         }
     },
@@ -29,17 +30,20 @@ const OrderTools = {
     },
     toggleOrderLine: function(e) {
         let id = $(e.target).attr('data-target');
+        let row = $('tr' + id);
         if (e.target.textContent.match(/add/i)) {
-            $('tr' + id).removeClass('hide');
+            row.removeClass('hide');
+            row.find('input[name="live[]"]').val(true);
         } else {
-            $('tr' + id).addClass('hide');
+            row.addClass('hide');
+            row.find('input[name="live[]"]').val(false);
         }
         OrderTools.checkSubmitButtonVisiblity();
     },
 
     checkSubmitButtonVisiblity: function() {
         let inputs = $('tr[id|="ol"][class!="hide"] input.order_quantity');
-        let result = true;
+        let result = inputs.length > 0;
         inputs.each(function(index,input) {
             let value = $(input).val();
             let number_length = value.match(/[0-9 ]*/)[0].length

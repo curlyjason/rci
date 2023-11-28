@@ -85,17 +85,23 @@ $postOnShelf = function(CustomersItem $input):string {
 
     return $this->fetch('onShelfForm');
 };
-$removeButton = function(CustomersItem $input):string {
-    return $this->Form->button('Remove from order',[
+$rowTools = function(CustomersItem $input):string {
+    $this->start('rowTools');
+    echo $this->Form->button('Remove from order',[
         'data-target' => "#ol-$input->id",
         'class' => 'toggleOnOrder button-clear',
         'type' => 'button',
     ]);
+    echo $this->Form->control('id', ['name' => 'live[]', 'type' => 'hidden', 'value' => 'false']);
+    echo $this->Form->control('id', ['name' => 'item_id[]', 'type' => 'hidden', 'value' => $input->item_id]);
+    $this->end();
+
+    return $this->fetch('rowTools');
 };
-$formTableRow = function($customersItem) use ($description, $postOnShelf, $removeButton) :string {
+$formTableRow = function($customersItem) use ($description, $postOnShelf, $rowTools) :string {
     $this->start('tableRows');
-        echo "<tr id=\"ol-$customersItem->id\" class=\"\">";
-        echo "<td>{$removeButton($customersItem)}</td>";
+        echo "<tr id=\"ol-$customersItem->id\" class=\"hide\">";
+        echo "<td>{$rowTools($customersItem)}</td>";
         echo "<td>{$description($customersItem)}</td>";
         echo "<td>{$postOnShelf($customersItem)}</td>";
         echo '</tr>';

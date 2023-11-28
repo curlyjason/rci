@@ -143,8 +143,18 @@ class CustomersItemsController extends AppController
 
     public function orderNow()
     {
+        $result = [];
         if ($this->request->is('post')) {
-            osdd($this->request->getData());
+            osd($this->request->getData(), 'posted data');
+            foreach ($this->request->getData('live') as $index => $islive) {
+                if ($islive != 'false') {
+                    $result[] = [
+                        'order_quantity' => $this->request->getData('order_quantity')[$index],
+                        'id' => $this->request->getData('item_id')[$index],
+                    ];
+                }
+            }
+            osdd($result, 'processed data');
         }
         $this->setUserCustomerVariable();
         $query = $this->CustomersItems->find()
