@@ -119,24 +119,9 @@ class CustomersItemsController extends AppController
 
     public function setTriggerLevels()
     {
-        $this->setUserCustomerVariable();
-        $query = $this->CustomersItems->find()
-            ->where(['customer_id' => $this->readSession('Auth')->customer_id])
-            ->contain(['Customers', 'Items.Vendors']);
-        $customersItems = $this->paginate($query);
-
-        $result = collection($customersItems)
-            ->reduce(function ($accum, $customerItem) {
-                $id = $customerItem->id;
-                $accum['masterFilterMap']->$id = $customerItem->item->name
-                    . ' ' . $customerItem->item->description
-                    . ' ' . $customerItem->item->vendors[0]->_joinData->sku;
-                $accum['items'][$id] = $customerItem->item->name;
-
-                return $accum;
-            }, ['masterFilterMap' => new \stdClass(), 'items' => []]);
-
-        extract($result);
+        $customersItems = $this->GetPaginatedItemsForUser();
+        $result = $this->createItemListAndFilterMap($customersItems);
+        extract($result); //masterFilterMap, items
 
         $this->set(compact('masterFilterMap', 'items', 'customersItems'));
     }
@@ -156,24 +141,9 @@ class CustomersItemsController extends AppController
             }
             osdd($result, 'processed data');
         }
-        $this->setUserCustomerVariable();
-        $query = $this->CustomersItems->find()
-            ->where(['customer_id' => $this->readSession('Auth')->customer_id])
-            ->contain(['Customers', 'Items.Vendors']);
-        $customersItems = $this->paginate($query);
-
-        $result = collection($customersItems)
-            ->reduce(function ($accum, $customerItem) {
-                $id = $customerItem->id;
-                $accum['masterFilterMap']->$id = $customerItem->item->name
-                    . ' ' . $customerItem->item->description
-                    . ' ' . $customerItem->item->vendors[0]->_joinData->sku;
-                $accum['items'][$id] = $customerItem->item->name;
-
-                return $accum;
-            }, ['masterFilterMap' => new \stdClass(), 'items' => []]);
-
-        extract($result);
+        $customersItems = $this->GetPaginatedItemsForUser();
+        $result = $this->createItemListAndFilterMap($customersItems);
+        extract($result); //masterFilterMap, items
 
         $this->set(compact('masterFilterMap', 'items', 'customersItems'));
     }
@@ -190,5 +160,38 @@ class CustomersItemsController extends AppController
             ->first();
 
         $this->set(compact('user'));
+    }
+
+    /**
+     * @param \Cake\Datasource\Paging\PaginatedInterface $customersItems
+     * @return mixed
+     */
+    private function createItemListAndFilterMap(\Cake\Datasource\Paging\PaginatedInterface $customersItems): mixed
+    {
+        $result = collection($customersItems)
+            ->reduce(function ($accum, $customerItem) {
+                $id = $customerItem->id;
+                $accum['masterFilterMap']->$id = $customerItem->item->name/*
+                    . ' ' . $customerItem->item->description
+                    . ' ' . $customerItem->item->vendors[0]->_joinData->sku*/
+                ;
+                $accum['items'][$id] = $customerItem->item->name;
+
+                return $accum;
+            }, ['masterFilterMap' => new \stdClass(), 'items' => []]);
+        return $result;
+    }
+
+    /**
+     * @return \Cake\Datasource\Paging\PaginatedInterface
+     */
+    private function GetPaginatedItemsForUser(): \Cake\Datasource\Paging\PaginatedInterface
+    {
+        $this->setUserCustomerVariable();
+        $query = $this->CustomersItems->find()
+            ->where(['customer_id' => $this->readSession('Auth')->customer_id])
+            ->contain(['Customers', 'Items.Vendors']);
+        $customersItems = $this->paginate($query);
+        return $customersItems;
     }
 }
