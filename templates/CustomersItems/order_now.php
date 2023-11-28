@@ -39,7 +39,12 @@ $getId = function($data) {
 };
 
 $selector = function(CustomersItem $input):string {
-    $selectLink = $this->Html->link('Add to order',"#ol-$input->id", ['class' => 'addToOrder']);
+    $selectLink = $this->Form->button('Add to order',[
+        'data-target' => "#ol-$input->id",
+        'class' => 'toggleOnOrder, button-clear',
+        'type' => 'button',
+    ]);
+;
     $itemName = $input?->item->name ?? 'Unknown';
     $pattern = '<td>%s</td><td><span class="name">%s</span></td>';
 
@@ -73,13 +78,18 @@ $postOnShelf = function(CustomersItem $input):string {
         'id' => "quantity-$input->id",
         'type' => 'char',
     ]);
+    echo $this->Form->button('Remove from order',[
+        'data-target' => "#ol-$input->id",
+        'class' => 'toggleOnOrder, button-clear',
+        'type' => 'button',
+    ]);
     $this->end();
 
     return $this->fetch('onShelfForm');
 };
 $formTableRow = function($customersItem) use ($description, $postOnShelf) :string {
     $this->start('tableRows');
-        echo "<tr id=\"ol-$customersItem->id\" class=\"hide\">";
+        echo "<tr id=\"ol-$customersItem->id\" class=\"\">";
         echo "<td>{$description($customersItem)}</td>";
         echo "<td>{$postOnShelf($customersItem)}</td>";
         echo '</tr>';
