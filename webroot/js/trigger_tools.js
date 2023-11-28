@@ -63,7 +63,7 @@ const TriggerTools = {
         });
         let postData = TriggerTools.preparePostData(e.target)
         $.post(
-            "http://localhost:8015/api/set-trigger.json", //url
+            "api/set-trigger.json", //url
             postData,
             function(data, status){ // callback to handle response
                 if (data.error !== undefined) {

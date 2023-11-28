@@ -18,7 +18,7 @@ const InventoryTools = {
         });
         let postData = InventoryTools.preparePostData(e.target)
         $.post(
-            "http://localhost:8015/api/set-inventory.json", //url
+            "api/set-inventory.json", //url
             postData,
             function(data, status){ // callback to handle response
                 if (data.error !== undefined) {
