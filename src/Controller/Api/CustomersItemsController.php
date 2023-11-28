@@ -45,6 +45,10 @@ class CustomersItemsController extends ApiController
         $this->set(compact('response'));
     }
 
+    /**
+     * not called from js as of 11/28/23. posts direct to controller/action
+     * @return void
+     */
     public function orderItem()
     {
         if ($this->request->is($this->allowed_methods)) {
