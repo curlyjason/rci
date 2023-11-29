@@ -9,9 +9,10 @@ const OrderTools = {
     },
 
     keypressHandler: function(e) {
+        let regex = new RegExp( e.target.value,'i' );
         for (let key in itemMap) {
             let row = $('tr#' + key);
-            if(itemMap[key].match(e.target.value)) {
+            if(itemMap[key].match(regex)) {
                 row.removeClass('hide');
             }
             else {
