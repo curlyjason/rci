@@ -26,6 +26,7 @@ $jQuery_path = Configure::read('debug')
 $this->prepend('script', $this->Html->script($jQuery_path));
 
 $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_PORT');
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -44,23 +45,50 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
     <?= $this->fetch('style') ?>
+    <style>
+        .top-nav #myLinks {
+            display: none;
+        }
+        #myLinks a {
+            display: block;
+        }
+    </style>
+    <script>
+        function menuToggle() {
+            let x = document.getElementById("myLinks");
+            let y = document.getElementById("masterMenu");
+            if (x.style.display === "block") {
+                x.style.display = "none";
+                y.style.display = "block"
+            } else {
+                x.style.display = "block";
+                y.style.display = "none";
+            }
+        }
+    </script>
 </head>
 <body>
     <nav class="top-nav">
-        <div class="top-nav-titlex">
-            <a href="<?= $this->Url->build('/take-inventory') ?>">Take Inventory</a> |
-            <a href="<?= $this->Url->build('/set-trigger-levels') ?>">Set Trigger Levels</a> |
+        <div id="myLinks" class="top-nav-titlex">
+            <a href="javascript:void(0);" onclick="menuToggle()">
+                Close Menu
+            </a>
+            <a href="<?= $this->Url->build('/take-inventory') ?>">Take Inventory</a>
+            <a href="<?= $this->Url->build('/set-trigger-levels') ?>">Set Trigger Levels</a>
             <a href="<?= $this->Url->build('/order-now') ?>">Order Now</a>
-            <?php if (Configure::read('debug')) : ?>
-                | <a href="<?= $this->Url->build('api/set-inventory.json') ?>">Set Inventory</a> |
-                <a href="<?= $this->Url->build('api/set-trigger.json') ?>">Set Trigger</a> |
+            <?php if (Configure::read('debug') && false) : ?>
+                <a href="<?= $this->Url->build('api/set-inventory.json') ?>">Set Inventory</a>
+                <a href="<?= $this->Url->build('api/set-trigger.json') ?>">Set Trigger</a>
                 <a href="<?= $this->Url->build('api/order-item.json') ?>">Order</a>
             <?php endif; ?>
+            <a href="users/logout">Logout</a>
         </div>
         <div class="top-nav-links">
-            <a href="#" style="font-weight: normal">Welcome <?= $this->request->getSession()->read('Auth')?->email ?> </a>
+            <a id="masterMenu" href="javascript:void(0);" onclick="menuToggle()">
+                Menu
+            </a>
+<!--            <a href="#" style="font-weight: normal">Welcome --><?php //= $this->request->getSession()->read('Auth')?->email ?><!-- </a>-->
             <?php if (!is_null($this->request->getSession()->read('Auth'))) : ?>
-            <a href="users/logout">Logout</a>
             <?php endif; ?>
         </div>
     </nav>
