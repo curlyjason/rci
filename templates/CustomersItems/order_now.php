@@ -11,6 +11,13 @@ use App\Model\Entity\CustomersItem;
 
 //<editor-fold desc="SPECIALIZED PAGE STYLES : viewblock = style">
 $style_overrides = [
+    '.submit input' => [
+        'position' => 'fixed',
+        'top' => '80px',
+        'right' => '0',
+        'border' => 'thin solid black',
+        'background-color' => 'darkgreen',
+    ],
     'tbody input.order_quantity' => [
         'font-size'=>'200%',
         'max-width'=>'7rem',
@@ -22,13 +29,17 @@ $style_overrides = [
     'td' => [
         'padding-top' => '3px',
         'padding-bottom' => '0px',
-    ]
+    ],
+    '.lineAdd' => [
+        'background-color' => 'lightgrey',
+        'border-color' => 'green'
+    ],
 ];
 
 $this->append('style');
 echo "\n<style>\n";
-foreach ($style_overrides as $selector => $override) {
-    echo $selector . ' { ' . $this->Html->style($override) . " }\n";
+foreach ($style_overrides as $potentialItemCell => $override) {
+    echo $potentialItemCell . ' { ' . $this->Html->style($override) . " }\n";
 }
 echo "</style>\n";
 $this->end();
@@ -38,41 +49,10 @@ $this->end();
 $getId = function($data) {
     return $data->id;
 };
-
-$selector = function(CustomersItem $input):string {
-    $selectLink = $this->Form->button('Add to order',[
-        'data-target' => "#ol-$input->id",
-        'class' => 'toggleOnOrder button-clear',
-        'type' => 'button',
-    ]);
-;
-    $itemName = $input?->item->name ?? 'Unknown';
-    $pattern = '<td>%s</td><td><span class="name">%s</span></td>';
-
-    return sprintf($pattern, $selectLink, $itemName);
-};
-$outputSelectorRow = function($customersItem) use ($selector, $getId):string {
-    $this->start('tableRows');
-    echo "<tr id=\"{$getId($customersItem)}\">";
-    echo $selector($customersItem);
-    echo '</tr>';
-    $this->end();
-
-    return $this->fetch('tableRows');
-};
-
-$description = function(CustomersItem $input):string {
-    $itemName = $input?->item->name ?? 'Unknown';
-    $itemTrigger = $input->target_quantity ?? '?';
-    $currInventory = $input->quantity;
-    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">[Reorder trigger level: %s | Current inventory: %s]';
-
-    return sprintf($pattern, $itemName, $itemTrigger, $currInventory);
-};
-$postOnShelf = function(CustomersItem $input):string {
-    $this->start('onShelfForm');
+$orderQtyInput = function(CustomersItem $input):string {
+    $this->start('orderQtyInput');
     echo $this->Form->control('order_quantity', [
-        'class' => 'order_quantity',
+        'class' => 'order_quantity hide',
         'label' => false,
         'name' => 'order_quantity[]',
         'value' => '',
@@ -83,28 +63,36 @@ $postOnShelf = function(CustomersItem $input):string {
     echo $this->Form->control('id', ['name' => 'id[]', 'type' => 'hidden', 'value' => $input->id]);
     $this->end();
 
-    return $this->fetch('onShelfForm');
+    return $this->fetch('orderQtyInput');
 };
-$rowTools = function(CustomersItem $input):string {
-    $this->start('rowTools');
-    echo $this->Form->button('Remove from order',[
-        'data-target' => "#ol-$input->id",
-        'class' => 'toggleOnOrder button-clear',
+
+$potentialItemCell = function(CustomersItem $input) use ($getId, $orderQtyInput):string {
+    $addButton = $this->Form->button('Add to order',[
+        'class' => 'toggleOnOrder lineAdd',
         'type' => 'button',
     ]);
-    echo $this->Form->control('id', ['name' => 'live[]', 'type' => 'hidden', 'value' => 'false']);
-    echo $this->Form->control('id', ['name' => 'item_id[]', 'type' => 'hidden', 'value' => $input->item_id]);
-    $this->end();
+    $removeButton = $this->Form->button('Remove from order',[
+        'class' => 'toggleOnOrder lineRemove hide',
+        'type' => 'button',
+    ]);
+    $itemName = $input?->item->name ?? 'Unknown';
+    $cellId = "td-{$getId($input)}";
 
-    return $this->fetch('rowTools');
+    return "
+<td id=\"$cellId\" colspan='2'>
+        {$orderQtyInput($input)}
+    <div>
+        <span class=\"name\">$itemName</span><br/>
+        $addButton $removeButton
+    </div>
+</td>
+";
 };
-$formTableRow = function($customersItem) use ($description, $postOnShelf, $rowTools) :string {
+$outputSelectorRow = function($customersItem) use ($potentialItemCell, $getId):string {
     $this->start('tableRows');
-        echo "<tr id=\"ol-$customersItem->id\" class=\"hide\">";
-        echo "<td>{$rowTools($customersItem)}</td>";
-        echo "<td>{$description($customersItem)}</td>";
-        echo "<td>{$postOnShelf($customersItem)}</td>";
-        echo '</tr>';
+    echo "<tr id=\"{$getId($customersItem)}\">";
+    echo $potentialItemCell($customersItem);
+    echo '</tr>';
     $this->end();
 
     return $this->fetch('tableRows');
@@ -122,6 +110,8 @@ $this->append('script', $this->Html->script('order_tools.js'));
     echo $this->Form->end();
     ?>
     <div class="table-responsive">
+        <?= $this->Form->create(); ?>
+        <?= $this->Form->submit('Place Order') ?>
         <table>
             <thead>
             <tr>
@@ -133,27 +123,6 @@ $this->append('script', $this->Html->script('order_tools.js'));
             <?php
             foreach ($customersItems as $customersItem):
                 echo $outputSelectorRow($customersItem);
-            endforeach;
-            ?>
-            </tbody>
-        </table>
-    </div>
-    <div class="table-responsive order-lines">
-        <h4>Order Items</h4>
-        <?= $this->Form->create(); ?>
-        <?= $this->Form->submit('Place Order') ?>
-        <table>
-            <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th><?= $this->Paginator->sort('item_id') ?></th>
-                <th>Quantity</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php
-            foreach ($customersItems as $customersItem):
-                echo $formTableRow($customersItem);
             endforeach;
             ?>
             </tbody>
