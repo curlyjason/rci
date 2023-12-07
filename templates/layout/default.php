@@ -49,7 +49,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
         .top-nav #myLinks {
             display: none;
         }
-        #myLinks a {
+        #myLinks a, a#masterMenu {
             display: block;
         }
     </style>
@@ -68,9 +68,9 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
     </script>
 </head>
 <body>
-    <nav class="top-nav">
+<nav class="top-nav">
         <div id="myLinks" class="top-nav-titlex">
-            <a href="javascript:void(0);" onclick="menuToggle()">
+                <a href="javascript:void(0);" onclick="menuToggle()">
                 Close Menu
             </a>
             <a href="<?= $this->Url->build('/take-inventory') ?>">Take Inventory</a>
@@ -94,6 +94,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
     </nav>
     <main class="main">
         <div class="container">
+            <h4>Rods & Cones Inventory</h4>
             <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>
         </div>
