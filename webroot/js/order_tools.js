@@ -1,8 +1,8 @@
 
 const OrderTools = {
     init: function () {
-        $('input[name="filter"]').on('keyup', OrderTools.keypressHandler);
-        $('input[name="filter"]').on('keydown', OrderTools.filterKeyDownHandler);
+        $('input[name="filter"]').on('keyup', OrderTools.keypressHandler)
+            .on('keydown', OrderTools.filterKeyDownHandler);
         OrderTools.setOrderLineToggleListeners(OrderTools.getOrderLineToggles());
         $('div.submit').addClass('hide');
         OrderTools.setOrderLineInputListeners(OrderTools.getOrderLineInputs());
