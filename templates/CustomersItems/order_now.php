@@ -59,7 +59,7 @@ $getId = function($data) {
 $orderQtyInput = function(CustomersItem $input):string {
     $this->start('orderQtyInput');
     echo $this->Form->control('order_quantity', [
-        'class' => 'order_quantity hide',
+        'class' => 'order_quantity hide tipMe',
         'label' => false,
         'name' => 'order_quantity[]',
         'value' => '',

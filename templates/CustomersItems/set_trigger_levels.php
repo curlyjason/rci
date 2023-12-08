@@ -41,7 +41,7 @@ $postOnShelf = function(CustomersItem $input) use ($getId):string {
     $this->start('onShelfForm');
     echo $this->Form->create($input, ['id' => $getId($input)]);
     echo $this->Form->control('target_quantity', [
-        'class' => 'target_quantity',
+        'class' => 'target_quantity tipMe',
         'label' => false,
         'value' => $input->target_quantity,
         'title' => 'Amount on shelf',
@@ -64,9 +64,6 @@ $outputTableRow = function($customersItem) use ($description, $postOnShelf, $get
     return $this->fetch('tableRows');
 };
 //</editor-fold>
-
-//osd($masterFilterMap);
-//osd($items);
 
 $this->append('script', $this->Html->script('trigger_tools.js'));
 

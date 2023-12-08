@@ -24,6 +24,7 @@ $jQuery_path = Configure::read('debug')
 //    : 'https://code.jquery.com/jquery-3.7.1.min.js';
 
 $this->prepend('script', $this->Html->script($jQuery_path));
+$this->append('script', $this->Html->script('tooltip.js'));
 
 $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_PORT');
 

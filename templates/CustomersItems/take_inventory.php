@@ -50,7 +50,7 @@ $postOnShelf = function(CustomersItem $input):string {
     $this->start('onShelfForm');
     echo $this->Form->create($input, ['id' => $input->id]);
     echo $this->Form->control('quantity', [
-        'class' => 'quantity',
+        'class' => 'quantity tipMe',
         'label' => false,
         'value' => $input->quantity,
         'title' => 'Amount on shelf',
