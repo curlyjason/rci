@@ -2,6 +2,7 @@
 const OrderTools = {
     init: function () {
         $('input[name="filter"]').on('keyup', OrderTools.keypressHandler);
+        $('input[name="filter"]').on('keydown', OrderTools.filterKeyDownHandler);
         OrderTools.setOrderLineToggleListeners(OrderTools.getOrderLineToggles());
         $('div.submit').addClass('hide');
         OrderTools.setOrderLineInputListeners(OrderTools.getOrderLineInputs());
@@ -9,6 +10,13 @@ const OrderTools = {
         OrderTools.setRadioListeners();
     },
 
+    filterKeyDownHandler: function (e) {
+        if ($(e.target).val() === '') {
+            let radios = $('input[type="radio"]');
+            let allItemMode = radios[0];
+            $(allItemMode).trigger('click')
+        }
+    },
     keypressHandler: function(e) {
         let regex = new RegExp( e.target.value,'i' );
         for (let key in itemMap) {
