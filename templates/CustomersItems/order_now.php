@@ -12,9 +12,10 @@ use App\Model\Entity\CustomersItem;
 //<editor-fold desc="SPECIALIZED PAGE STYLES : viewblock = style">
 $style_overrides = [
     '.submit input' => [
+        'font-size' => '170%',
+        'height' => '6.5rem',
         'position' => 'fixed',
-        'top' => '80px',
-        'right' => '0',
+        'bottom' => '10%',
         'border' => 'thin solid black',
         'background-color' => 'darkgreen',
     ],
@@ -33,6 +34,9 @@ $style_overrides = [
     '.lineAdd' => [
         'background-color' => 'lightgrey',
         'border-color' => 'green'
+    ],
+    'table' => [
+        'margin-bottom' => '15rem',
     ],
 ];
 
