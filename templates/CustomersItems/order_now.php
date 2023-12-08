@@ -23,13 +23,16 @@ $style_overrides = [
         'font-size'=>'200%',
         'max-width'=>'7rem',
         'margin-top' => '1rem',
+        'margin-bottom' => '.3rem',
+    ],
+    'tr.order td' => [
+        'padding-left' => '1rem',
+    ],
+    'tr.order' => [
+        'background-color' => 'beige',
     ],
     '.hide' => [
         'display'=>'none',
-    ],
-    'tr td div input.order_quantity' => [
-        'margin-bottom' => '.8rem',
-        'margin-top' => '1.5rem',
     ],
     'td' => [
         'padding-top' => '3px',
@@ -115,6 +118,10 @@ $this->append('script', $this->Html->script('order_tools.js'));
     <?php
     echo $this->Form->create();
     echo $this->Form->control('filter');
+    echo $this->Form->control('review', [
+        'type' => 'radio',
+        'options' => ['On Order', 'All Items']
+    ]);
     echo $this->Form->end();
     ?>
     <div class="table-responsive">

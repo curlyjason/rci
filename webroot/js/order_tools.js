@@ -32,14 +32,17 @@ const OrderTools = {
     toggleOrderLine: function(e) {
         let chosenButton = e.target;
         let hiddeButton = $(chosenButton).siblings('button')[0];
-        let quantityInput = $($(chosenButton).parents('tr')[0]).find('input.order_quantity');
+        let itemRow = $($(chosenButton).parents('tr')[0]);
+        let quantityInput = itemRow.find('input.order_quantity');
 
         $(chosenButton).addClass('hide');
         $(hiddeButton).removeClass('hide');
 
         if (chosenButton.textContent.match(/add/i)) {
+            itemRow.addClass('order');
             quantityInput.removeClass('hide');
         } else {
+            itemRow.removeClass('order');
             quantityInput.val('');
             quantityInput.addClass('hide');
         }
