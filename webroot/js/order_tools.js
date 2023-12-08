@@ -6,6 +6,7 @@ const OrderTools = {
         $('div.submit').addClass('hide');
         OrderTools.setOrderLineInputListeners(OrderTools.getOrderLineInputs());
         OrderTools.checkSubmitButtonVisiblity();
+        OrderTools.setRadioListeners();
     },
 
     keypressHandler: function(e) {
@@ -74,9 +75,27 @@ const OrderTools = {
             $(input).on('change', OrderTools.checkSubmitButtonVisiblity);
         });
     },
-    numbersOnly: function(e) {
 
+    setRadioListeners: function() {
+        let radios = $('input[type="radio"]');
+        radios.on('change', OrderTools.radioChanged);
+        let checked = $('input[type="radio"]:checked');
+        let allItemMode = radios[0];
+        if(checked.length === 0) {
+            $(allItemMode).attr('checked', true);
+        }
     },
+    radioChanged: function(){
+        let checked = $('input[type="radio"]:checked');
+        if (checked.val() === '1') {
+            $('input[name="filter"]').val('').trigger('keyup');
+            $('tr[class!="order"]').addClass('hide');
+        }
+        else {
+            $('input[name="filter"]').val('').trigger('keyup');
+            $('tr[class!="order"]').removeClass('hide');
+        }
+    }
 };
 
 $(document).ready(OrderTools.init);

@@ -120,7 +120,8 @@ $this->append('script', $this->Html->script('order_tools.js'));
     echo $this->Form->control('filter');
     echo $this->Form->control('review', [
         'type' => 'radio',
-        'options' => ['On Order', 'All Items']
+        'options' => ['Show All Items', 'Review Order'],
+        'label' => false
     ]);
     echo $this->Form->end();
     ?>
