@@ -27,6 +27,10 @@ $style_overrides = [
     '.hide' => [
         'display'=>'none',
     ],
+    'tr td div input.order_quantity' => [
+        'margin-bottom' => '.8rem',
+        'margin-top' => '1.5rem',
+    ],
     'td' => [
         'padding-top' => '3px',
         'padding-bottom' => '0px',
