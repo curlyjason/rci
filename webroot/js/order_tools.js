@@ -30,20 +30,24 @@ const OrderTools = {
         });
     },
     toggleOrderLine: function(e) {
-        let id = $(e.target).attr('data-target');
-        let row = $('tr' + id);
-        if (e.target.textContent.match(/add/i)) {
-            row.removeClass('hide');
-            row.find('input[name="live[]"]').val(true);
+        let chosenButton = e.target;
+        let hiddeButton = $(chosenButton).siblings('button')[0];
+        let quantityInput = $($(chosenButton).parents('tr')[0]).find('input.order_quantity');
+
+        $(chosenButton).addClass('hide');
+        $(hiddeButton).removeClass('hide');
+
+        if (chosenButton.textContent.match(/add/i)) {
+            quantityInput.removeClass('hide');
         } else {
-            row.addClass('hide');
-            row.find('input[name="live[]"]').val(false);
+            quantityInput.val('');
+            quantityInput.addClass('hide');
         }
         OrderTools.checkSubmitButtonVisiblity();
     },
 
     checkSubmitButtonVisiblity: function() {
-        let inputs = $('tr[id|="ol"][class!="hide"] input.order_quantity');
+        let inputs = $('input.order_quantity:visible');
         let result = inputs.length > 0;
         inputs.each(function(index,input) {
             let value = $(input).val();
