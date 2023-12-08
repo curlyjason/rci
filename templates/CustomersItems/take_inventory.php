@@ -8,37 +8,33 @@
 use App\Model\Entity\CustomersItem;
 
 //<editor-fold desc="SPECIALIZED PAGE STYLES : viewblock = style">
-$style_overrides = [
-    'tbody.todo input.quantity, tbody.complete input.quantity' => [
-        'font-size'=>'200%',
-        'max-width'=>'7rem',
-        'margin-bottom'=>'5px',
-        'color'=>'darkred'
-    ],
-    'tbody.complete input.quantity' => [
-        'color' => 'green',
-    ],
-    'tbody.todo button.ok-button, tbody.complete button.ok-button' => [
-        'border-color'=>'darkgreen',
-        'background-color'=>'white',
-        'color'=>'green',
-        'height'=>'2.8rem',
-        'line-height'=>'2.8rem',
-        'padding'=>'0 2rem;'
-    ],
-    'tbody.complete button.ok-button' => [
-        'display' => 'none',
-        'background-color'=>'green',
-        'color'=>'white',
-    ],
-];
-
 $this->append('style');
-echo "\n<style>\n";
-foreach ($style_overrides as $selector => $override) {
-    echo $selector . ' { ' . $this->Html->style($override) . " }\n";
-}
-echo "</style>\n";
+?>
+<style>
+    tbody.todo input.quantity, tbody.complete input.quantity{
+        font-size:200%;
+        max-width:7rem;
+        margin-bottom:5px;
+        color:darkred;
+    }
+    tbody.complete input.quantity{
+        color: green;
+    }
+    tbody.todo button.ok-button, tbody.complete button.ok-button{
+        border-color:darkgreen;
+        background-color:white;
+        color:green;
+        height:2.8rem;
+        line-height:2.8rem;
+        padding:0 2rem;;
+    }
+    tbody.complete button.ok-button{
+        display: none;
+        background-color:green;
+        color:white;
+    }
+</style>
+<?php
 $this->end();
 //</editor-fold>
 

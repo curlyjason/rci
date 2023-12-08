@@ -10,49 +10,45 @@
 use App\Model\Entity\CustomersItem;
 
 //<editor-fold desc="SPECIALIZED PAGE STYLES : viewblock = style">
-$style_overrides = [
-    '.submit input' => [
-        'font-size' => '170%',
-        'height' => '6.5rem',
-        'position' => 'fixed',
-        'bottom' => '10%',
-        'border' => 'thin solid black',
-        'background-color' => 'darkgreen',
-    ],
-    'tbody input.order_quantity' => [
-        'font-size'=>'200%',
-        'max-width'=>'7rem',
-        'margin-top' => '1rem',
-        'margin-bottom' => '.3rem',
-    ],
-    'tr.order td' => [
-        'padding-left' => '1rem',
-    ],
-    'tr.order' => [
-        'background-color' => 'beige',
-    ],
-    '.hide' => [
-        'display'=>'none',
-    ],
-    'td' => [
-        'padding-top' => '3px',
-        'padding-bottom' => '0px',
-    ],
-    '.lineAdd' => [
-        'background-color' => 'lightgrey',
-        'border-color' => 'green'
-    ],
-    'table' => [
-        'margin-bottom' => '15rem',
-    ],
-];
-
 $this->append('style');
-echo "\n<style>\n";
-foreach ($style_overrides as $potentialItemCell => $override) {
-    echo $potentialItemCell . ' { ' . $this->Html->style($override) . " }\n";
-}
-echo "</style>\n";
+?>
+<style>
+    .submit input  {
+        font-size:  170%;
+        height:  6.5rem;
+        position:  fixed;
+        bottom:  10%;
+        border:  thin solid black;
+        background-color:  darkgreen;
+    }
+    tbody input.order_quantity  {
+        font-size: 200%;
+        max-width: 7rem;
+        margin-top:  1rem;
+        margin-bottom:  .3rem;
+    }
+    tr.order td  {
+        padding-left:  1rem;
+    }
+    tr.order  {
+        background-color:  beige;
+    }
+    .hide  {
+        display: none;
+    }
+    td  {
+        padding-top:  3px;
+        padding-bottom:  0;
+    }
+    .lineAdd  {
+        background-color:  lightgrey;
+        border-color:  green
+    }
+    table  {
+        margin-bottom:  15rem;
+    }
+</style>
+<?php
 $this->end();
 //</editor-fold>
 

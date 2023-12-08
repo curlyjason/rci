@@ -10,22 +10,18 @@
 use App\Model\Entity\CustomersItem;
 
 //<editor-fold desc="SPECIALIZED PAGE STYLES : viewblock = style">
-$style_overrides = [
-    'tbody input.target_quantity' => [
-        'font-size'=>'200%',
-        'max-width'=>'7rem',
-    ],
-    'tr.hide' => [
-        'display'=>'none',
-    ],
-];
-
 $this->append('style');
-echo "\n<style>\n";
-foreach ($style_overrides as $selector => $override) {
-    echo $selector . ' { ' . $this->Html->style($override) . " }\n";
-}
-echo "</style>\n";
+?>
+<style>
+    tbody input.target_quantity {
+        font-size: 200%;
+        max-width: 7rem;
+    }
+    tr.hide {
+        display: none;
+    }
+</style>
+<?php
 $this->end();
 //</editor-fold>
 
