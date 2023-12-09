@@ -67,10 +67,10 @@ const TriggerTools = {
             postData,
             function(data, status){ // callback to handle response
                 if (data.error !== undefined) {
-                    alert(data.error);
+                    // alert(data.error);
                 }
                 else {
-                    alert('trigger inventory level changed')
+                    // alert('trigger inventory level changed')
                 }
             });
     },
