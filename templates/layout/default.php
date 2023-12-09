@@ -53,6 +53,14 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
         #myLinks a, a#masterMenu {
             display: block;
         }
+        span.rci-tool-tip {
+            position: absolute;
+            display: inline-block;
+            /*visibility: hidden;*/
+            font-size: x-small;
+            padding: 2px 1rem;
+            background-color: gold;
+        }
     </style>
     <script>
         function menuToggle() {
