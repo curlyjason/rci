@@ -56,10 +56,17 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
         span.rci-tool-tip {
             position: absolute;
             display: inline-block;
-            /*visibility: hidden;*/
+            border-radius: 6px;
             font-size: x-small;
             padding: 2px 1rem;
             background-color: gold;
+            margin-bottom: -10px
+        }
+        span.rci-arrow {
+            width: 0;
+            border-top: 10px;
+            border-style: solid;
+            border-color: black transparent transparent transparent;
         }
     </style>
     <script>
