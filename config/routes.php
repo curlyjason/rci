@@ -89,4 +89,11 @@ return function (RouteBuilder $routes): void {
         $routes->connect('/set-trigger', ['controller' => 'CustomersItems', 'action' => 'setTrigger']);
         $routes->connect('/order-item', ['controller' => 'CustomersItems', 'action' => 'orderItem']);
     });
+
+    $routes->prefix('Admin', function (RouteBuilder $routes): void {
+        // All routes here will be prefixed with `/admin`, and
+        // have the `'prefix' => 'Admin'` route element added that
+        // will be required when generating URLs for these routes
+        $routes->fallbacks(DashedRoute::class);
+    });
 };
