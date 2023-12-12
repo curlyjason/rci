@@ -61,6 +61,7 @@ const TriggerTools = {
         $(e.target).parents('form').submit(function(e){
             e.preventDefault();
         });
+        Tooltip.hideTip(e);
         let postData = TriggerTools.preparePostData(e.target)
         $.post(
             "api/set-trigger.json", //url

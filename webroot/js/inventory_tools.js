@@ -16,6 +16,7 @@ const InventoryTools = {
         $(e.target).parents('form').submit(function(e){
             e.preventDefault();
         });
+        Tooltip.hideTip(e);
         let postData = InventoryTools.preparePostData(e.target)
         $.post(
             "api/set-inventory.json", //url
