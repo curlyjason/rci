@@ -55,11 +55,21 @@ final class DropVendor extends AbstractMigration
         $ivs = $this->table('items_vendors');
         $this->requiredCakeNormColumns($ivs)
             ->create();
+        $ivs->addColumn(
+            'sku',
+            'char',
+            [
+                'after' => 'id',
+                'default' => null,
+                'limit' => 255,
+                'null' => true,
+            ]
+        )
+        ->update();
 
         $this->requiredForeignKey($ivs, 'vendors', 'id');
         $this->requiredForeignKey($ivs, 'items', 'id');
 
         $ivs->update();
-
     }
 }
