@@ -22,7 +22,7 @@ const Tooltip = {
     },
     hideTip: function(e) {
         $(e.target).siblings('span').each(function (index, node) {
-            $(node).fadeOut('fast');
+            $(node).css('display', 'none');
         });
     },
     count: 0,
