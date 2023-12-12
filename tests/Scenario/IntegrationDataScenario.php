@@ -34,7 +34,7 @@ class IntegrationDataScenario implements FixtureScenarioInterface
      */
     public function load(...$args): mixed
     {
-        $vendors = VendorFactory::make(3)->withItems(3)->persist();
+        $items = ItemFactory::make(9)->persist();
         $customers = CustomerFactory::make(3)->persist();
         $cust_item = array_chunk(CustomersItemFactory::make(9)->getEntities(), 3);
         UserFactory::make([
@@ -59,12 +59,12 @@ class IntegrationDataScenario implements FixtureScenarioInterface
          */
         $CustTable = CustomersItemFactory::make()->getTable();
 
-        collection($vendors)
-            ->map(function ($vendor, $vi) use ($customers, $cust_item, $CustTable) {
-                $items = $vendor->items;
+        collection(array_chunk($items, 3))
+            ->map(function ($_3items, $index) use ($customers, $cust_item, $CustTable) {
+                $items = $_3items;
                 foreach ($customers as $ci => $customer) {
                     $CustTable->patchEntity(
-                        $cust_item[$vi][$ci],
+                        $cust_item[$index][$ci],
                         [
                             'customer_id' => $customer->id,
                             'item_id' => $items[$ci]->id,
@@ -73,7 +73,7 @@ class IntegrationDataScenario implements FixtureScenarioInterface
                             'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
                         ]
                     );
-                    $CustTable->save($cust_item[$vi][$ci]);
+                    $CustTable->save($cust_item[$index][$ci]);
                 }
             })
             ->toArray();
