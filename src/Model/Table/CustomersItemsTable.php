@@ -73,6 +73,10 @@ class CustomersItemsTable extends Table
             ->allowEmptyString('target_quantity');
 
         $validator
+            ->dateTime('next_inventory')
+            ->allowEmptyDateTime('next_inventory');
+
+        $validator
             ->nonNegativeInteger('customer_id')
             ->notEmptyString('customer_id');
 

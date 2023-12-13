@@ -47,6 +47,9 @@ class CustomersTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->hasMany('Users', [
+            'foreignKey' => 'customer_id',
+        ]);
         $this->belongsToMany('Items', [
             'foreignKey' => 'customer_id',
             'targetForeignKey' => 'item_id',

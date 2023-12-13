@@ -15,6 +15,8 @@ use Authentication\PasswordHasher\DefaultPasswordHasher;
  * @property int|null $customer_id
  * @property \Cake\I18n\DateTime|null $created
  * @property \Cake\I18n\DateTime|null $modified
+ *
+ * @property \App\Model\Entity\Customer $customer
  */
 class User extends Entity
 {
@@ -33,6 +35,7 @@ class User extends Entity
         'customer_id' => true,
         'created' => true,
         'modified' => true,
+        'customer' => true,
     ];
 
     /**

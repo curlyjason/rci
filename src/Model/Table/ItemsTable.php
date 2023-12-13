@@ -12,7 +12,6 @@ use Cake\Validation\Validator;
  * Items Model
  *
  * @property \App\Model\Table\CustomersTable&\Cake\ORM\Association\BelongsToMany $Customers
- * @property \App\Model\Table\VendorsTable&\Cake\ORM\Association\BelongsToMany $Vendors
  *
  * @method \App\Model\Entity\Item newEmptyEntity()
  * @method \App\Model\Entity\Item newEntity(array $data, array $options = [])
@@ -52,11 +51,6 @@ class ItemsTable extends Table
             'foreignKey' => 'item_id',
             'targetForeignKey' => 'customer_id',
             'joinTable' => 'customers_items',
-        ]);
-        $this->belongsToMany('Vendors', [
-            'foreignKey' => 'item_id',
-            'targetForeignKey' => 'vendor_id',
-            'joinTable' => 'items_vendors',
         ]);
     }
 
