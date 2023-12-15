@@ -3,6 +3,7 @@
  * @var \App\View\AppView $this
  */
 ?>
+<h1>Log In</h1>
 <div class="users form content">
     <?= $this->Form->create() ?>
     <fieldset>
