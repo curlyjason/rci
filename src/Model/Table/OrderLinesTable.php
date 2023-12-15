@@ -65,11 +65,6 @@ class OrderLinesTable extends Table
             ->allowEmptyString('sku');
 
         $validator
-            ->scalar('vendor_sku')
-            ->maxLength('vendor_sku', 255)
-            ->allowEmptyString('vendor_sku');
-
-        $validator
             ->scalar('uom')
             ->maxLength('uom', 32)
             ->allowEmptyString('uom');
