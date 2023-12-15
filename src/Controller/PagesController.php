@@ -62,6 +62,9 @@ class PagesController extends AppController
         $this->set(compact('page', 'subpage'));
 
         try {
+            if ($this->getRequest()->getQuery('unauthorized')) {
+                $this->Flash->error($this->readSession('Auth')->email . ' does not have Administrator access.');
+            }
             return $this->render(implode('/', $path));
         } catch (MissingTemplateException $exception) {
             if (Configure::read('debug')) {
