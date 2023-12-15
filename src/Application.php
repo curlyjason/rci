@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Policy\RequestPolicy;
+use Authorization\Exception\MissingIdentityException;
 use Authorization\Middleware\RequestAuthorizationMiddleware;
 use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
@@ -126,7 +127,16 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 'httponly' => true,
             ]))
             ->add(new AuthenticationMiddleware($this))
-            ->add(new AuthorizationMiddleware($this))
+            ->add(new AuthorizationMiddleware($this, [
+                'unauthorizedHandler' => [
+                    'className' => 'Authorization.Redirect',
+                    'url' => '/pages/unauthorized',
+                    'queryParam' => 'redirectUrl',
+//                    'exceptions' => [
+//                        MissingIdentityException::class,
+//                    ],
+                ],
+            ]))
             ->add(new RequestAuthorizationMiddleware());
 
         return $middlewareQueue;

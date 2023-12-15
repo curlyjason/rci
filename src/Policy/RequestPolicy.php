@@ -6,6 +6,7 @@ namespace App\Policy;
 use Authorization\IdentityInterface;
 use Authorization\Policy\RequestPolicyInterface;
 use Authorization\Policy\ResultInterface;
+use Cake\Error\Debugger;
 use Cake\Http\ServerRequest;
 
 class RequestPolicy implements RequestPolicyInterface
@@ -27,9 +28,12 @@ class RequestPolicy implements RequestPolicyInterface
 //        }
 //
 //        return false;
-        if ($request->getParam('prefix') != 'admin') {
+//        debug($identity->getOriginalData());
+        if ($request->getParam('prefix') != 'Admin') {
+//            debug('not admin');
             return true;
-        } elseif ($identity->isAdmin()) {
+        } elseif ($identity->getOriginalData()->isAdmin()) {
+//            debug('in admin');
             return true;
         }
 
