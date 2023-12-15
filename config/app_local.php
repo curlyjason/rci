@@ -64,4 +64,7 @@ return [
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
+    'Session' => [
+        'timeout' => 480,
+    ],
 ];
