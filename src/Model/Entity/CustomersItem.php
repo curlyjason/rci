@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
+use Cake\I18n\DateTime;
 use Cake\ORM\Entity;
 
 /**
@@ -42,4 +43,9 @@ class CustomersItem extends Entity
         'customer' => true,
         'item' => true,
     ];
+
+    public function hasBeenInventoried(): bool
+    {
+        return new DateTime() < new DateTime($this->next_inventory);
+    }
 }
