@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Test\Factory\CustomerFactory;
 use App\Test\Scenario\IntegrationDataScenario;
 use Authentication\Controller\Component\AuthenticationComponent;
 use Cake\Core\Configure;
