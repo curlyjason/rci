@@ -33,7 +33,7 @@ $getId = function($data) {
 $description = function(CustomersItem $input):string {
     $itemName = $input?->item->name ?? 'Unknown';
     $itemQuantity = $input->quantity ?? '?';
-    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">[Current inventory level: %s]';
+    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">[Current inventory level: %s]</span>';
 
     return sprintf($pattern, $itemName, $itemQuantity);
 };

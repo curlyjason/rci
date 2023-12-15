@@ -13,6 +13,9 @@ use App\Model\Entity\CustomersItem;
 $this->append('style');
 ?>
 <style>
+    p.name {
+        margin-bottom: .5rem;
+    }
     .submit input  {
         font-size:  170%;
         height:  6.5rem;
@@ -52,10 +55,22 @@ $this->append('style');
 $this->end();
 //</editor-fold>
 
+
 //<editor-fold desc="LOCAL UTILITY FUNCTIONS">
 $getId = function($data) {
     return $data->id;
 };
+
+$description = function(CustomersItem $input):string {
+    $itemName = $input?->item->name ?? 'Unknown';
+    $itemTrigger = $input->target_quantity ?? '?';
+    $itemQuantity = $input->quantity ?? '?';
+    $pattern = '<span class="name">%s</span><br />
+<span style="font-size: small;">[Current inventory level: %s | Reorder trigger level: %s]</span>';
+
+    return sprintf($pattern, $itemName, $itemQuantity, $itemTrigger);
+};
+
 $orderQtyInput = function(CustomersItem $input):string {
     $this->start('orderQtyInput');
     echo $this->Form->control('order_quantity', [
@@ -73,7 +88,7 @@ $orderQtyInput = function(CustomersItem $input):string {
     return $this->fetch('orderQtyInput');
 };
 
-$potentialItemCell = function(CustomersItem $input) use ($getId, $orderQtyInput):string {
+$potentialItemCell = function(CustomersItem $input) use ($getId, $orderQtyInput, $description):string {
     $addButton = $this->Form->button('Add to order',[
         'class' => 'toggleOnOrder lineAdd',
         'type' => 'button',
@@ -82,14 +97,15 @@ $potentialItemCell = function(CustomersItem $input) use ($getId, $orderQtyInput)
         'class' => 'toggleOnOrder lineRemove hide',
         'type' => 'button',
     ]);
-    $itemName = $input?->item->name ?? 'Unknown';
+    $itemName = $description($input);
+//    $itemName = $input?->item->name ?? 'Unknown';
     $cellId = "td-{$getId($input)}";
 
     return "
 <td id=\"$cellId\" colspan='2'>
         {$orderQtyInput($input)}
     <div>
-        <span class=\"name\">$itemName</span><br/>
+        <p class=\"name\">$itemName</p>
         $addButton $removeButton
     </div>
 </td>

@@ -42,7 +42,7 @@ $this->end();
 $description = function(CustomersItem $input):string {
     $itemName = $input?->item->name ?? 'Unknown';
     $itemTrigger = $input->target_quantity ?? '?';
-    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">[Reorder trigger level: %s]';
+    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">[Reorder trigger level: %s]</span>';
 
     return sprintf($pattern, $itemName, $itemTrigger);
 };
