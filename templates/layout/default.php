@@ -98,7 +98,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
             <a href="<?= $this->Url->build('/take-inventory') ?>">Take Inventory</a>
             <a href="<?= $this->Url->build('/set-trigger-levels') ?>">Set Trigger Levels</a>
             <a href="<?= $this->Url->build('/order-now') ?>">Order Now</a>
-            <a href="users/logout">Logout</a>
+            <a href="/users/logout">Logout</a>
         </div>
         <div class="top-nav-links">
             <a id="masterMenu" href="javascript:void(0);" onclick="menuToggle()">
