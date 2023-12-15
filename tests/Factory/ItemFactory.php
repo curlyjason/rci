@@ -37,6 +37,7 @@ class ItemFactory extends CakephpBaseFactory
         $this->setDefaultData(function (Generator $faker) {
             return [
                 'name' => $faker->sentence(6),
+                'qb_code' => $faker->words(4),
             ];
         });
     }

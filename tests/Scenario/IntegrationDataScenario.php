@@ -86,7 +86,7 @@ class IntegrationDataScenario implements FixtureScenarioInterface
     {
         collection($this->item_names)
             ->map(function ($item) use ($customer) {
-                $i = ItemFactory::make(['name' => $item])->persist();
+                $i = ItemFactory::make(['name' => $item, 'qb_code' => "qb.$item"])->persist();
                 CustomersItemFactory::make([
                     'customer_id' => $customer->id,
                     'item_id' => $i->id,
