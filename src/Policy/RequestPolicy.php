@@ -20,20 +20,9 @@ class RequestPolicy implements RequestPolicyInterface
      */
     public function canAccess(?IdentityInterface $identity, ServerRequest $request): bool|ResultInterface
     {
-//        if (
-//            $request->getParam('controller') === 'Users'
-//            && $request->getParam('action') === 'login'
-//        ) {
-//            return true;
-//        }
-//
-//        return false;
-//        debug($identity->getOriginalData());
         if ($request->getParam('prefix') != 'Admin') {
-//            debug('not admin');
             return true;
         } elseif ($identity->getOriginalData()->isAdmin()) {
-//            debug('in admin');
             return true;
         }
 

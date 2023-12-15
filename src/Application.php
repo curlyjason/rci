@@ -136,7 +136,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                     'queryParam' => null,
                     'exceptions' => [
                         ForbiddenException::class
-                    ]
+                    ],
                 ],
             ]))
             ->add(new RequestAuthorizationMiddleware());
