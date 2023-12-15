@@ -190,7 +190,7 @@ class CustomersItemsController extends AppController
         $this->setUserCustomerVariable();
         $query = $this->CustomersItems->find()
             ->where(['customer_id' => $this->readSession('Auth')->customer_id])
-            ->contain(['Customers', 'Items.Vendors']);
+            ->contain(['Customers', 'Items']);
         $customersItems = $this->paginate($query);
         return $customersItems;
     }

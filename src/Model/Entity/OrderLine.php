@@ -11,7 +11,6 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property string|null $name
  * @property string|null $sku
- * @property string|null $vendor_sku
  * @property string|null $uom
  * @property int|null $quantity
  * @property \Cake\I18n\DateTime|null $created
@@ -31,7 +30,6 @@ class OrderLine extends Entity
     protected array $_accessible = [
         'name' => true,
         'sku' => true,
-        'vendor_sku' => true,
         'uom' => true,
         'quantity' => true,
         'created' => true,

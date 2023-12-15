@@ -56,8 +56,7 @@ class ItemsController extends AppController
             $this->Flash->error(__('The item could not be saved. Please, try again.'));
         }
         $customers = $this->Items->Customers->find('list', limit: 200)->all();
-        $vendors = $this->Items->Vendors->find('list', limit: 200)->all();
-        $this->set(compact('item', 'customers', 'vendors'));
+        $this->set(compact('item', 'customers'));
     }
 
     /**
@@ -80,8 +79,7 @@ class ItemsController extends AppController
             $this->Flash->error(__('The item could not be saved. Please, try again.'));
         }
         $customers = $this->Items->Customers->find('list', limit: 200)->all();
-        $vendors = $this->Items->Vendors->find('list', limit: 200)->all();
-        $this->set(compact('item', 'customers', 'vendors'));
+        $this->set(compact('item', 'customers'));
     }
 
     /**

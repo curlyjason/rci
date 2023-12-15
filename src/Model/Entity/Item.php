@@ -14,7 +14,6 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\DateTime|null $modified
  *
  * @property \App\Model\Entity\Customer[] $customers
- * @property \App\Model\Entity\Vendor[] $vendors
  */
 class Item extends Entity
 {
@@ -32,6 +31,5 @@ class Item extends Entity
         'created' => true,
         'modified' => true,
         'customers' => true,
-        'vendors' => true,
     ];
 }
