@@ -51,5 +51,11 @@ class User extends Entity
         if (strlen($password) > 0) {
             return (new DefaultPasswordHasher())->hash($password);
         }
+    public function isAdmin()
+    {
+        return in_array($this->email, [
+            'ddrake@dreamingmind.com',
+            'jason@curlymedia.com',
+        ]);
     }
 }

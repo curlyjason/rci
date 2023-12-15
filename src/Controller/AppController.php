@@ -55,4 +55,8 @@ class AppController extends Controller
     {
         return $this->request->getSession()->read($string);
     }
+
+    protected function isAdmin() {
+        return $this->readSession('Auth')->isAdmin();
+    }
 }
