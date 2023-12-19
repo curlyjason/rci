@@ -11,13 +11,13 @@
  * @link          https://cakephp.org CakePHP(tm) Project
  * @since         0.10.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
- * @var \App\View\AppView $this
+ * @var AppView $this
  */
 
+use App\View\AppView;
 use Cake\Core\Configure;
 
 /**
- * @param \App\View\AppView $this
  * @return mixed
  */
 $getIdentity = function(){ return $this->request->getSession()->read('Auth'); };
@@ -48,7 +48,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
     <?= $this->fetch('style') ?>
-<!--    Site Wide CSS overrides-->
+    <!-- Site Wide CSS overrides-->
     <style>
         .top-nav #myLinks {
             display: none;
@@ -83,7 +83,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
             font-size: smaller;
         }
     </style>
-<!--    Menu toggle listener-->
+    <!-- Menu toggle listener-->
     <script>
         function menuToggle() {
             let x = document.getElementById("myLinks");
@@ -100,16 +100,16 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
 </head>
 <body>
 <nav class="top-nav">
-<!--    Expanded menu revealed onClick -->
+        <!-- Expanded menu revealed onClick -->
         <div id="myLinks" class="top-nav-titlex">
             <div class="top-nav-links side-nav">
-                <a href="javascript:void(0);"onclick="menuToggle()">Close Menu</a>
+                <a href="javascript:void(0);" onclick="menuToggle()">Close Menu</a>
             </div>
             <?= $this->element('layout/public_menus') ?>
             <?= $getIdentity()?->isAdmin() ? $this->element('layout/admin_menus') : '' ?>
             <a class="section-break" href="/users/logout">Logout</a>
         </div>
-<!--    Minimal menu displayed by default -->
+        <!-- Minimal menu displayed by default -->
         <div class="top-nav-links">
             <div id="masterMenu">
                 <a href="javascript:void(0);" onclick="menuToggle()">Menu</a>
