@@ -79,6 +79,9 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
         .section-break {
             border-top: thin solid black;
         }
+        .top-nav a {
+            font-size: smaller;
+        }
     </style>
 <!--    Menu toggle listener-->
     <script>
@@ -98,9 +101,11 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
 <body>
 <nav class="top-nav">
         <div id="myLinks" class="top-nav-titlex">
-            <a href="javascript:void(0);" onclick="menuToggle()">Close Menu</a>
+            <div class="top-nav-links side-nav">
+                <a href="javascript:void(0);"onclick="menuToggle()">Close Menu</a>
+            </div>
             <?= $this->element('layout/public_menus') ?>
-            <?= $getIdentity()->isAdmin() ? $this->element('layout/admin_menus') : '' ?>
+            <?= $getIdentity()?->isAdmin() ? $this->element('layout/admin_menus') : '' ?>
             <a class="section-break" href="/users/logout">Logout</a>
         </div>
         <div class="top-nav-links">
