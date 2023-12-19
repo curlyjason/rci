@@ -32,7 +32,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
 
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -100,6 +100,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
 </head>
 <body>
 <nav class="top-nav">
+<!--    Expanded menu revealed onClick -->
         <div id="myLinks" class="top-nav-titlex">
             <div class="top-nav-links side-nav">
                 <a href="javascript:void(0);"onclick="menuToggle()">Close Menu</a>
@@ -108,6 +109,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
             <?= $getIdentity()?->isAdmin() ? $this->element('layout/admin_menus') : '' ?>
             <a class="section-break" href="/users/logout">Logout</a>
         </div>
+<!--    Minimal menu displayed by default -->
         <div class="top-nav-links">
             <div id="masterMenu">
                 <a href="javascript:void(0);" onclick="menuToggle()">Menu</a>
