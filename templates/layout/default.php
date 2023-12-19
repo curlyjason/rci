@@ -76,6 +76,9 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
             border-style: solid;
             border-color: gold transparent transparent transparent;
         }
+        .section-break {
+            border-top: thin solid black;
+        }
     </style>
 <!--    Menu toggle listener-->
     <script>
@@ -96,11 +99,9 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
 <nav class="top-nav">
         <div id="myLinks" class="top-nav-titlex">
             <a href="javascript:void(0);" onclick="menuToggle()">Close Menu</a>
-            <a href="<?= $this->Url->build('/') ?>">Home</a>
-            <a href="<?= $this->Url->build('/take-inventory') ?>">Take Inventory</a>
-            <a href="<?= $this->Url->build('/set-trigger-levels') ?>">Set Trigger Levels</a>
-            <a href="<?= $this->Url->build('/order-now') ?>">Order Now</a>
-            <a href="/users/logout">Logout</a>
+            <?= $this->element('layout/public_menus') ?>
+            <?= $getIdentity()->isAdmin() ? $this->element('layout/admin_menus') : '' ?>
+            <a class="section-break" href="/users/logout">Logout</a>
         </div>
         <div class="top-nav-links">
             <div id="masterMenu">
