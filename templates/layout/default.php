@@ -16,13 +16,15 @@
 
 use Cake\Core\Configure;
 
+/**
+ * @param \App\View\AppView $this
+ * @return mixed
+ */
+$getIdentity = function(){ return $this->request->getSession()->read('Auth'); };
+
 $jQuery_path = Configure::read('debug')
     ? 'node_modules/jquery/dist/jquery.js'
     : 'node_modules/jquery/dist/jquery.slim.js';
-//$jQuery_path = Configure::read('debug')
-//    ? 'https://code.jquery.com/jquery-3.7.1.js'
-//    : 'https://code.jquery.com/jquery-3.7.1.min.js';
-
 $this->prepend('script', $this->Html->script($jQuery_path));
 $this->append('script', $this->Html->script('tooltip.js'));
 
@@ -46,6 +48,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
     <?= $this->fetch('style') ?>
+<!--    Site Wide CSS overrides-->
     <style>
         .top-nav #myLinks {
             display: none;
@@ -74,6 +77,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
             border-color: gold transparent transparent transparent;
         }
     </style>
+<!--    Menu toggle listener-->
     <script>
         function menuToggle() {
             let x = document.getElementById("myLinks");
@@ -91,9 +95,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
 <body>
 <nav class="top-nav">
         <div id="myLinks" class="top-nav-titlex">
-                <a href="javascript:void(0);" onclick="menuToggle()">
-                Close Menu
-            </a>
+            <a href="javascript:void(0);" onclick="menuToggle()">Close Menu</a>
             <a href="<?= $this->Url->build('/') ?>">Home</a>
             <a href="<?= $this->Url->build('/take-inventory') ?>">Take Inventory</a>
             <a href="<?= $this->Url->build('/set-trigger-levels') ?>">Set Trigger Levels</a>
@@ -101,11 +103,11 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
             <a href="/users/logout">Logout</a>
         </div>
         <div class="top-nav-links">
-            <a id="masterMenu" href="javascript:void(0);" onclick="menuToggle()">
-                Menu
-            </a>
-<!--            <a href="#" style="font-weight: normal">Welcome --><?php //= $this->request->getSession()->read('Auth')?->email ?><!-- </a>-->
-            <?php if (!is_null($this->request->getSession()->read('Auth'))) : ?>
+            <div id="masterMenu">
+                <a href="javascript:void(0);" onclick="menuToggle()">Menu</a>
+                <br/><span style="font-size: x-small">Welcome <?= $getIdentity()?->email ?></span>
+            </div>
+    <?php if (!is_null($getIdentity())) : ?>
             <?php endif; ?>
         </div>
     </nav>
