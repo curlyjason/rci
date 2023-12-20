@@ -62,7 +62,7 @@ class PagesController extends AppController
         $this->set(compact('page', 'subpage'));
 
         try {
-            if ($this->getRequest()->getQuery('unauthorized')) {
+            if ($this->getRequest()->getQuery('unauthorized') && !$this?->isAdmin()) {
                 $this->Flash->error($this->readSession('Auth')->email . ' does not have Administrator access.');
             }
             return $this->render(implode('/', $path));

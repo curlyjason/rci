@@ -22,7 +22,7 @@ class RequestPolicy implements RequestPolicyInterface
     {
         if ($request->getParam('prefix') != 'Admin') {
             return true;
-        } elseif ($identity->getOriginalData()->isAdmin()) {
+        } elseif (!is_null($identity) && $identity->getOriginalData()->isAdmin()) {
             return true;
         }
 

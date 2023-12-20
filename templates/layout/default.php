@@ -11,18 +11,20 @@
  * @link          https://cakephp.org CakePHP(tm) Project
  * @since         0.10.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
- * @var \App\View\AppView $this
+ * @var AppView $this
  */
 
+use App\View\AppView;
 use Cake\Core\Configure;
+
+/**
+ * @return mixed
+ */
+$getIdentity = function(){ return $this->request->getSession()->read('Auth'); };
 
 $jQuery_path = Configure::read('debug')
     ? 'node_modules/jquery/dist/jquery.js'
     : 'node_modules/jquery/dist/jquery.slim.js';
-//$jQuery_path = Configure::read('debug')
-//    ? 'https://code.jquery.com/jquery-3.7.1.js'
-//    : 'https://code.jquery.com/jquery-3.7.1.min.js';
-
 $this->prepend('script', $this->Html->script($jQuery_path));
 $this->append('script', $this->Html->script('tooltip.js'));
 
@@ -30,7 +32,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
 
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -46,6 +48,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
     <?= $this->fetch('style') ?>
+    <!-- Site Wide CSS overrides-->
     <style>
         .top-nav #myLinks {
             display: none;
@@ -73,7 +76,14 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
             border-style: solid;
             border-color: gold transparent transparent transparent;
         }
+        .section-break {
+            border-top: thin solid black;
+        }
+        .top-nav a {
+            font-size: smaller;
+        }
     </style>
+    <!-- Menu toggle listener-->
     <script>
         function menuToggle() {
             let x = document.getElementById("myLinks");
@@ -90,22 +100,22 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
 </head>
 <body>
 <nav class="top-nav">
+        <!-- Expanded menu revealed onClick -->
         <div id="myLinks" class="top-nav-titlex">
-                <a href="javascript:void(0);" onclick="menuToggle()">
-                Close Menu
-            </a>
-            <a href="<?= $this->Url->build('/') ?>">Home</a>
-            <a href="<?= $this->Url->build('/take-inventory') ?>">Take Inventory</a>
-            <a href="<?= $this->Url->build('/set-trigger-levels') ?>">Set Trigger Levels</a>
-            <a href="<?= $this->Url->build('/order-now') ?>">Order Now</a>
-            <a href="/users/logout">Logout</a>
+            <div class="top-nav-links side-nav">
+                <a href="javascript:void(0);" onclick="menuToggle()">Close Menu</a>
+            </div>
+            <?= $this->element('layout/public_menus') ?>
+            <?= $getIdentity()?->isAdmin() ? $this->element('layout/admin_menus') : '' ?>
+            <a class="section-break" href="/users/logout">Logout</a>
         </div>
+        <!-- Minimal menu displayed by default -->
         <div class="top-nav-links">
-            <a id="masterMenu" href="javascript:void(0);" onclick="menuToggle()">
-                Menu
-            </a>
-<!--            <a href="#" style="font-weight: normal">Welcome --><?php //= $this->request->getSession()->read('Auth')?->email ?><!-- </a>-->
-            <?php if (!is_null($this->request->getSession()->read('Auth'))) : ?>
+            <div id="masterMenu">
+                <a href="javascript:void(0);" onclick="menuToggle()">Menu</a>
+                <br/><span style="font-size: x-small">Welcome <?= $getIdentity()?->email ?></span>
+            </div>
+    <?php if (!is_null($getIdentity())) : ?>
             <?php endif; ?>
         </div>
     </nav>
