@@ -76,7 +76,7 @@ $inputCols = [
     <?= $this->Form->control(
         $inputCol . '.dups',
         [
-            'options' => array_combine(['allow', 'discard', 'update'],['allow', 'discard', 'update']),
+            'options' => array_combine(['allow', 'discard'],['allow', 'discard']),
             'type' => 'radio',
             'label' => 'On Duplicate:',
             'value' => $this->request->getData($inputCol.'.dups') ?? 'allow',
