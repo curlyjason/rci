@@ -38,4 +38,9 @@ class AppView extends View
     public function initialize(): void
     {
     }
+
+    public function getIdentity()
+    {
+        return $this->request->getSession()->read('Auth');
+    }
 }
