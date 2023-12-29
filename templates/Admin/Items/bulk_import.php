@@ -6,6 +6,14 @@
 ?>
 
 <style>
+    div.inputCol {
+        width: 50%;
+        background-color: rgba(229, 227, 207, 0.25);
+        padding: 1rem 2rem;
+    }
+    div.inputCol:nth-child(2n) {
+        background-color: rgba(207, 219, 229, 0.15);
+    }
     div.input.select, div.input.radio {
         display: flex;
     }
@@ -17,16 +25,16 @@
         margin-left: 1.2rem;
     }
     div.input.radio > label:first-child {
-        margin-left: 23%;
+        margin-left: 36.5%;
     }
     div.input.select label {
-        width: 30%;
-    }
+        width: 60%;
+        padding-top: 4px;  }
     span.dest {
         display: inline-block;
-        width: 80%;
+        width: 70%;
     }
-    div.input.select select {
+    div.input.select select, div.input.radio {
         margin-bottom: 0;
     }
 </style>
@@ -45,6 +53,7 @@ $inputCols = [
 
 <?= $this->Form->create() ?>
 <?php foreach ($inputCols as $inputCol) : ?>
+<div class="inputCol">
     <?= $this->Form->control(
         $inputCol . '.dest',
         [
@@ -73,6 +82,7 @@ $inputCols = [
             'value' => $this->request->getData($inputCol.'.dups') ?? 'allow',
         ]
     ) ?>
+</div>
 <?php endforeach; ?>
 <?= $this->Form->submit() ?>
 <?= $this->Form->end() ?>
