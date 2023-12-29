@@ -17,11 +17,6 @@
 use App\View\AppView;
 use Cake\Core\Configure;
 
-/**
- * @return mixed
- */
-$getIdentity = function(){ return $this->request->getSession()->read('Auth'); };
-
 $jQuery_path = Configure::read('debug')
     ? 'node_modules/jquery/dist/jquery.js'
     : 'node_modules/jquery/dist/jquery.slim.js';
@@ -106,16 +101,16 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
                 <a href="javascript:void(0);" onclick="menuToggle()">Close Menu</a>
             </div>
             <?= $this->element('layout/public_menus') ?>
-            <?= $getIdentity()?->isAdmin() ? $this->element('layout/admin_menus') : '' ?>
+            <?= $this->element('layout/admin_menus') ?>
             <a class="section-break" href="/users/logout">Logout</a>
         </div>
         <!-- Minimal menu displayed by default -->
         <div class="top-nav-links">
             <div id="masterMenu">
                 <a href="javascript:void(0);" onclick="menuToggle()">Menu</a>
-                <br/><span style="font-size: x-small">Welcome <?= $getIdentity()?->email ?></span>
+                <br/><span style="font-size: x-small">Welcome <?= $this->getIdentity()?->email ?></span>
             </div>
-    <?php if (!is_null($getIdentity())) : ?>
+    <?php if (!is_null($this->getIdentity())) : ?>
             <?php endif; ?>
         </div>
     </nav>
