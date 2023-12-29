@@ -101,4 +101,11 @@ class ItemsController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+    public function bulkImport()
+    {
+        $schema = $this->Items->getSchema();
+
+        $this->set(compact('schema'));
+    }
 }
