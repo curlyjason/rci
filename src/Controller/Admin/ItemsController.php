@@ -104,8 +104,9 @@ class ItemsController extends AppController
 
     public function bulkImport()
     {
+        $post = $this->request->getData();
         $schema = $this->Items->getSchema();
 
-        $this->set(compact('schema'));
+        $this->set(compact('schema', 'post'));
     }
 }

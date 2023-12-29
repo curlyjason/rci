@@ -46,7 +46,7 @@ $inputCols = [
 <?= $this->Form->create() ?>
 <?php foreach ($inputCols as $inputCol) : ?>
     <?= $this->Form->control(
-        'destination_columns',
+        $inputCol . '.dest',
         [
             'empty' => 'Choose destination column',
             'options' => array_combine($schema->columns(),$schema->columns()),
@@ -65,9 +65,9 @@ $inputCols = [
             'escape' => false,
         ]) ?>
     <?= $this->Form->control(
-        $inputCol . '_dups',
+        $inputCol . '.dups',
         [
-            'options' => ['allow', 'discard', 'update'],
+            'options' => array_combine(['allow', 'discard', 'update'],['allow', 'discard', 'update']),
             'type' => 'radio',
             'label' => 'On Duplicate:',
             'value' => '0',
@@ -76,3 +76,6 @@ $inputCols = [
 <?php endforeach; ?>
 <?= $this->Form->submit() ?>
 <?= $this->Form->end() ?>
+
+<?php
+osd ($post);
