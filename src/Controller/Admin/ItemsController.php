@@ -34,7 +34,7 @@ class ItemsController extends AppController
      */
     public function view($id = null)
     {
-        $item = $this->Items->get($id, contain: ['Customers', 'Vendors']);
+        $item = $this->Items->get($id, contain: ['Customers']);
         $this->set(compact('item'));
     }
 
@@ -68,7 +68,7 @@ class ItemsController extends AppController
      */
     public function edit($id = null)
     {
-        $item = $this->Items->get($id, contain: ['Customers', 'Vendors']);
+        $item = $this->Items->get($id, contain: ['Customers']);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $item = $this->Items->patchEntity($item, $this->request->getData());
             if ($this->Items->save($item)) {
