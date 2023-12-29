@@ -70,7 +70,7 @@ $inputCols = [
             'options' => array_combine(['allow', 'discard', 'update'],['allow', 'discard', 'update']),
             'type' => 'radio',
             'label' => 'On Duplicate:',
-            'value' => '0',
+            'value' => $this->request->getData($inputCol.'.dups') ?? 'allow',
         ]
     ) ?>
 <?php endforeach; ?>
