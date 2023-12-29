@@ -106,7 +106,15 @@ class ItemsController extends AppController
     {
         $post = $this->request->getData();
         $schema = $this->Items->getSchema();
+        $inputCols = [
+            'Product/Service',
+            'Type',
+            'Description',
+            'Price',
+            'Cost',
+            'Qty On Hand',
+        ];
 
-        $this->set(compact('schema', 'post'));
+        $this->set(compact('schema', 'inputCols', 'post'));
     }
 }

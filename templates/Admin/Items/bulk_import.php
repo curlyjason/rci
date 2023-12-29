@@ -2,6 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var \Cake\Database\Schema\TableSchemaInterface $schema
+ * @var array $inputCols
  */
 ?>
 
@@ -40,14 +41,6 @@
 </style>
 
 <?php
-$inputCols = [
-    'Product/Service',
-    'Type',
-    'Description',
-    'Price',
-    'Cost',
-    'Qty On Hand',
-];
 
 ?>
 
