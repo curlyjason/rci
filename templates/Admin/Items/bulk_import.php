@@ -3,6 +3,7 @@
  * @var \App\View\AppView $this
  * @var \Cake\Database\Schema\TableSchemaInterface $schema
  * @var array $inputCols
+ * @var resource $import
  */
 ?>
 
@@ -41,6 +42,13 @@
 </style>
 
 <?php
+$line = fgetcsv($import);
+while ($line) {
+    echo $this->Html->para('', implode('::', $line));
+    $line = fgetcsv($import);
+//    fwrite($import, implode(',, ',($line)));
+}
+
 
 ?>
 
@@ -52,6 +60,7 @@
         [
             'empty' => 'Choose destination column',
             'options' => array_combine($schema->columns(),$schema->columns()),
+//            'options' => array_combine($schema,$schema),
             'id' => $inputCol,
             'class' => 'map_select',
             'label' => $this->Html->tag(

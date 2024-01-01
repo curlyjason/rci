@@ -12,6 +12,9 @@ use App\Controller\AppController;
  */
 class ItemsController extends AppController
 {
+
+    protected string $itemImportFile = WWW_ROOT . 'bulk-import/import.txt';
+
     /**
      * Index method
      *
@@ -102,8 +105,20 @@ class ItemsController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
+    /**
+     * Dev method for the reusable bulk import system
+     *
+     * See `import()` for the minimally viable version
+     *
+     * @return void
+     */
     public function bulkImport()
     {
+        $file = new \SplFileInfo($this->itemImportFile);
+        if (!$file->isFile() && !$this->upload()) {
+            $this->render('upload');
+        }
+        $import = fopen($this->itemImportFile, 'r+');
         $post = $this->request->getData();
         $schema = $this->Items->getSchema();
         $inputCols = [
@@ -115,6 +130,37 @@ class ItemsController extends AppController
             'Qty On Hand',
         ];
 
-        $this->set(compact('schema', 'inputCols', 'post'));
+        $this->set(compact('schema', 'inputCols', 'post', 'import'));
+    }
+
+    /**
+     * If no upload is found, get or accept one
+     *
+     * bulkImport() calls here to verify the existence of a file to process.
+     * - If none is detected, this method will render a form to get one.
+     * - If we are in post mode with a file in hand, this method will
+     * save it and return to bulkImport.
+     * - If a file is in place, we'll just return to bulkImport if processing
+     *
+     * @return void
+     */
+    protected function upload(): bool
+    {
+        if ($this->request->is('post')) {
+            $upload = $this->request->getData('upload');
+            /* @var \Laminas\Diactoros\UploadedFile $upload */
+
+            if (!in_array($upload->getClientMediaType(), ['text/plain', 'text/csv'])) {
+                $this->Flash->error('Only .txt or .csv files are allowed');
+            }
+            if ($upload->getSize() > 1024*1024) {
+                $this->Flash->error('Files over 1mb are not allowed');
+            }
+            if (empty($this->request->getSession()->read('Flash'))) {
+                $upload->moveTo($this->itemImportFile);
+                return true;
+            }
+        }
+        return false;
     }
 }
