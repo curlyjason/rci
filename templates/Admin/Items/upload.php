@@ -5,7 +5,7 @@
  */
 
 ?>
-<?= $this->Form->create(null, ['type' => 'file', 'action' => 'bulkImport']) ?>
+<?= $this->Form->create(null, ['type' => 'file']) ?>
 <?= $this->Form->control('upload', ['type' => 'file']) ?>
 <?= $this->Form->submit() ?>
 <?= $this->Form->end() ?>
