@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use Exception;
+use SplFileInfo;
 
 /**
  * Items Controller
@@ -12,7 +14,6 @@ use App\Controller\AppController;
  */
 class ItemsController extends AppController
 {
-
     public const BULK_IMPORT_ROOT = WWW_ROOT . 'bulk-import/';
     public const BULK_ARCHIVE_ROOT = self::BULK_IMPORT_ROOT . 'archive/';
     protected string $importFilePath = self::BULK_IMPORT_ROOT . 'import.txt';
@@ -43,7 +44,7 @@ class ItemsController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $item = $this->Items->get($id, contain: ['Customers']);
         $this->set(compact('item'));
@@ -77,7 +78,7 @@ class ItemsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $item = $this->Items->get($id, contain: ['Customers']);
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -100,7 +101,7 @@ class ItemsController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         $item = $this->Items->get($id);
@@ -115,7 +116,9 @@ class ItemsController extends AppController
 
     public function import()
     {
-        $file = new \SplFileInfo($this->importFilePath);
+        $file = new SplFileInfo($this->importFilePath);
+//        osd($file->isFile(), 'is it a file');
+//        osdd($this->upload(), 'actual upload');
         /**
          * if there is no uploaded file and upload() is not
          * successfully called (creates an upload file) during
@@ -123,12 +126,12 @@ class ItemsController extends AppController
          */
         if (!$file->isFile() && !$this->upload()) {
             $this->render('upload');
+        } else {
+            //only reach here when an uploaded file exists
+            $this->_processUploadFile();
         }
-
-        //only reach here when an uploaded file exists
-        $this->_processUploadFile();
-
     }
+
     /**
      * Dev method for the reusable bulk import system
      *
@@ -138,7 +141,7 @@ class ItemsController extends AppController
      */
     public function bulkImport()
     {
-        $file = new \SplFileInfo($this->importFilePath);
+        $file = new SplFileInfo($this->importFilePath);
         /**
          * if there is no uploaded file and upload() is not
          * successfully called (creates an upload file) during
@@ -179,7 +182,7 @@ class ItemsController extends AppController
     {
         if ($this->request->is('post')) {
             $upload = $this->request->getData('upload');
-             /* @var \Laminas\Diactoros\UploadedFile $upload */
+            /** @var \Laminas\Diactoros\UploadedFile $upload */
 
             if (!in_array($upload->getClientMediaType(), ['text/plain', 'text/csv'])) {
                 $this->Flash->error('Only .txt or .csv files are allowed');
@@ -189,9 +192,11 @@ class ItemsController extends AppController
             }
             if (empty($this->request->getSession()->read('Flash'))) {
                 $upload->moveTo($this->importFilePath);
+
                 return true;
             }
         }
+
         return false;
     }
 
@@ -205,14 +210,12 @@ class ItemsController extends AppController
 
             //read in the headers
             $headers = fgetcsv($import);
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $import = null;
             $errors = null;
             $archive = null;
             throw $e;
         }
-
 
         //  Flash message try again with detail
         //walk through each line
