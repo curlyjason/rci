@@ -105,6 +105,22 @@ class ItemsController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
+    public function import()
+    {
+        $file = new \SplFileInfo($this->itemImportFile);
+        /**
+         * if there is no uploaded file and upload() is not
+         * successfully called (creates an upload file) during
+         * a valid POST event, render the upload form
+         */
+        if (!$file->isFile() && !$this->upload()) {
+            $this->render('upload');
+        }
+
+        //only reach here when an uploaded file exists
+        $this->_processUploadFile();
+
+    }
     /**
      * Dev method for the reusable bulk import system
      *
@@ -115,9 +131,16 @@ class ItemsController extends AppController
     public function bulkImport()
     {
         $file = new \SplFileInfo($this->itemImportFile);
+        /**
+         * if there is no uploaded file and upload() is not
+         * successfully called (creates an upload file) during
+         * a valid POST event, render the upload form
+         */
         if (!$file->isFile() && !$this->upload()) {
             $this->render('upload');
         }
+
+        //only reach here when an uploaded file exists
         $import = fopen($this->itemImportFile, 'r+');
         $post = $this->request->getData();
         $schema = $this->Items->getSchema();
@@ -136,7 +159,7 @@ class ItemsController extends AppController
     /**
      * If no upload is found, get or accept one
      *
-     * bulkImport() calls here to verify the existence of a file to process.
+     * bulkImport() calls here to verify/establish the existence of a file to process.
      * - If none is detected, this method will render a form to get one.
      * - If we are in post mode with a file in hand, this method will
      * save it and return to bulkImport.
@@ -162,5 +185,14 @@ class ItemsController extends AppController
             }
         }
         return false;
+    }
+
+    private function _processUploadFile()
+    {
+        //What if the file content is deemed invalid?
+        //walk through each line
+        //save it if it is new
+        //what if it is an edit?
+        //collect in a new file if it is not valid
     }
 }
