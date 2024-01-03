@@ -148,12 +148,12 @@ class ItemsController extends AppController
     {
         if ($this->request->is('post')) {
             $upload = $this->request->getData('upload');
-            /* @var \Laminas\Diactoros\UploadedFile $upload */
+             /* @var \Laminas\Diactoros\UploadedFile $upload */
 
             if (!in_array($upload->getClientMediaType(), ['text/plain', 'text/csv'])) {
                 $this->Flash->error('Only .txt or .csv files are allowed');
             }
-            if ($upload->getSize() > 1024*1024) {
+            if ($upload->getSize() > 1024 * 1024 / 2) {
                 $this->Flash->error('Files over 1mb are not allowed');
             }
             if (empty($this->request->getSession()->read('Flash'))) {
