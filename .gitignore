@@ -53,4 +53,7 @@ yarn-debug.log
 yarn-error.log
 /config/conv.php
 /.env
-/webroot/bulk-import
+/webroot/bulk-import/*
+!/webroot/bulk-import/.gitkeep
+/webroot/bulk-import/archive/*
+!/webroot/bulk-import/archive/.gitkeep
