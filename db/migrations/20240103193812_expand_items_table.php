@@ -4,7 +4,7 @@ declare(strict_types=1);
 use App\Utilities\Phinx\PhinxHelperTrait;
 use Phinx\Migration\AbstractMigration;
 
-final class ExpandItemsForQBLinking extends AbstractMigration
+final class ExpandItemsTable extends AbstractMigration
 {
     use PhinxHelperTrait;
 
@@ -35,8 +35,18 @@ final class ExpandItemsForQBLinking extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table('items')
-            ->addColumn('qb_encoded', 'char', ['limit' => 255]);
+        $table = $this->table('items');
+        $table
+            ->addColumn(
+                'qb_encoded',
+                'char',
+                [
+                    'limit' => 255,
+                    'after' => 'id',
+                    'comment' => 'The delimited list-member string from QuickBooks, unedited',
+                ])
+            ->update();
+        $table->addIndex('qb_encoded')->update();
     }
 
 //    public function up(): void {}
