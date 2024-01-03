@@ -5,7 +5,8 @@
  */
 ?>
 <div class="items index content">
-    <?= $this->Html->link(__('New Item'), ['action' => 'add'], ['class' => 'button float-right']) ?>
+    <?= $this->Html->link(__('New Item'), ['action' => 'add'], ['class' => 'button float-right', 'style' => 'margin-left: 1rem;']) ?>
+    <?= $this->Html->link(__('Import'), ['action' => 'import'], ['class' => 'button float-right']) ?>
     <h3><?= __('Items') ?></h3>
     <div class="table-responsive">
         <table>
