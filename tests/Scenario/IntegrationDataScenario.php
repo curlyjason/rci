@@ -56,7 +56,7 @@ class IntegrationDataScenario implements FixtureScenarioInterface
             ],
         ])
         ->persist();
-        
+
         return null;
     }
 
