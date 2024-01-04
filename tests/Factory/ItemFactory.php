@@ -43,27 +43,13 @@ class ItemFactory extends CakephpBaseFactory
 
     /**
      * @param array|callable|null|int|\Cake\Datasource\EntityInterface|string $parameter
-     * @param int $n
      * @return ItemFactory
      */
-    public function withCustomers($parameter = null, int $n = 1): ItemFactory
+    public function withCustomers($parameter = null): ItemFactory
     {
         return $this->with(
             'Customers',
-            CustomerFactory::make($parameter, $n)->without('Items')
-        );
-    }
-
-    /**
-     * @param array|callable|null|int|\Cake\Datasource\EntityInterface|string $parameter
-     * @param int $n
-     * @return ItemFactory
-     */
-    public function withVendors($parameter = null, int $n = 1): ItemFactory
-    {
-        return $this->with(
-            'Vendors',
-            VendorFactory::make($parameter, $n)->without('Items')
+            CustomerFactory::make($parameter)
         );
     }
 }

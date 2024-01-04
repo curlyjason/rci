@@ -50,7 +50,20 @@ class CustomerFactory extends CakephpBaseFactory
     {
         return $this->with(
             'Items',
-            ItemFactory::make($parameter, $n)->without('Customers')
+            ItemFactory::make($parameter, $n)
+        );
+    }
+
+    /**
+     * @param array|callable|null|int|\Cake\Datasource\EntityInterface|string $parameter
+     * @param int $n
+     * @return CustomerFactory
+     */
+    public function withUsers($parameter = null, int $n = 1): CustomerFactory
+    {
+        return $this->with(
+            'Users',
+            UserFactory::make($parameter, $n)
         );
     }
 }
