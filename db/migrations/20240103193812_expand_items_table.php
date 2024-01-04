@@ -38,7 +38,7 @@ final class ExpandItemsTable extends AbstractMigration
         $table = $this->table('items');
         $table
             ->addColumn(
-                'qb_encoded',
+                'qb_code',
                 'char',
                 [
                     'limit' => 255,
@@ -46,7 +46,7 @@ final class ExpandItemsTable extends AbstractMigration
                     'comment' => 'The delimited list-member string from QuickBooks, unedited',
                 ])
             ->update();
-        $table->addIndex('qb_encoded')->update();
+        $table->addIndex('qb_code')->update();
     }
 
 //    public function up(): void {}
