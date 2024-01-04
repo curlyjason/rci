@@ -11,7 +11,7 @@ use Cake\Validation\Validator;
 /**
  * Items Model
  *
- * @property \App\Model\Table\CustomersTable&\Cake\ORM\Association\BelongsToMany $Customers
+ * @property \App\Model\Table\CustomersTable&\Cake\ORM\Association\BelongsTo $Customers
  *
  * @method \App\Model\Entity\Item newEmptyEntity()
  * @method \App\Model\Entity\Item newEntity(array $data, array $options = [])
@@ -47,10 +47,8 @@ class ItemsTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsToMany('Customers', [
-            'foreignKey' => 'item_id',
-            'targetForeignKey' => 'customer_id',
-            'joinTable' => 'customers_items',
+        $this->belongsTo('Customers', [
+            'foreignKey' => 'customer_id',
         ]);
     }
 
@@ -63,10 +61,33 @@ class ItemsTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
+            ->nonNegativeInteger('customer_id')
+            ->allowEmptyString('customer_id');
+
+        $validator
+            ->scalar('qb_code')
+            ->maxLength('qb_code', 255)
+            ->allowEmptyString('qb_code');
+
+        $validator
             ->scalar('name')
             ->maxLength('name', 255)
             ->allowEmptyString('name');
 
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules): RulesChecker
+    {
+        $rules->add($rules->existsIn('customer_id', 'Customers'), ['errorField' => 'customer_id']);
+
+        return $rules;
     }
 }
