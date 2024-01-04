@@ -9,6 +9,8 @@ use Cake\ORM\Entity;
  * Item Entity
  *
  * @property int $id
+ * @property int|null $customer_id
+ * @property string|null $qb_code
  * @property string|null $name
  * @property \Cake\I18n\DateTime|null $created
  * @property \Cake\I18n\DateTime|null $modified
@@ -27,6 +29,8 @@ class Item extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
+        'customer_id' => true,
+        'qb_code' => true,
         'name' => true,
         'created' => true,
         'modified' => true,
