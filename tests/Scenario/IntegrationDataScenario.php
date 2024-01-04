@@ -38,7 +38,14 @@ class IntegrationDataScenario implements FixtureScenarioInterface
         $i = [];
         foreach ([0,1,2] as $ix => $val) {
             $c[$ix] = CustomerFactory::make(1)->persist();
-            $i[$ix] = ItemFactory::make(3)->withCustomers($c[$ix])->persist();
+            $i[$ix] = ItemFactory::make(
+                [
+                    'quantity' => 5,
+                    'trigger_quantity' => 10,
+                    'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
+                ],
+                3)
+                ->withCustomers($c[$ix])->persist();
         }
         $customer = $c[0];
         $this->addNamedItems($customer);
@@ -64,7 +71,12 @@ class IntegrationDataScenario implements FixtureScenarioInterface
     {
         collection($this->item_names)
             ->map(function ($item) use ($customer) {
-                $i = ItemFactory::make(['name' => $item])->withCustomers($customer)->persist();
+                $i = ItemFactory::make([
+                    'name' => $item,
+                    'quantity' => 5,
+                    'trigger_quantity' => 10,
+                    'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
+                ])->withCustomers($customer)->persist();
             })
             ->toArray();
     }
