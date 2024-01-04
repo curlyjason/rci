@@ -11,7 +11,8 @@ use Cake\Validation\Validator;
 /**
  * Customers Model
  *
- * @property \App\Model\Table\ItemsTable&\Cake\ORM\Association\BelongsToMany $Items
+ * @property \App\Model\Table\ItemsTable&\Cake\ORM\Association\HasMany $Items
+ * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\HasMany $Users
  *
  * @method \App\Model\Entity\Customer newEmptyEntity()
  * @method \App\Model\Entity\Customer newEntity(array $data, array $options = [])
@@ -47,13 +48,11 @@ class CustomersTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->hasMany('Users', [
+        $this->hasMany('Items', [
             'foreignKey' => 'customer_id',
         ]);
-        $this->belongsToMany('Items', [
+        $this->hasMany('Users', [
             'foreignKey' => 'customer_id',
-            'targetForeignKey' => 'item_id',
-            'joinTable' => 'customers_items',
         ]);
     }
 
