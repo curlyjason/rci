@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use App\Model\Entity\Item;
+use Cake\ORM\Entity;
+use Cake\Utility\Inflector;
 use Exception;
 use SplFileInfo;
 
@@ -18,6 +21,10 @@ class ItemsController extends AppController
     public const BULK_ARCHIVE_ROOT = self::BULK_IMPORT_ROOT . 'archive/';
     protected string $importFilePath = self::BULK_IMPORT_ROOT . 'import.txt';
     protected string $errorFilePath = self::BULK_IMPORT_ROOT . 'errors.txt';
+    public const REQUIRED_HEADERS = [
+        'name',
+        'qb_code',
+    ];
 
     private function importArchivePath(): string
     {
@@ -117,8 +124,6 @@ class ItemsController extends AppController
     public function import()
     {
         $file = new SplFileInfo($this->importFilePath);
-//        osd($file->isFile(), 'is it a file');
-//        osdd($this->upload(), 'actual upload');
         /**
          * if there is no uploaded file and upload() is not
          * successfully called (creates an upload file) during
@@ -206,22 +211,59 @@ class ItemsController extends AppController
         try {
             $import = fopen($this->importFilePath, 'r');
             $errors = fopen($this->errorFilePath, 'r+');
-            $archive = fopen($this->importArchivePath(), 'w');
 
             //read in the headers
-            $headers = fgetcsv($import);
+            $headers = $this->checkHeaders($import);
+            $archive = fopen($this->importArchivePath(), 'w');
+            while ($newLine = fgetcsv($import)) {
+                $this->processLine($newLine, $headers);
+                osd($newLine);
+            }
         } catch (Exception $e) {
             $import = null;
             $errors = null;
             $archive = null;
             throw $e;
         }
-
         //  Flash message try again with detail
         //walk through each line
         //save it if it is new
         //what if it is an edit?
         //
         //collect in a new file if it is not valid
+    }
+
+    private function checkHeaders($import)
+    {
+        $headers = fgetcsv($import);
+
+        $output = collection($headers)->reduce(function ($accum, $value, $index) {
+            $underscore = Inflector::underscore($value);
+            if (in_array($underscore, self::REQUIRED_HEADERS)) {
+                $accum[$underscore] = $index;
+            }
+
+            return $accum;
+        }, []);
+
+        if (count($output) != 2) {
+            $import = null;
+            unlink($this->importFilePath);
+            throw new Exception("Input file did not have expected headers 'name' and 'qb_code'");
+        }
+
+        return $output;
+    }
+
+    private function processLine(array $newLine, mixed $headers)
+    {
+        $record = $this->Items->findOrCreate(
+            ['qb_code' => $newLine[$headers['qb_code']]],
+            function (Item $entity) use ($newLine, $headers) {
+                $entity->set('name', $newLine[$headers['name']]);
+                $entity->set('qb_code', $newLine[$headers['qb_code']]);
+            }
+        );
+        osd($record);
     }
 }
