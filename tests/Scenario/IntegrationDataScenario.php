@@ -34,51 +34,29 @@ class IntegrationDataScenario implements FixtureScenarioInterface
      */
     public function load(...$args): mixed
     {
-        $items = ItemFactory::make(9)->persist();
-        $customers = CustomerFactory::make(3)->persist();
-        $cust_item = array_chunk(CustomersItemFactory::make(9)->getEntities(), 3);
+        $c = [];
+        $i = [];
+        foreach ([0,1,2] as $ix => $val) {
+            $c[$ix] = CustomerFactory::make(1)->persist();
+            $i[$ix] = ItemFactory::make(3)->withCustomers($c[$ix])->persist();
+        }
+        $customer = $c[0];
+        $this->addNamedItems($customer);
+
         UserFactory::make([
             [
                 'email' => 'ddrake@dreamingmind.com',
                 'password' => 'xx',
-                'customer_id' => $customers[0]->id,
+                'customer_id' => $customer->id,
             ],
             [
                 'email' => 'jason@curlymedia.com',
                 'password' => 'xx',
-                'customer_id' => $customers[0]->id,
+                'customer_id' => $customer->id,
             ],
         ])
         ->persist();
-        /**
-         * $cust_item = [
-         *   [entity, entity, entity],
-         *   [entity, entity, entity],
-         *   [entity, entity, entity],
-         * ];
-         */
-        $CustTable = CustomersItemFactory::make()->getTable();
-
-        collection(array_chunk($items, 3))
-            ->map(function ($_3items, $index) use ($customers, $cust_item, $CustTable) {
-                $items = $_3items;
-                foreach ($customers as $ci => $customer) {
-                    $CustTable->patchEntity(
-                        $cust_item[$index][$ci],
-                        [
-                            'customer_id' => $customer->id,
-                            'item_id' => $items[$ci]->id,
-                            'quantity' => 5,
-                            'trigger_quantity' => 10,
-                            'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
-                        ]
-                    );
-                    $CustTable->save($cust_item[$index][$ci]);
-                }
-            })
-            ->toArray();
-        $this->addNamedItems($customers[0]);
-
+        
         return null;
     }
 
@@ -86,14 +64,7 @@ class IntegrationDataScenario implements FixtureScenarioInterface
     {
         collection($this->item_names)
             ->map(function ($item) use ($customer) {
-                $i = ItemFactory::make(['name' => $item])->persist();
-                CustomersItemFactory::make([
-                    'customer_id' => $customer->id,
-                    'item_id' => $i->id,
-                    'quantity' => 5,
-                    'trigger_quantity' => 10,
-                    'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
-                ])->persist();
+                $i = ItemFactory::make(['name' => $item])->withCustomers($customer)->persist();
             })
             ->toArray();
     }
