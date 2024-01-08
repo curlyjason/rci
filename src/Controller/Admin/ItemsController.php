@@ -240,7 +240,7 @@ class ItemsController extends AdminController
         $headers = fgetcsv($import);
 
         $output = collection($headers)->reduce(function ($accum, $value, $index) {
-            $underscore = Inflector::underscore($value);
+            $underscore = trim(Inflector::underscore($value));
             if (in_array($underscore, self::REQUIRED_HEADERS)) {
                 $accum[$underscore] = $index;
             }
