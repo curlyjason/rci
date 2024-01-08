@@ -125,6 +125,13 @@ class ItemsController extends AdminController
 
     public function import()
     {
+        /**
+         * uploading can only be done for one customer at a time
+         */
+        if (!$this->impersonate()) {
+            return $this->render('impersonate');
+        }
+
         $file = new SplFileInfo($this->importFilePath);
         /**
          * if there is no uploaded file and upload() is not
@@ -268,5 +275,24 @@ class ItemsController extends AdminController
             }
         );
         osd($record);
+    private function impersonate()
+    {
+
+        if ($this->Authentication->isImpersonating()) {
+            return true;
+        }
+
+        if ($this->request->is('post')) {
+            return true;
+        }
+
+        $table = $this->fetchTable('Customers');
+        $customers = $table
+            ->find()
+            ->contain(['Users'])
+            ->all();
+        $this->set(compact('customers', 'table'));
+
+        return false;
     }
 }
