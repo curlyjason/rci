@@ -39,6 +39,8 @@ class UserFactory extends CakephpBaseFactory
                 // set the model's default values
                 // For example:
                 // 'name' => $faker->lastName
+                'email' => $faker->email,
+                'password' => 'xx',
             ];
         });
     }

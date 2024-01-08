@@ -36,9 +36,21 @@ class CustomerFactory extends CakephpBaseFactory
     {
         $this->setDefaultData(function (Generator $faker) {
             return [
-                'name' => $faker->company,
-            ];
+                'name' => $faker->company,            ];
         });
+    }
+
+    /**
+     * @param array|callable|null|int|\Cake\Datasource\EntityInterface|string $parameter
+     * @param int $n
+     * @return CustomerFactory
+     */
+    public function withUsers($parameter = null, int $n = 1): CustomerFactory
+    {
+        return $this->with(
+            'Users',
+            UserFactory::make($parameter, $n)
+        );
     }
 
     /**
