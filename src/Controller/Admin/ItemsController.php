@@ -132,11 +132,12 @@ class ItemsController extends AdminController
          * a valid POST event, render the upload form
          */
         if (!$file->isFile() && !$this->upload()) {
-            $this->render('upload');
+            return $this->render('upload');
         } else {
             //only reach here when an uploaded file exists
             $this->_processUploadFile();
         }
+        return $this->render();
     }
 
     /**
