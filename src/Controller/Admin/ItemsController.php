@@ -15,7 +15,7 @@ use SplFileInfo;
  *
  * @property \App\Model\Table\ItemsTable $Items
  */
-class ItemsController extends AppController
+class ItemsController extends AdminController
 {
     public const BULK_IMPORT_ROOT = WWW_ROOT . 'bulk-import/';
     public const BULK_ARCHIVE_ROOT = self::BULK_IMPORT_ROOT . 'archive/';
@@ -31,6 +31,7 @@ class ItemsController extends AppController
         return self::BULK_ARCHIVE_ROOT . time();
     }
 
+        //<editor-fold desc="BAKED METHODS">
     /**
      * Index method
      *
@@ -120,6 +121,7 @@ class ItemsController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+    //</editor-fold>
 
     public function import()
     {
