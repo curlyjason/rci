@@ -35,7 +35,7 @@ class IntegrationDataScenario implements FixtureScenarioInterface
     public function load(...$args): mixed
     {
         $items = ItemFactory::make(9)->persist();
-        $customers = CustomerFactory::make(3)->persist();
+        $customers = CustomerFactory::make(3)->withUsers(1)->persist();
         $cust_item = array_chunk(CustomersItemFactory::make(9)->getEntities(), 3);
         UserFactory::make([
             [
