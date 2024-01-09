@@ -15,6 +15,8 @@ class CustomerFocus
 {
     use LocatorAwareTrait;
 
+    const FOCUS_PATH = 'Focus.customers';
+
     /**
      * @var ServerRequest
      */
@@ -100,10 +102,7 @@ class CustomerFocus
             return true;
         }
 
-        $table = $this->fetchTable('Customers');
-        /* @var CustomersTable $table */
-        $customers = $table->find()->all();
-        $controller->set(compact('customers'));
+        $controller->set('customers', $this->session->read(self::FOCUS_PATH));
 
         return false;
     }
@@ -114,14 +113,15 @@ class CustomerFocus
         $this->makeFocusLookup();
     }
 
+
     public function lookupFocus(int $id): Customer
     {
-        return $this->session->read("Focus.customers.$id");
+        return $this->session->read(self::FOCUS_PATH . '.$id');
     }
 
     private function makeFocusLookup(): void
     {
-        if ($this->session->read('Focus.customers')) {
+        if ($this->session->read(self::FOCUS_PATH)) {
             return;
         }
         $customers = $this->fetchTable('Customers')
@@ -132,6 +132,6 @@ class CustomerFocus
                 return $entity->id;
             })
             ->toArray();
-        $this->session->write('Focus.customers',$keyedData);
+        $this->session->write(self::FOCUS_PATH,$keyedData);
     }
 }
