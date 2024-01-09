@@ -6,16 +6,15 @@ namespace App\Controller\Admin;
 use App\Controller\AppController;
 use App\Controller\Component\CompanyFocusComponent;
 use App\Model\Entity\Item;
+use App\Utilities\CompanyFocus;
 use Cake\ORM\Entity;
 use Cake\Utility\Inflector;
 use Exception;
 use SplFileInfo;
-
 /**
  * Items Controller
  *
  * @property \App\Model\Table\ItemsTable $Items
- * @property CompanyFocusComponent $CompanyFocus
  */
 class ItemsController extends AdminController
 {
@@ -27,13 +26,6 @@ class ItemsController extends AdminController
         'name',
         'qb_code',
     ];
-
-    public function initialize(): void
-    {
-        parent::initialize();
-        $this->loadComponent('CompanyFocus');
-    }
-
 
     private function importArchivePath(): string
     {
@@ -137,7 +129,7 @@ class ItemsController extends AdminController
         /**
          * uploading can only be done for one customer at a time
          */
-        if (!$this->CompanyFocus->focus()) {
+        if (!(new CompanyFocus())->focus($this)) {
             return $this->render('companyFocus');
         }
 
