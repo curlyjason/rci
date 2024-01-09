@@ -49,8 +49,12 @@ class CompanyFocusComponent extends \Cake\Controller\Component
 
         if ($this->getController()->getRequest()->is('post')) {
             $entity = $this->getIdentity();
-            $table->patchEntity($entity, ['customer_id' => $this->requestData('customer_id')]);
+            $table->Users->patchEntity($entity, ['customer_id' => $this->requestData('customer_id')]);
             if (!$table->Users->save($entity)) {
+                /**
+                 * Save failed. remove customer id for entity (reference points into session)
+                 */
+                $table->Users->patchEntity($entity, ['customer_id' => '']);
                 $this->getController()->Flash->error('The customer id could not be set on the user');
                 return false;
             }
