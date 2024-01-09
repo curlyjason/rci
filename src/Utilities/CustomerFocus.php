@@ -97,6 +97,8 @@ class CustomerFocus
      * Assumes a template '`customerFocus`' that allows selection
      * of a customer and posts the id on key '`customers_id`'
      *
+     * $this is sent to the viewVars as $customerFocus
+     *
      * If the logged-in user has a customer id: return true (no other action)
      * If request=POST with '`customer_id`' key in the post: set focus and return true
      * If no focus and not a POST, return false (need to render 'customerFocus' UI)
@@ -105,6 +107,8 @@ class CustomerFocus
      */
     public function focus(Controller $controller): bool
     {
+        $controller->set('customerFocus', $this);
+
         if (!$this->isAdmin()) {
             return true;
         }
