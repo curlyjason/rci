@@ -28,7 +28,7 @@ class CustomerFocus
     {
         $this->request = Application::container()->get(ServerRequest::class);
         $this->session = $this->request->getSession();
-
+        $this->makeFocusLookup();
     }
 
     //<editor-fold desc="CONVENIENCE METHODS">
@@ -106,5 +106,31 @@ class CustomerFocus
         $controller->set(compact('customers'));
 
         return false;
+    }
+
+    public function resetFocusLookup(): void
+    {
+        $this->session->write('Focus.customers', null);
+        $this->makeFocusLookup();
+    }
+
+    public function lookupFocus(int $id): Customer
+    {
+        return $this->session->read("Focus.customers.$id");
+    }
+
+    private function makeFocusLookup(): void
+    {
+        if ($this->session->read('Focus.customers')) {
+            return;
+        }
+        $customers = $this->fetchTable('Customers')
+            ->find()
+            ->all();
+        $keyedData = collection($customers)
+            ->indexBy(function ($entity) {
+                return $entity->id;
+            });
+        $this->session->write('Focus.customers');
     }
 }
