@@ -13,8 +13,6 @@
                 <tr>
                     <th><?= $this->Paginator->sort('id') ?></th>
                     <th><?= $this->Paginator->sort('name') ?></th>
-                    <th><?= $this->Paginator->sort('created') ?></th>
-                    <th><?= $this->Paginator->sort('modified') ?></th>
                     <th class="actions"><?= __('Actions') ?></th>
                 </tr>
             </thead>
@@ -23,9 +21,8 @@
                 <tr>
                     <td><?= $this->Number->format($customer->id) ?></td>
                     <td><?= h($customer->name) ?></td>
-                    <td><?= h($customer->created) ?></td>
-                    <td><?= h($customer->modified) ?></td>
                     <td class="actions">
+                        <?= $this->Form->postLink(__('Focus'), ['action' => 'focus', $customer->id]) ?>
                         <?= $this->Html->link(__('View'), ['action' => 'view', $customer->id]) ?>
                         <?= $this->Html->link(__('Edit'), ['action' => 'edit', $customer->id]) ?>
                         <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $customer->id], ['confirm' => __('Are you sure you want to delete # {0}?', $customer->id)]) ?>

@@ -8,11 +8,13 @@ use \App\View\AppView;
  * @var Customer[] $customers
  */
 
-$userChoice = function($user) {
+$action = $this->request->getPath();
+
+$userChoice = function($user) use ($action) {
     return $user->isAdmin()
         ? ''
-        : '<dd>'
-            . $this->Form->postLink($user->email)
+        :   '<dd>'
+            . $this->Form->postLink($user->email, null, ['data' => ['id' => $user->id]])
             . '</dd>';
 }
 

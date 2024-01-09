@@ -128,8 +128,8 @@ class ItemsController extends AdminController
         /**
          * uploading can only be done for one customer at a time
          */
-        if (!$this->impersonate()) {
-            return $this->render('impersonate');
+        if (!$this->companyFocus()) {
+            return $this->render('companyFocus');
         }
 
         $file = new SplFileInfo($this->importFilePath);
@@ -276,6 +276,7 @@ class ItemsController extends AdminController
         );
         osd($record);
     private function impersonate()
+    private function companyFocus()
     {
 
         if ($this->Authentication->isImpersonating()) {
@@ -283,6 +284,12 @@ class ItemsController extends AdminController
         }
 
         if ($this->request->is('post')) {
+            $user = $this->fetchTable('Users')->get($this->request->getData('id'));
+            $this->Authentication->impersonate($user);
+            osd($this->Authentication->isImpersonating(), 'is impersonating');
+            osd($this->isAdmin(), 'isAdmin');
+            osd($this->readSession('Auth'), 'session data');
+            osdd($this->request->getData());
             return true;
         }
 
