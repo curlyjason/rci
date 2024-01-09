@@ -3,6 +3,7 @@
 namespace App\Controller\Component;
 
 use App\Model\Entity\User;
+use App\Model\Table\CustomersTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Session;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -11,28 +12,33 @@ class CompanyFocusComponent extends \Cake\Controller\Component
 {
     use LocatorAwareTrait;
 
-    public function getIdentity(): User
+    protected function request()
+    {
+        return $this->getController()->getRequest();
+    }
+
+    protected function getIdentity(): User
     {
         return $this->getController()->getRequest()->getSession()->read('Auth');
     }
 
-    public function isAdmin(): bool
+    protected function isAdmin(): bool
     {
         return $this->getIdentity()->isAdmin();
     }
 
-    public function isFocused(): bool
+    protected function isFocused(): bool
     {
         return (bool) $this->getFocus();
     }
 
-    public function getFocus(): ?int
+    protected function getFocus(): ?int
     {
         return $this->getIdentity()?->customer_id;
     }
 
-    public function requestData(?string $key = null, mixed $default = null): mixed {
-        return $this->getController()->getRequest()->getData($key, $default);
+    protected function requestData(?string $key = null, mixed $default = null): mixed {
+        return $this->request()->getData($key, $default);
     }
 
     public function focus()
@@ -46,16 +52,22 @@ class CompanyFocusComponent extends \Cake\Controller\Component
         }
 
         $table = $this->fetchTable('Customers');
+        /* @var CustomersTable $table */
 
-        if ($this->getController()->getRequest()->is('post')) {
+        if ($this->request()->is('post')) {
             $entity = $this->getIdentity();
-            $table->Users->patchEntity($entity, ['customer_id' => $this->requestData('customer_id')]);
+            $table->Users->patchEntity(
+                $entity,
+                ['customer_id' => $this->requestData('customer_id')]
+            );
             if (!$table->Users->save($entity)) {
                 /**
                  * Save failed. remove customer id for entity (reference points into session)
                  */
                 $table->Users->patchEntity($entity, ['customer_id' => '']);
-                $this->getController()->Flash->error('The customer id could not be set on the user');
+                $this->getController()
+                    ->Flash
+                    ->error('The customer id could not be set on the user');
                 return false;
             }
             return true;
