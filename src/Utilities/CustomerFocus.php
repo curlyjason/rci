@@ -110,7 +110,7 @@ class CustomerFocus
 
     public function resetFocusLookup(): void
     {
-        $this->session->write('Focus.customers', null);
+        $this->session->delete('Focus');
         $this->makeFocusLookup();
     }
 
@@ -130,7 +130,8 @@ class CustomerFocus
         $keyedData = collection($customers)
             ->indexBy(function ($entity) {
                 return $entity->id;
-            });
-        $this->session->write('Focus.customers');
+            })
+            ->toArray();
+        $this->session->write('Focus.customers',$keyedData);
     }
 }
