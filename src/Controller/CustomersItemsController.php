@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Utilities\CompanyFocus;
+use App\Utilities\CustomerFocus;
 
 /**
  * CustomersItems Controller
@@ -113,8 +113,8 @@ class CustomersItemsController extends AppController
         /**
          * uploading can only be done for one customer at a time
          */
-        if (!(new CompanyFocus())->focus($this)) {
-            return $this->render('/Admin/Items/company_focus');
+        if (!(new CustomerFocus())->focus($this)) {
+            return $this->render('/Admin/Items/customer_focus');
         }
         $this->setUserCustomerVariable();
         $query = $this->CustomersItems->find()

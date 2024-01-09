@@ -6,7 +6,7 @@ namespace App\Controller\Admin;
 use App\Controller\AppController;
 use App\Controller\Component\CompanyFocusComponent;
 use App\Model\Entity\Item;
-use App\Utilities\CompanyFocus;
+use App\Utilities\CustomerFocus;
 use Cake\ORM\Entity;
 use Cake\Utility\Inflector;
 use Exception;
@@ -129,8 +129,8 @@ class ItemsController extends AdminController
         /**
          * uploading can only be done for one customer at a time
          */
-        if (!(new CompanyFocus())->focus($this)) {
-            return $this->render('companyFocus');
+        if (!(new CustomerFocus())->focus($this)) {
+            return $this->render('customerFocus');
         }
 
         $file = new SplFileInfo($this->importFilePath);
@@ -282,7 +282,7 @@ class ItemsController extends AdminController
 //        osd($record);
     }
 
-    private function companyFocus()
+    private function customerFocus()
     {
 
         if ($this->Authentication->isImpersonating()) {

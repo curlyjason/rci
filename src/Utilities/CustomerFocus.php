@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use App\Application;
+use App\Model\Entity\Customer;
 use App\Model\Entity\User;
 use App\Model\Table\CustomersTable;
 use Cake\Controller\Controller;
@@ -10,7 +11,7 @@ use Cake\Http\ServerRequest;
 use Cake\Http\Session;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
-class CompanyFocus
+class CustomerFocus
 {
     use LocatorAwareTrait;
 
@@ -61,26 +62,26 @@ class CompanyFocus
     }
     //</editor-fold>
 
-    public function refocus(int $company_id): void
+    public function refocus(int $customer_id): void
     {
         $entity = $this->getIdentity();
-        $entity->set('customer_id', $$company_id);
+        $entity->set('customer_id', $$customer_id);
     }
     /**
-     * Controller/action call to guide admins into a company focus
+     * Controller/action call to guide admins into a customers focus
      *
      * Use from a controller action:
      * <pre>
-     *  if (!$this->CompanyFocus->focus()) {
-     *      return $this->render('companyFocus');
+     *  if (!$this->CustomerFocus->focus()) {
+     *      return $this->render('customersFocus');
      *  }
      * </pre>
-     * Assumes a template '`companyFocus`' that allows selection
-     * of a company and posts '`company_id`'
+     * Assumes a template '`customerFocus`' that allows selection
+     * of a customers and posts '`customers_id`'
      *
-     * If the logged-in user has a company id: return true (no other action)
-     * If request=POST with '`company_id`' key in the post: set focus and return true
-     * If no focus and not a POST, return false (need to render 'companyFocus' UI)
+     * If the logged-in user has a customer id: return true (no other action)
+     * If request=POST with '`customer_id`' key in the post: set focus and return true
+     * If no focus and not a POST, return false (need to render 'customerFocus' UI)
      *
      * @return bool
      */
