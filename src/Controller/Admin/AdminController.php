@@ -11,10 +11,5 @@ use Cake\Event\EventInterface;
 
 class AdminController extends \App\Controller\AppController
 {
-    public function beforeFilter(EventInterface $event)
-    {
-        parent::beforeFilter($event);
-//        $this->Authentication->getIdentity()->;
-    }
-
+    
 }

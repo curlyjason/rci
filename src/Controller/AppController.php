@@ -44,17 +44,11 @@ class AppController extends Controller
         $this->loadComponent('Flash');
         $this->loadComponent('Authentication.Authentication');
         $this->loadComponent('Authorization.Authorization');
-
-        /*
-         * Enable the following component for recommended CakePHP form protection settings.
-         * see https://book.cakephp.org/4/en/controllers/components/form-protection.html
-         */
-        //$this->loadComponent('FormProtection');
     }
 
-    protected function readSession(string $string)
+    protected function readSession(?string $string = null, mixed $default = null)
     {
-        return $this->request->getSession()->read($string);
+        return $this->request->getSession()->read($string, $default);
     }
 
     protected function isAdmin() {
