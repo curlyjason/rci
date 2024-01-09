@@ -40,7 +40,30 @@ class CompanyFocusComponent extends \Cake\Controller\Component
     protected function requestData(?string $key = null, mixed $default = null): mixed {
         return $this->request()->getData($key, $default);
     }
+    //</editor-fold>
 
+    public function refocus(int $company_id): void
+    {
+        $entity = $this->getIdentity();
+        $entity->set('customer_id', $$company_id);
+    }
+    /**
+     * Guide admins into a company focus
+     *
+     * Use:
+     * <pre>
+     *  if (!$this->CompanyFocus->focus()) {
+     *      return $this->render('companyFocus');
+     *  }
+     * </pre>
+     * Assumes a template '`companyFocus`' that allows selection
+     * of a company and posts '`company_id`'
+     *
+     * If the logged-in user has a company id, we return true
+     *
+     *
+     * @return bool
+     */
     public function focus()
     {
         if (!$this->isAdmin()) {
@@ -51,28 +74,14 @@ class CompanyFocusComponent extends \Cake\Controller\Component
             return true;
         }
 
-        $table = $this->fetchTable('Customers');
-        /* @var CustomersTable $table */
-
-        if ($this->request()->is('post')) {
+        if ($this->request()->is('post') && $this->requestData('company_id')) {
             $entity = $this->getIdentity();
-            $table->Users->patchEntity(
-                $entity,
-                ['customer_id' => $this->requestData('customer_id')]
-            );
-            if (!$table->Users->save($entity)) {
-                /**
-                 * Save failed. remove customer id for entity (reference points into session)
-                 */
-                $table->Users->patchEntity($entity, ['customer_id' => '']);
-                $this->getController()
-                    ->Flash
-                    ->error('The customer id could not be set on the user');
-                return false;
-            }
+            $entity->set('customer_id', $this->requestData('company_id'));
             return true;
         }
 
+        $table = $this->fetchTable('Customers');
+        /* @var CustomersTable $table */
         $customers = $table->find()->all();
         $this->getController()->set(compact('customers'));
 
