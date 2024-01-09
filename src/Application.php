@@ -59,6 +59,8 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Application extends BaseApplication implements AuthenticationServiceProviderInterface, AuthorizationServiceProviderInterface
 {
+    public static ?ContainerInterface $_container;
+
     /**
      * Load all the application configuration and bootstrap logic.
      *
@@ -153,6 +155,16 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      */
     public function services(ContainerInterface $container): void
     {
+        $container->add(\Cake\Controller\ComponentRegistry::class);
+        $container->delegate(
+            new \League\Container\ReflectionContainer()
+        );
+        self::$_container = $container;
+    }
+
+    public static function container(): ?ContainerInterface
+    {
+        return self::$_container;
     }
 
     /**
