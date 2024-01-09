@@ -62,13 +62,24 @@ class CustomerFocus
     protected function requestData(?string $key = null, mixed $default = null): mixed {
         return $this->request->getData($key, $default);
     }
+
+    private function makeFocusLookup(): void
+    {
+        if ($this->session->read(self::FOCUS_PATH)) {
+            return;
+        }
+        $customers = $this->fetchTable('Customers')
+            ->find()
+            ->all();
+        $keyedData = collection($customers)
+            ->indexBy(function ($entity) {
+                return $entity->id;
+            })
+            ->toArray();
+        $this->session->write(self::FOCUS_PATH,$keyedData);
+    }
     //</editor-fold>
 
-    public function refocus(int $customer_id): void
-    {
-        $entity = $this->getIdentity();
-        $entity->set('customer_id', $$customer_id);
-    }
     /**
      * Controller/action call to guide admins into a customers focus
      *
@@ -107,31 +118,26 @@ class CustomerFocus
         return false;
     }
 
-    public function resetFocusLookup(): void
+    public function setFocus(int $customer_id): void
     {
-        $this->session->delete('Focus');
-        $this->makeFocusLookup();
+        $entity = $this->getIdentity();
+        $entity->set('customer_id', $customer_id);
     }
 
+    public function blur()
+    {
+        $entity = $this->getIdentity();
+        $entity->set('customer_id', null);
+    }
 
     public function lookupFocus(int $id): Customer
     {
         return $this->session->read(self::FOCUS_PATH . '.$id');
     }
 
-    private function makeFocusLookup(): void
+    public function resetFocusLookup(): void
     {
-        if ($this->session->read(self::FOCUS_PATH)) {
-            return;
-        }
-        $customers = $this->fetchTable('Customers')
-            ->find()
-            ->all();
-        $keyedData = collection($customers)
-            ->indexBy(function ($entity) {
-                return $entity->id;
-            })
-            ->toArray();
-        $this->session->write(self::FOCUS_PATH,$keyedData);
+        $this->session->delete('Focus');
+        $this->makeFocusLookup();
     }
 }
