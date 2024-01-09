@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use App\Controller\Component\CompanyFocusComponent;
 use App\Model\Entity\Item;
 use Cake\ORM\Entity;
 use Cake\Utility\Inflector;
@@ -14,6 +15,7 @@ use SplFileInfo;
  * Items Controller
  *
  * @property \App\Model\Table\ItemsTable $Items
+ * @property CompanyFocusComponent $CompanyFocus
  */
 class ItemsController extends AdminController
 {
@@ -25,6 +27,13 @@ class ItemsController extends AdminController
         'name',
         'qb_code',
     ];
+
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadComponent('CompanyFocus');
+    }
+
 
     private function importArchivePath(): string
     {
@@ -128,7 +137,7 @@ class ItemsController extends AdminController
         /**
          * uploading can only be done for one customer at a time
          */
-        if (!$this->companyFocus()) {
+        if (!$this->CompanyFocus->focus()) {
             return $this->render('companyFocus');
         }
 
@@ -195,7 +204,7 @@ class ItemsController extends AdminController
      */
     protected function upload(): bool
     {
-        if ($this->request->is('post')) {
+        if ($this->request->is('post') && $this->request->getData('upload')) {
             $upload = $this->request->getData('upload');
             /** @var \Laminas\Diactoros\UploadedFile $upload */
 
@@ -226,6 +235,10 @@ class ItemsController extends AdminController
             $headers = $this->checkHeaders($import);
             $archive = fopen($this->importArchivePath(), 'w');
             while ($newLine = fgetcsv($import)) {
+                osd([
+                    'name' => $newLine[$headers['name']],
+                    'qb_code' => $newLine[$headers['qb_code']]
+                ]);
                 $this->processLine($newLine, $headers);
                 osd($newLine);
             }
@@ -267,15 +280,16 @@ class ItemsController extends AdminController
 
     private function processLine(array $newLine, mixed $headers)
     {
-        $record = $this->Items->findOrCreate(
-            ['qb_code' => $newLine[$headers['qb_code']]],
-            function (Item $entity) use ($newLine, $headers) {
-                $entity->set('name', $newLine[$headers['name']]);
-                $entity->set('qb_code', $newLine[$headers['qb_code']]);
-            }
-        );
-        osd($record);
-    private function impersonate()
+//        $record = $this->Items->findOrCreate(
+//            ['qb_code' => $newLine[$headers['qb_code']]],
+//            function (Item $entity) use ($newLine, $headers) {
+//                $entity->set('name', $newLine[$headers['name']]);
+//                $entity->set('qb_code', $newLine[$headers['qb_code']]);
+//            }
+//        );
+//        osd($record);
+    }
+
     private function companyFocus()
     {
 
