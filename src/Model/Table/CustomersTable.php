@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Utilities\CustomerFocus;
+use ArrayObject;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -72,5 +76,10 @@ class CustomersTable extends Table
             ->allowEmptyString('name');
 
         return $validator;
+    }
+
+    public function afterSaveCommit(EventInterface $event, EntityInterface $entity, ArrayObject $options)
+    {
+        (new CustomerFocus())->resetFocusLookup();
     }
 }
