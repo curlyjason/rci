@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Utilities\CompanyFocus;
+
 /**
  * CustomersItems Controller
  *
@@ -108,6 +110,12 @@ class CustomersItemsController extends AppController
 
     public function takeInventory()
     {
+        /**
+         * uploading can only be done for one customer at a time
+         */
+        if (!(new CompanyFocus())->focus($this)) {
+            return $this->render('/Admin/Items/company_focus');
+        }
         $this->setUserCustomerVariable();
         $query = $this->CustomersItems->find()
             ->where(['customer_id' => $this->readSession('Auth')->customer_id])
