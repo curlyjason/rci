@@ -116,6 +116,7 @@ class CustomersItemsController extends AppController
         if (!(new CustomerFocus())->focus($this)) {
             return $this->render('/Admin/Items/customer_focus');
         }
+
         $this->setUserCustomerVariable();
         $query = $this->CustomersItems->find()
             ->where(['customer_id' => $this->readSession('Auth')->customer_id])
@@ -127,6 +128,13 @@ class CustomersItemsController extends AppController
 
     public function setTriggerLevels()
     {
+        /**
+         * uploading can only be done for one customer at a time
+         */
+        if (!(new CustomerFocus())->focus($this)) {
+            return $this->render('/Admin/Items/customer_focus');
+        }
+
         $customersItems = $this->GetPaginatedItemsForUser();
         $result = $this->createItemListAndFilterMap($customersItems);
         extract($result); //masterFilterMap, items
@@ -136,6 +144,13 @@ class CustomersItemsController extends AppController
 
     public function orderNow()
     {
+        /**
+         * uploading can only be done for one customer at a time
+         */
+        if (!(new CustomerFocus())->focus($this)) {
+            return $this->render('/Admin/Items/customer_focus');
+        }
+
         $result = [];
         if ($this->request->is('post')) {
             osd($this->request->getData(), 'posted data');
