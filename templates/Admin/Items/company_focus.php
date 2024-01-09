@@ -10,19 +10,11 @@ use \App\View\AppView;
 
 $action = $this->request->getPath();
 
-$userChoice = function($user) use ($action) {
-    return $user->isAdmin()
-        ? ''
-        :   '<dd>'
-            . $this->Form->postLink($user->email, null, ['data' => ['id' => $user->id]])
-            . '</dd>';
+$customerChoice = function($customer) use ($action) {
+    return $this->Form->postLink($customer->name, null, ['data' => ['customer_id' => $customer->id]]);
 }
 
 ?>
 <?php foreach ($customers as $customer) : ?>
-    <dt><?= $customer->name ?></dt>
-    <?php foreach ($customer->users as $user) :?>
-        <?= $userChoice($user) ?>
-    <?php endforeach; ?>
-
+    <p><?= $customerChoice($customer) ?></p>
 <?php endforeach; ?>
