@@ -65,6 +65,8 @@ return [
         ],
     ],
     'Session' => [
+//        'timeout' => .25,
         'timeout' => 480,
+//        prudence56@yahoo.com
     ],
 ];
