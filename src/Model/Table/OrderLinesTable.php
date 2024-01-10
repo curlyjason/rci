@@ -55,9 +55,9 @@ class OrderLinesTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->scalar('qb_encoded')
-            ->maxLength('qb_encoded', 255)
-            ->allowEmptyString('qb_encoded');
+            ->scalar('qb_code')
+            ->maxLength('qb_code', 255)
+            ->allowEmptyString('qb_code');
 
         $validator
             ->scalar('name')

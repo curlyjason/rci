@@ -19,8 +19,8 @@
             <h3><?= h($orderLine->name) ?></h3>
             <table>
                 <tr>
-                    <th><?= __('Qb Encoded') ?></th>
-                    <td><?= h($orderLine->qb_encoded) ?></td>
+                    <th><?= __('Qb Code') ?></th>
+                    <td><?= h($orderLine->qb_code) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Name') ?></th>

@@ -22,7 +22,7 @@
             <fieldset>
                 <legend><?= __('Edit Order Line') ?></legend>
                 <?php
-                    echo $this->Form->control('qb_encoded');
+                    echo $this->Form->control('qb_code');
                     echo $this->Form->control('name');
                     echo $this->Form->control('quantity');
                 ?>
