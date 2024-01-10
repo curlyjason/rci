@@ -16,6 +16,13 @@
 
 use App\View\AppView;
 use Cake\Core\Configure;
+$session = $this->request->getSession();
+$focusCustomer = $focusCustomer ?? new \App\Utilities\CustomerFocus();
+/* @var \App\Utilities\CustomerFocus $focusCustomer */
+
+$customerName = function() use ($session, $focusCustomer) {
+    return $focusCustomer->lookupFocus($focusCustomer->getFocus())->name;
+};
 
 $jQuery_path = Configure::read('debug')
     ? 'node_modules/jquery/dist/jquery.js'
@@ -116,7 +123,8 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
     </nav>
     <main class="main">
         <div class="container">
-            <h4>Rods & Cones Inventory</h4>
+            <h4 style="margin-bottom: 0;">Rods & Cones Inventory</h4>
+            <p><?= $this->Html->image('reFocus.png', ['style' => 'height: 1.5rem;']) ?> <?= $customerName() ?></p>
             <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>
         </div>
