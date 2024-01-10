@@ -59,7 +59,7 @@ class CustomerFocus
         return (bool) $this->getFocus();
     }
 
-    protected function getFocus(): ?int
+    public function getFocus(): ?int
     {
         return $this->getIdentity()?->customer_id;
     }
@@ -163,7 +163,7 @@ class CustomerFocus
      */
     public function lookupFocus(int $id): Customer
     {
-        return $this->session->read(self::FOCUS_PATH . '.$id');
+        return $this->session->read(self::FOCUS_PATH . ".$id");
     }
 
     /**
