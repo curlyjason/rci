@@ -109,11 +109,7 @@ class CustomerFocus
     {
         $controller->set('customerFocus', $this);
 
-        if (!$this->isAdmin()) {
-            return true;
-        }
-
-        if ($this->isAdmin() && $this->isFocused()) {
+        if ($this->isFocused()) {
             return true;
         }
         if ($this->request()->is('post') && $this->requestData('customer_id')) {
