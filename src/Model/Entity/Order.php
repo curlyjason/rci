@@ -31,6 +31,7 @@ class Order extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
+        'order_lines' => true,
         'order_number' => true,
         'ordered_by' => true,
         'ordered_by_email' => true,
