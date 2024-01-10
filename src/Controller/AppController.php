@@ -54,4 +54,7 @@ class AppController extends Controller
     protected function isAdmin() {
         return $this->readSession('Auth')->isAdmin();
     }
+    protected function getIdentity() {
+        return $this->readSession('Auth');
+    }
 }
