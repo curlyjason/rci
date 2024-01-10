@@ -15,6 +15,7 @@ if ($this->getIdentity()?->isAdmin()):
 ?>
     <?= $decorateOpen ?> <a <?= $sectionBreak ?>  href="<?= $this->Url->build('admin/users') ?>">Users</a><?= $decorateClose ?>
     <?= $decorateOpen ?> <a href="<?= $this->Url->build('admin/items') ?>">Items</a><?= $decorateClose ?>
+    <?= $decorateOpen ?> <a href="<?= $this->Url->build('admin/items/import') ?>">Item Import</a><?= $decorateClose ?>
     <?= $decorateOpen ?> <a href="<?= $this->Url->build('admin/orders') ?>">Orders</a><?= $decorateClose ?>
     <?= $decorateOpen ?> <a href="<?= $this->Url->build('admin/customers') ?>">Customers</a><?= $decorateClose ?>
 <?php endif ?>
