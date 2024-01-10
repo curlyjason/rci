@@ -44,12 +44,12 @@ class CustomerFocus
         return $this->request;
     }
 
-    protected function getIdentity(): User
+    protected function getIdentity(): ?User
     {
         return $this->session->read('Auth');
     }
 
-    protected function isAdmin(): bool
+    public function isAdmin(): bool
     {
         return $this->getIdentity()->isAdmin();
     }
@@ -161,7 +161,7 @@ class CustomerFocus
      * @param int $id
      * @return Customer
      */
-    public function lookupFocus(int $id): Customer
+    public function lookupFocus(?int $id): ?Customer
     {
         return $this->session->read(self::FOCUS_PATH . ".$id");
     }
