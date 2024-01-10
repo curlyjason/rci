@@ -26,7 +26,7 @@ class CustomersController extends AppController
         $this->set(compact('customers'));
     }
 
-    public function focus($id)
+    public function focus($id = null)
     {
         (new CustomerFocus())->setFocus((int) $id);
         return $this->redirect($this->referer());
