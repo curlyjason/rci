@@ -83,8 +83,6 @@ $orderQtyInput = function(CustomersItem $input):string {
         'type' => 'char',
     ]);
     echo $this->Form->control('id', ['name' => 'id[]', 'type' => 'hidden', 'value' => $input->id]);
-    //signal for the action to process the post
-    echo $this->Form->control('order_now', ['order_now' => 'id[]', 'type' => 'hidden', 'value' => false]);
     $this->end();
 
     return $this->fetch('orderQtyInput');
@@ -131,6 +129,7 @@ $this->append('script', $this->Html->script('order_tools.js'));
     <h3><?= __('Make an Order') ?></h3>
     <?php
     echo $this->Form->create();
+    //signal for the action to process the post
     echo $this->Form->control('filter');
     echo $this->Form->control('review', [
         'type' => 'radio',
@@ -141,6 +140,7 @@ $this->append('script', $this->Html->script('order_tools.js'));
     ?>
     <div class="table-responsive">
         <?= $this->Form->create(); ?>
+        <?= $this->Form->control('order_now', [ 'type' => 'hidden', 'value' => true]); ?>
         <?= $this->Form->submit('Place Order') ?>
         <table>
             <thead>
