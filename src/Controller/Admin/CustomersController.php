@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use App\Utilities\CustomerFocus;
 
 /**
  * Customers Controller
@@ -23,6 +24,12 @@ class CustomersController extends AppController
         $customers = $this->paginate($query);
 
         $this->set(compact('customers'));
+    }
+
+    public function focus($id)
+    {
+        (new CustomerFocus())->setFocus((int) $id);
+        return $this->redirect($this->referer());
     }
 
     /**
