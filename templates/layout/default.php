@@ -21,7 +21,17 @@ $focusCustomer = $focusCustomer ?? new \App\Utilities\CustomerFocus();
 /* @var \App\Utilities\CustomerFocus $focusCustomer */
 
 $customerName = function() use ($session, $focusCustomer) {
-    return $focusCustomer->lookupFocus($focusCustomer->getFocus())->name;
+    if ($focusCustomer->getFocus() ?? false) {
+        return $focusCustomer->lookupFocus($focusCustomer->getFocus())->name;
+    }
+};
+$reFocus = function() use ($session, $focusCustomer) {
+    $identity = $session->read('Auth');
+    if (($focusCustomer->getFocus() ?? false) && $identity->isAdmin()) {
+        $img = $this->Html->image('reFocus.png', ['id' => 'refocus']);
+        return $this->Html->link($img, 'admin/customers/focus', ['escape' => false]);
+    }
+    return '';
 };
 
 $jQuery_path = Configure::read('debug')
@@ -29,6 +39,7 @@ $jQuery_path = Configure::read('debug')
     : 'node_modules/jquery/dist/jquery.slim.js';
 $this->prepend('script', $this->Html->script($jQuery_path));
 $this->append('script', $this->Html->script('tooltip.js'));
+//$this->append('script', $this->Html->script('refocus.js'));
 
 $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_PORT');
 
@@ -52,6 +63,10 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
     <?= $this->fetch('style') ?>
     <!-- Site Wide CSS overrides-->
     <style>
+        #refocus {
+            margin-bottom: -1px;
+            height: 1.5rem;
+        }
         .top-nav #myLinks {
             display: none;
         }
@@ -124,7 +139,7 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
     <main class="main">
         <div class="container">
             <h4 style="margin-bottom: 0;">Rods & Cones Inventory</h4>
-            <p><?= $this->Html->image('reFocus.png', ['style' => 'height: 1.5rem;']) ?> <?= $customerName() ?></p>
+            <p><?= $reFocus() ?> <?= $customerName() ?></p>
             <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>
         </div>
