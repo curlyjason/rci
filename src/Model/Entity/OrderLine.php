@@ -30,7 +30,7 @@ class OrderLine extends Entity
         'qb_encoded' => true,
         'name' => true,
         'quantity' => true,
-        'created' => true,
-        'modified' => true,
+        'created' => false,
+        'modified' => false,
     ];
 }
