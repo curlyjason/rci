@@ -35,8 +35,10 @@ class ItemFactory extends CakephpBaseFactory
     protected function setDefaultTemplate(): void
     {
         $this->setDefaultData(function (Generator $faker) {
+            $name = $faker->sentence(6);
             return [
-                'name' => $faker->sentence(6),
+                'name' => $name,
+                'qb_code' => "path:to:$name"
             ];
         });
     }
