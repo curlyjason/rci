@@ -8,10 +8,14 @@ use \App\View\AppView;
  * @var Customer[] $customers
  */
 
-$action = $this->request->getPath();
-
-$customerChoice = function($customer) use ($action) {
-    return $this->Form->postLink($customer->name, null, ['data' => ['customer_id' => $customer->id]]);
+$customerChoice = function($customer){
+    return $this->Form->postLink(
+        $customer->name,
+        null,
+        ['data' => [
+            'customer_id' => $customer->id,
+            'customer_focus' => true //signal for CustomerFocus to process the post
+        ]]);
 }
 
 ?>
