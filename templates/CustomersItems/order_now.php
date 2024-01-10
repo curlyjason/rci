@@ -79,10 +79,10 @@ $orderQtyInput = function(CustomersItem $input):string {
         'name' => 'order_quantity[]',
         'value' => '',
         'title' => 'Amount on shelf',
-        'id' => "order_quantity-$input->id",
+        'id' => "order_quantity-$input->item_id",
         'type' => 'char',
     ]);
-    echo $this->Form->control('id', ['name' => 'id[]', 'type' => 'hidden', 'value' => $input->id]);
+    echo $this->Form->control('id', ['name' => 'id[]', 'type' => 'hidden', 'value' => $input->item_id]);
     $this->end();
 
     return $this->fetch('orderQtyInput');
