@@ -22,10 +22,8 @@
             <fieldset>
                 <legend><?= __('Edit Order Line') ?></legend>
                 <?php
+                    echo $this->Form->control('qb_encoded');
                     echo $this->Form->control('name');
-                    echo $this->Form->control('sku');
-                    echo $this->Form->control('vendor_sku');
-                    echo $this->Form->control('uom');
                     echo $this->Form->control('quantity');
                 ?>
             </fieldset>

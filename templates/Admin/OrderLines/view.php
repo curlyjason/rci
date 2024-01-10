@@ -19,20 +19,12 @@
             <h3><?= h($orderLine->name) ?></h3>
             <table>
                 <tr>
+                    <th><?= __('Qb Encoded') ?></th>
+                    <td><?= h($orderLine->qb_encoded) ?></td>
+                </tr>
+                <tr>
                     <th><?= __('Name') ?></th>
                     <td><?= h($orderLine->name) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Sku') ?></th>
-                    <td><?= h($orderLine->sku) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Vendor Sku') ?></th>
-                    <td><?= h($orderLine->vendor_sku) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Uom') ?></th>
-                    <td><?= h($orderLine->uom) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Id') ?></th>

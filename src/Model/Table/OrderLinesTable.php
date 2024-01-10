@@ -55,19 +55,14 @@ class OrderLinesTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
+            ->scalar('qb_encoded')
+            ->maxLength('qb_encoded', 255)
+            ->allowEmptyString('qb_encoded');
+
+        $validator
             ->scalar('name')
             ->maxLength('name', 255)
             ->allowEmptyString('name');
-
-        $validator
-            ->scalar('sku')
-            ->maxLength('sku', 255)
-            ->allowEmptyString('sku');
-
-        $validator
-            ->scalar('uom')
-            ->maxLength('uom', 32)
-            ->allowEmptyString('uom');
 
         $validator
             ->integer('quantity')
