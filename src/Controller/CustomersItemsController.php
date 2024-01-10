@@ -153,10 +153,10 @@ class CustomersItemsController extends AppController
         osd($this->request->getData());
         $result = [];
         if ($this->request->getData('order_now')) {
-            foreach ($this->request->getData('order_quantity') as $index => $islive) {
-                if ($islive != 'false') {
+            foreach ($this->request->getData('order_quantity') as $index => $qty) {
+                if ($qty) {
                     $result[] = [
-                        'order_quantity' => $this->request->getData('order_quantity')[$index],
+                        'order_quantity' => $qty,
                         'id' => $this->request->getData('id')[$index],
                     ];
                 }
