@@ -83,6 +83,8 @@ $orderQtyInput = function(CustomersItem $input):string {
         'type' => 'char',
     ]);
     echo $this->Form->control('id', ['name' => 'id[]', 'type' => 'hidden', 'value' => $input->id]);
+    //signal for the action to process the post
+    echo $this->Form->control('order_now', ['order_now' => 'id[]', 'type' => 'hidden', 'value' => false]);
     $this->end();
 
     return $this->fetch('orderQtyInput');

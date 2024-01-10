@@ -150,8 +150,9 @@ class CustomersItemsController extends AppController
         if (!(new CustomerFocus())->focus($this)) {
             return $this->render('/Admin/Items/customer_focus');
         }
+
         $result = [];
-        if ($this->request->getData('customer_focus')) {
+        if ($this->request->getData('order_now')) {
             osd($this->request->getData(), 'posted data');
             foreach ($this->request->getData('live') as $index => $islive) {
                 if ($islive != 'false') {
