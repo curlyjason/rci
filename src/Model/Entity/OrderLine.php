@@ -9,6 +9,7 @@ use Cake\ORM\Entity;
  * OrderLine Entity
  *
  * @property int $id
+ * @property int|null $order_id
  * @property string|null $qb_code
  * @property string|null $name
  * @property int|null $quantity
@@ -27,6 +28,7 @@ class OrderLine extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
+        'order_id' => true,
         'qb_code' => true,
         'name' => true,
         'quantity' => true,

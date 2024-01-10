@@ -17,6 +17,7 @@
             <fieldset>
                 <legend><?= __('Add Order Line') ?></legend>
                 <?php
+                    echo $this->Form->control('order_id');
                     echo $this->Form->control('qb_code');
                     echo $this->Form->control('name');
                     echo $this->Form->control('quantity');

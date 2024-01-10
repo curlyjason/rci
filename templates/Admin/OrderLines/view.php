@@ -31,6 +31,10 @@
                     <td><?= $this->Number->format($orderLine->id) ?></td>
                 </tr>
                 <tr>
+                    <th><?= __('Order Id') ?></th>
+                    <td><?= $orderLine->order_id === null ? '' : $this->Number->format($orderLine->order_id) ?></td>
+                </tr>
+                <tr>
                     <th><?= __('Quantity') ?></th>
                     <td><?= $orderLine->quantity === null ? '' : $this->Number->format($orderLine->quantity) ?></td>
                 </tr>

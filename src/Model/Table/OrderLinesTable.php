@@ -44,6 +44,10 @@ class OrderLinesTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->belongsTo('Orders', [
+            'foreignKey' => 'order_id',
+        ]);
     }
 
     /**
@@ -54,6 +58,10 @@ class OrderLinesTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
+        $validator
+            ->nonNegativeInteger('order_id')
+            ->allowEmptyString('order_id');
+
         $validator
             ->scalar('qb_code')
             ->maxLength('qb_code', 255)
@@ -69,5 +77,19 @@ class OrderLinesTable extends Table
             ->allowEmptyString('quantity');
 
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules): RulesChecker
+    {
+        $rules->add($rules->existsIn('order_id', 'Orders'), ['errorField' => 'order_id']);
+
+        return $rules;
     }
 }

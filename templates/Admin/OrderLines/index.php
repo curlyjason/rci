@@ -12,6 +12,7 @@
             <thead>
                 <tr>
                     <th><?= $this->Paginator->sort('id') ?></th>
+                    <th><?= $this->Paginator->sort('order_id') ?></th>
                     <th><?= $this->Paginator->sort('qb_code') ?></th>
                     <th><?= $this->Paginator->sort('name') ?></th>
                     <th><?= $this->Paginator->sort('quantity') ?></th>
@@ -24,6 +25,7 @@
                 <?php foreach ($orderLines as $orderLine): ?>
                 <tr>
                     <td><?= $this->Number->format($orderLine->id) ?></td>
+                    <td><?= $orderLine->order_id === null ? '' : $this->Number->format($orderLine->order_id) ?></td>
                     <td><?= h($orderLine->qb_code) ?></td>
                     <td><?= h($orderLine->name) ?></td>
                     <td><?= $orderLine->quantity === null ? '' : $this->Number->format($orderLine->quantity) ?></td>

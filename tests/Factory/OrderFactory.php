@@ -42,4 +42,17 @@ class OrderFactory extends CakephpBaseFactory
             ];
         });
     }
+
+    /**
+     * @param array|callable|null|int|\Cake\Datasource\EntityInterface|string $parameter
+     * @param int $n
+     * @return OrderFactory
+     */
+    public function withOrderLines($parameter = null, int $n = 1): OrderFactory
+    {
+        return $this->with(
+            'OrderLines',
+            OrderLineFactory::make($parameter, $n)
+        );
+    }
 }
