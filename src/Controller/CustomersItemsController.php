@@ -153,12 +153,14 @@ class CustomersItemsController extends AppController
         osd($this->request->getData());
         $result = [];
         if ($this->request->getData('order_now')) {
+            $ITable = $this->fetchTable('Items');
+            $OLTable = $this->fetchTable('OrderLines');
             foreach ($this->request->getData('order_quantity') as $index => $qty) {
                 if ($qty) {
-                    $result[] = [
-                        'order_quantity' => $qty,
-                        'id' => $this->request->getData('id')[$index],
-                    ];
+                    $itemId = $this->request->getData('id')[$index];
+                    $entity = $OLTable->newEntity($ITable->get($itemId)->toArray());
+                    $entity->set('order_quantity', $qty);
+                    $result[] = $entity;
                 }
             }
             osdd($result, 'processed data');
