@@ -155,15 +155,22 @@ class CustomersItemsController extends AppController
         if ($this->request->getData('order_now')) {
             $ITable = $this->fetchTable('Items');
             $OLTable = $this->fetchTable('OrderLines');
+            $order = $OLTable->Orders->newEntity([
+                'order_number' => uniqid(),
+                'ordered_by' => $this->getIdentity()->name,
+                'ordered_by_email' => $this->getIdentity()->email,
+                'status' => 'new',
+                'order_lines' => [],
+            ]);
             foreach ($this->request->getData('order_quantity') as $index => $qty) {
                 if ($qty) {
                     $itemId = $this->request->getData('id')[$index];
                     $entity = $OLTable->newEntity($ITable->get($itemId)->toArray());
                     $entity->set('order_quantity', $qty);
-                    $result[] = $entity;
+                    $order['order_lines'][] = $entity;
                 }
             }
-            osdd($result, 'processed data');
+            osdd($order, 'processed data');
         }
         $customersItems = $this->GetPaginatedItemsForUser();
         $result = $this->createItemListAndFilterMap($customersItems);
