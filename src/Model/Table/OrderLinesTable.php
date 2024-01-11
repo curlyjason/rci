@@ -26,6 +26,8 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\OrderLine[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ *
+ * @property OrdersTable $Orders
  */
 class OrderLinesTable extends Table
 {
