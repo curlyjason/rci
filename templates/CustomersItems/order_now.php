@@ -141,6 +141,8 @@ $this->append('script', $this->Html->script('order_tools.js'));
     <div class="table-responsive">
         <?= $this->Form->create(); ?>
         <?= $this->Form->control('order_now', [ 'type' => 'hidden', 'value' => true]); ?>
+        <?= $this->Form->control('name', [ 'type' => 'hidden', 'value' => $this->getIdentity()->name]); ?>
+        <?= $this->Form->control('email', [ 'type' => 'hidden', 'value' => $this->getIdentity()->email]); ?>
         <?= $this->Form->submit('Place Order') ?>
         <table>
             <thead>

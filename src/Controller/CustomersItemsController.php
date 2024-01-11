@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Forms\OrderNowForm;
 use App\Utilities\CustomerFocus;
 
 /**
@@ -150,28 +151,12 @@ class CustomersItemsController extends AppController
         if (!(new CustomerFocus())->focus($this)) {
             return $this->render('/Admin/Items/customer_focus');
         }
-        osd($this->request->getData());
-        $result = [];
-        if ($this->request->getData('order_now')) {
-            $ITable = $this->fetchTable('Items');
-            $OLTable = $this->fetchTable('OrderLines');
-            $order = $OLTable->Orders->newEntity([
-                'order_number' => uniqid(),
-                'ordered_by' => $this->getIdentity()->name,
-                'ordered_by_email' => $this->getIdentity()->email,
-                'status' => 'new',
-                'order_lines' => [],
-            ]);
-            foreach ($this->request->getData('order_quantity') as $index => $qty) {
-                if ($qty) {
-                    $itemId = $this->request->getData('id')[$index];
-                    $entity = $OLTable->newEntity($ITable->get($itemId)->toArray());
-                    $entity->set('order_quantity', $qty);
-                    $order['order_lines'][] = $entity;
-                }
-            }
-            osd($order, 'processed data');
+
+        $Form =new OrderNowForm();
+        if ($this->request->getData('order_now') && $Form->execute($this->request->getData())) {
+            osd($Form->getData('result'), 'processed data');
         }
+
         $customersItems = $this->GetPaginatedItemsForUser();
         $result = $this->createItemListAndFilterMap($customersItems);
         extract($result); //masterFilterMap, items
