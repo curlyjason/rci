@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Application;
 use App\Forms\OrderNowForm;
 use App\Utilities\CustomerFocus;
 
@@ -114,7 +115,7 @@ class CustomersItemsController extends AppController
         /**
          * uploading can only be done for one customer at a time
          */
-        if (!(new CustomerFocus())->focus($this)) {
+        if (!(Application::container()->get(CustomerFocus::class))->focus($this)) {
             return $this->render('/Admin/Items/customer_focus');
         }
 
@@ -132,7 +133,7 @@ class CustomersItemsController extends AppController
         /**
          * uploading can only be done for one customer at a time
          */
-        if (!(new CustomerFocus())->focus($this)) {
+        if (!(Application::container()->get(CustomerFocus::class))->focus($this)) {
             return $this->render('/Admin/Items/customer_focus');
         }
 
@@ -148,13 +149,13 @@ class CustomersItemsController extends AppController
         /**
          * uploading can only be done for one customer at a time
          */
-        if (!(new CustomerFocus())->focus($this)) {
+        if (!(Application::container()->get(CustomerFocus::class))->focus($this)) {
             return $this->render('/Admin/Items/customer_focus');
         }
 
-        $Form =new OrderNowForm();
         if ($this->request->getData('order_now') && $Form->execute($this->request->getData())) {
             osd($Form->getData('result'), 'processed data');
+        $Form = Application::container()->get(OrderNowForm::class);
         }
 
         $customersItems = $this->GetPaginatedItemsForUser();

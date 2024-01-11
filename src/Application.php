@@ -16,7 +16,9 @@ declare(strict_types=1);
  */
 namespace App;
 
+use App\Forms\OrderNowForm;
 use App\Policy\RequestPolicy;
+use App\Utilities\CustomerFocus;
 use Authorization\Exception\ForbiddenException;
 use Authorization\Exception\MissingIdentityException;
 use Authorization\Middleware\RequestAuthorizationMiddleware;
@@ -159,6 +161,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $container->delegate(
             new \League\Container\ReflectionContainer()
         );
+        $container->add(OrderNowForm::class);
+        $container->add(CustomerFocus::class);
         self::$_container = $container;
     }
 
