@@ -6,6 +6,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventManager;
 use Cake\Form\Form;
 use Cake\Form\Schema;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Validation\Validator;
 
@@ -37,6 +38,7 @@ class OrderNowForm extends Form
      */
     public function execute(array $data, array $options = []): bool
     {
+
         if (parent::execute($data)) {
             $ITable = $this->fetchTable('Items');
             $OLTable = $this->fetchTable('OrderLines');
@@ -45,13 +47,14 @@ class OrderNowForm extends Form
                 'ordered_by' => $this->getData('name'),
                 'ordered_by_email' => $this->getData('email'),
                 'status' => 'new',
+                'order_date' => (new FrozenTime(time()))->format('Y-m-d'),
                 'order_lines' => [],
             ]);
             foreach ($this->getData('order_quantity') as $index => $qty) {
                 if ($qty) {
                     $itemId = $this->getData('id')[$index];
                     $entity = $OLTable->newEntity($ITable->get($itemId)->toArray());
-                    $entity->set('order_quantity', $qty);
+                    $entity->set('quantity', $qty);
                     $order['order_lines'][] = $entity;
                 }
             }
