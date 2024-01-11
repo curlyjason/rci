@@ -5,7 +5,9 @@ namespace App\Controller;
 
 use App\Application;
 use App\Forms\OrderNowForm;
+use App\Model\Entity\Order;
 use App\Utilities\CustomerFocus;
+use Cake\Http\Response;
 
 /**
  * CustomersItems Controller
@@ -147,22 +149,37 @@ class CustomersItemsController extends AppController
     public function orderNow()
     {
         /**
-         * uploading can only be done for one customer at a time
+         * Insure we have customer focus
          */
         if (!(Application::container()->get(CustomerFocus::class))->focus($this)) {
             return $this->render('/Admin/Items/customer_focus');
         }
 
-        if ($this->request->getData('order_now') && $Form->execute($this->request->getData())) {
-            osd($Form->getData('result'), 'processed data');
+        /**
+         * Process a post if we have one
+         */
         $Form = Application::container()->get(OrderNowForm::class);
+        if ($Form->execute($this->request->getData())) {
+            osd($Form->getData('result'));
+            /**
+             * Fix errors if we have them.
+             * Then either successfully save or go to fix the save errors
+             */
+            return $Form->getData('result')->hasErrors()
+                ? $this->render('Admin/Orders/resolveErrors')
+                : $this->saveNewOrder($Form);
         }
 
+        /**
+         * Render the Order Now form
+         */
         $customersItems = $this->GetPaginatedItemsForUser();
         $result = $this->createItemListAndFilterMap($customersItems);
         extract($result); //masterFilterMap, items
 
         $this->set(compact('masterFilterMap', 'items', 'customersItems'));
+
+        return $this->render();
     }
 
     /**
@@ -210,5 +227,21 @@ class CustomersItemsController extends AppController
             ->contain(['Customers', 'Items']);
         $customersItems = $this->paginate($query);
         return $customersItems;
+    }
+
+    private function saveNewOrder(OrderNowForm $executedForm): Response
+    {
+        $order = $executedForm->getData('result');
+
+        if ($this->fetchTable('Orders')->save($order)) {
+            $this->Flash->success('The order has been saved');
+
+            return $this->redirect('/');
+        }
+
+        $this->Flash->error('The order has not been saved');
+
+        return $this->render();
+
     }
 }
