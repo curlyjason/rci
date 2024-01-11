@@ -170,7 +170,7 @@ class CustomersItemsController extends AppController
                     $order['order_lines'][] = $entity;
                 }
             }
-            osdd($order, 'processed data');
+            osd($order, 'processed data');
         }
         $customersItems = $this->GetPaginatedItemsForUser();
         $result = $this->createItemListAndFilterMap($customersItems);
