@@ -16,6 +16,7 @@ class CustomerFocus
     use LocatorAwareTrait;
 
     const FOCUS_PATH = 'Focus.customers';
+    public const TEMPLATE_SET_CUSTOMER_FOCUS = '/Admin/Items/customer_focus';
     /**
      * @var ServerRequest
      */

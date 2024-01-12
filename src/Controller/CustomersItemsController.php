@@ -23,7 +23,7 @@ class CustomersItemsController extends AppController
          * insure we have customer focus
          */
         if (!(Application::container()->get(CustomerFocus::class))->focus($this)) {
-            return $this->render('/Admin/Items/customer_focus');
+            return $this->render(CustomerFocus::TEMPLATE_SET_CUSTOMER_FOCUS);
         }
         /**
          * render take-inventory UI
@@ -45,7 +45,7 @@ class CustomersItemsController extends AppController
          * insure we have customer focus
          */
         if (!(Application::container()->get(CustomerFocus::class))->focus($this)) {
-            return $this->render('/Admin/Items/customer_focus');
+            return $this->render(CustomerFocus::TEMPLATE_SET_CUSTOMER_FOCUS);
         }
         /**
          * render set-trigger-level UI
@@ -64,7 +64,7 @@ class CustomersItemsController extends AppController
          * Insure we have customer focus
          */
         if (!(Application::container()->get(CustomerFocus::class))->focus($this)) {
-            return $this->render('/Admin/Items/customer_focus');
+            return $this->render(CustomerFocus::TEMPLATE_SET_CUSTOMER_FOCUS);
         }
         /**
          * Process a post if we have one
