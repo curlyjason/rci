@@ -139,9 +139,8 @@ class CustomersItemsController extends AppController
             return $this->render('/Admin/Items/customer_focus');
         }
 
-        $customersItems = $this->GetPaginatedItemsForUser();
-        $result = $this->createItemListAndFilterMap($customersItems);
-        extract($result); //masterFilterMap, items
+        $result = $this->createItemListAndFilterMap();
+        extract($result); //customerItems, masterFilterMap, items
 
         $this->set(compact('masterFilterMap', 'items', 'customersItems'));
     }
@@ -154,29 +153,21 @@ class CustomersItemsController extends AppController
         if (!(Application::container()->get(CustomerFocus::class))->focus($this)) {
             return $this->render('/Admin/Items/customer_focus');
         }
-
         /**
          * Process a post if we have one
          */
         $Form = Application::container()->get(OrderNowForm::class);
         if ($Form->execute($this->request->getData())) {
-            osd($Form->getData('result'));
             /**
-             * Fix errors if we have them.
-             * Then either successfully save or go to fix the save errors
+             * Either leave after successful save or go to fix-errors UI
              */
-            return $Form->getData('result')->hasErrors()
-                ? $this->render('Admin/Orders/resolveErrors')
-                : $this->saveNewOrder($Form);
+            return $this->render($this->saveNewOrder($Form));
         }
-
         /**
          * Render the Order Now form
          */
-        $customersItems = $this->GetPaginatedItemsForUser();
-        $result = $this->createItemListAndFilterMap($customersItems);
-        extract($result); //masterFilterMap, items
-
+        $result = $this->createItemListAndFilterMap();
+        extract($result); //customerItems, masterFilterMap, items
         $this->set(compact('masterFilterMap', 'items', 'customersItems'));
 
         return $this->render();
@@ -197,23 +188,24 @@ class CustomersItemsController extends AppController
     }
 
     /**
-     * @param \Cake\Datasource\Paging\PaginatedInterface $customersItems
      * @return mixed
      */
-    private function createItemListAndFilterMap(\Cake\Datasource\Paging\PaginatedInterface $customersItems): mixed
+    private function createItemListAndFilterMap(): mixed
     {
-        $result = collection($customersItems)
+        $accum = [
+            'masterFilterMap' => new \stdClass(),
+            'items' => [],
+            'customersItems' => $this->GetPaginatedItemsForUser()
+        ];
+
+        return collection($accum['customersItems'])
             ->reduce(function ($accum, $customerItem) {
                 $id = $customerItem->id;
-                $accum['masterFilterMap']->$id = $customerItem->item->name/*
-                    . ' ' . $customerItem->item->description
-                    . ' ' . $customerItem->item->vendors[0]->_joinData->sku*/
-                ;
+                $accum['masterFilterMap']->$id = $customerItem->item->name;
                 $accum['items'][$id] = $customerItem->item->name;
 
                 return $accum;
-            }, ['masterFilterMap' => new \stdClass(), 'items' => []]);
-        return $result;
+            }, $accum);
     }
 
     /**
@@ -225,23 +217,22 @@ class CustomersItemsController extends AppController
         $query = $this->CustomersItems->find()
             ->where(['customer_id' => $this->readSession('Auth')->customer_id])
             ->contain(['Customers', 'Items']);
-        $customersItems = $this->paginate($query);
-        return $customersItems;
+        return $this->paginate($query);
     }
 
-    private function saveNewOrder(OrderNowForm $executedForm): Response
+    private function saveNewOrder(OrderNowForm $executedForm): mixed
     {
         $order = $executedForm->getData('result');
+        /* @var Order $order */
 
-        if ($this->fetchTable('Orders')->save($order)) {
+        if (!$order->hasErrors() && $this->fetchTable('Orders')->save($order)) {
             $this->Flash->success('The order has been saved');
 
-            return $this->redirect('/');
+            return '/Pages/home';
         }
-
         $this->Flash->error('The order has not been saved');
+        $this->set(compact('executedForm'));
 
-        return $this->render();
-
+        return 'Admin/Orders/resolveErrors';
     }
 }
