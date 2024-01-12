@@ -2,6 +2,8 @@
 
 namespace App\Forms;
 
+use App\Model\Table\ItemsTable;
+use App\Model\Table\OrderLinesTable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventManager;
 use Cake\Form\Form;
@@ -42,6 +44,10 @@ class OrderNowForm extends Form
         if (parent::execute($data)) {
             $ITable = $this->fetchTable('Items');
             $OLTable = $this->fetchTable('OrderLines');
+            /**
+             * @var ItemsTable $ITable
+             * @var OrderLinesTable $OLTable
+             */
             $order = $OLTable->Orders->newEntity([
                 'order_number' => uniqid(),
                 'ordered_by' => $this->getData('name'),
@@ -58,6 +64,7 @@ class OrderNowForm extends Form
                     $order['order_lines'][] = $entity;
                 }
             }
+            $OLTable->Orders->checkRules($order);
             $this->set('result', $order);
 
             return true;
