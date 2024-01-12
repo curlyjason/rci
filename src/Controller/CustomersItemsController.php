@@ -140,9 +140,9 @@ class CustomersItemsController extends AppController
         }
 
         $result = $this->createItemListAndFilterMap();
-        extract($result); //customerItems, masterFilterMap, items
+        extract($result); //customerItems, masterFilterMap
 
-        $this->set(compact('masterFilterMap', 'items', 'customersItems'));
+        $this->set(compact('masterFilterMap', 'customersItems'));
     }
 
     public function orderNow()
@@ -167,14 +167,14 @@ class CustomersItemsController extends AppController
          * Render the Order Now form
          */
         $result = $this->createItemListAndFilterMap();
-        extract($result); //customerItems, masterFilterMap, items
-        $this->set(compact('masterFilterMap', 'items', 'customersItems'));
+        extract($result); //customerItems, masterFilterMap
+        $this->set(compact('masterFilterMap', 'customersItems'));
 
         return $this->render();
     }
 
     /**
-     * @return mixed
+     * @return void
      */
     private function setUserCustomerVariable(): void
     {
@@ -193,16 +193,14 @@ class CustomersItemsController extends AppController
     private function createItemListAndFilterMap(): mixed
     {
         $accum = [
-            'masterFilterMap' => new \stdClass(),
-            'items' => [],
-            'customersItems' => $this->GetPaginatedItemsForUser()
+            'masterFilterMap' => new \stdClass(), //for javascript live filtering tool
+            'customersItems' => $this->GetPaginatedItemsForUser(), //data for rendering
         ];
 
         return collection($accum['customersItems'])
             ->reduce(function ($accum, $customerItem) {
                 $id = $customerItem->id;
                 $accum['masterFilterMap']->$id = $customerItem->item->name;
-                $accum['items'][$id] = $customerItem->item->name;
 
                 return $accum;
             }, $accum);
@@ -220,7 +218,7 @@ class CustomersItemsController extends AppController
         return $this->paginate($query);
     }
 
-    private function saveNewOrder(OrderNowForm $executedForm): mixed
+    private function saveNewOrder(OrderNowForm $executedForm): string
     {
         $order = $executedForm->getData('result');
         /* @var Order $order */

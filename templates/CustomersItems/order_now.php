@@ -2,8 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\CustomersItem> $customersItems
- * @var object $masterFilterMap
- * @var array $items
+ * @var object $masterFilterMap for js live filtering
  * @var \App\Model\Entity\User $user
  */
 
