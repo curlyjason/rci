@@ -16,22 +16,6 @@ class OrderNowForm extends Form
 {
     use LocatorAwareTrait;
 
-    public array $posted = [
-        'order_now' => '1',
-        'order_quantity' => [
-            0 => '0',
-            1 => '',
-            2 => '7',
-            3 => '',
-        ],
-        'id' => [
-            0 => '291608622',
-            1 => '291608625',
-            2 => '291608628',
-            3 => '1638876896',
-        ],
-    ];
-
     /**
      * @param array $data
      * @param array $options

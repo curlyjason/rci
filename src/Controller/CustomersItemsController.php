@@ -144,6 +144,6 @@ class CustomersItemsController extends AppController
         $this->Flash->error('The order has not been saved');
         $this->set(compact('executedForm'));
 
-        return 'Admin/Orders/resolveErrors';
+        return '/Admin/Orders/resolve-errors';
     }
 }
