@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -27,7 +28,7 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  *
- * @property OrdersTable $Orders
+ * @property OrdersTable&BelongsTo $Orders
  */
 class OrderLinesTable extends Table
 {
