@@ -17,6 +17,10 @@ use Cake\Http\Response;
 class CustomersItemsController extends AppController
 {
 
+    protected array $paginate = [
+        'limit' => 100,
+    ];
+
     public function takeInventory(): Response
     {
         /**
