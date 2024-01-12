@@ -79,9 +79,8 @@ class CustomersItemsController extends AppController
         /**
          * Render the Order Now form
          */
-        $result = $this->createItemListAndFilterMap();
-        extract($result); //customerItems, masterFilterMap
-        $this->set(compact('masterFilterMap', 'customersItems'));
+        $result = $this->createItemListAndFilterMap(); //customerItems, masterFilterMap
+        $this->set(compact(array_keys($result)));
 
         return $this->render();
     }
