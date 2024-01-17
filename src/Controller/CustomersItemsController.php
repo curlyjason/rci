@@ -54,10 +54,7 @@ class CustomersItemsController extends AppController
         /**
          * render set-trigger-level UI
          */
-        $result = $this->createItemListAndFilterMap();
-        extract($result); //customerItems, masterFilterMap
-
-        $this->set(compact('masterFilterMap', 'customersItems'));
+        $this->set($this->createItemListAndFilterMap()); //customersItems, masterFilterMap
 
         return $this->render();
     }
@@ -83,9 +80,7 @@ class CustomersItemsController extends AppController
         /**
          * Render the Order Now form
          */
-        $result = $this->createItemListAndFilterMap(); //customersItems, masterFilterMap
-        extract($result);
-        $this->set(compact(array_keys($result)));
+        $this->set($this->createItemListAndFilterMap()); //customersItems, masterFilterMap
 
         return $this->render();
     }
