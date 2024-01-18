@@ -65,7 +65,14 @@ class ItemsTable extends Table
         $validator
             ->scalar('name')
             ->maxLength('name', 255)
-            ->allowEmptyString('name');
+//            ->allowEmptyString('name')
+            ->requirePresence('name');
+
+        $validator
+            ->scalar('qb_code')
+            ->maxLength('name', 255)
+            ->minLength('qb_code', 5)
+            ->requirePresence('qb_code');
 
         return $validator;
     }

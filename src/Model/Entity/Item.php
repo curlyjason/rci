@@ -27,6 +27,7 @@ class Item extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
+        'qb_code' => true,
         'name' => true,
         'created' => true,
         'modified' => true,
