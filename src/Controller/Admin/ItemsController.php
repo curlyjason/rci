@@ -42,7 +42,7 @@ class ItemsController extends AdminController
     private ?int $_errorCount;
     private \Cake\Datasource\EntityInterface|\App\Model\Entity\Customer|null $_customer;
     //</editor-fold>
-    private \stdClass $import;
+    private \stdClass|null $import;
 
     private function importArchivePath(): string
     {
@@ -150,18 +150,40 @@ class ItemsController extends AdminController
             return $this->render('customerFocus');
         }
 
-        $file = new SplFileInfo($this->importFilePath);
         /**
          * if there is no uploaded file and upload() is not
          * successfully called (creates an upload file) during
          * a valid POST event, render the upload form
          */
-        if (!$file->isFile() && !$this->upload()) {
+        if (!$this->uploadExists()) {
             return $this->render('upload');
         } else {
             //only reach here when an uploaded file exists
             $this->_processUploadFile();
         }
+        /**
+         * _processUploadFile set $this->import object
+         * keys:
+         *      source          resource
+         *      error           resource
+         *      archive         resource
+         *      errorCount      int
+         *      archiveCount    int
+         *      archivePath     string
+         */
+        if ((bool) $this->import->archiveCount) {
+            $this->Flash->success(
+                "Total items imported for {$this->import->customer}: {$this->import->archiveCount}"
+            );
+            $this->Flash->success("Import data archive at: {$this->import->archivePath}");
+        }
+        if ((bool) $this->import->errorCount) {
+            $this->Flash->success("Total lines with errors: {$this->import->errorCount}");
+        }
+        //render a report page
+        //show archived lines
+        //show errors
+
         return $this->render();
     }
 
@@ -180,7 +202,7 @@ class ItemsController extends AdminController
          * successfully called (creates an upload file) during
          * a valid POST event, render the upload form
          */
-        if (!$file->isFile() && !$this->upload()) {
+        if (!$file->isFile() && !$this->uploadExists()) {
             $this->render('upload');
         }
 
@@ -211,8 +233,15 @@ class ItemsController extends AdminController
      *
      * @return void
      */
-    protected function upload(): bool
+    protected function uploadExists(): bool
     {
+        /**
+         * Code might move and rename an error file for retry
+         */
+        if ((new SplFileInfo($this->importFilePath))->isFile()) {
+            return true;
+        }
+
         if ($this->request->is('post') && $this->request->getData('upload')) {
             $upload = $this->request->getData('upload');
             /** @var \Laminas\Diactoros\UploadedFile $upload */
@@ -237,53 +266,37 @@ class ItemsController extends AdminController
     {
         try {
             $this->import = new \stdClass();
-            $addProps = function($properties) {
+            $addProps = function($obj, $properties) {
                 foreach ($properties as $name => $value) {
-                    $this->import->$$name = $value;
+                    $obj->$$name = $value;
                 }
             };
-            $addProps(['source' => fopen($this->importFilePath, 'r')];
-            $this->_importSource = fopen($this->importFilePath, 'r');
-            $currentArchivePath = $this->importArchivePath();
+            $addProps(
+                $this->import,
+                [
+                    'source' => fopen($this->importFilePath, 'r'),
+                    'archivePath' => $this->importArchivePath(),
+                ]
+            );
 
             //read in the headers, throws exception
-            $headers = $this->checkHeaders($this->_importSource);
+            $headers = $this->checkHeaders($this->import->source);
 
-            $addProps([
-                'archive' => fopen($currentArchivePath, 'w'),
+            $addProps($this->import, [
+                'archive' => fopen($this->import->archivePath, 'w'),
                 'archiveCount' => 0,
                 'errors' => fopen($this->errorFilePath, 'r+'),
                 'errorCount' => 0,
                 'customer' => $this->Items->Customers->get($this->getIdentity()->customer_id),
             ]);
-            $this->_importArchive = fopen($currentArchivePath, 'w');
-            $this->_archiveCount = 0;
-            $this->_importErrors = fopen($this->errorFilePath, 'r+');
-            $this->_errorCount = 0;
-            $this->_customer = $this->Items->Customers->get($this->getIdentity()->customer_id);
 
-            while ($newLine = fgetcsv($this->_importSource)) {
+            while ($newLine = fgetcsv($this->import->source)) {
                 $this->processLine($newLine, $headers);
             }
-            $this->closeImportStreams();
         } catch (Exception $e) {
-            $this->closeImportStreams();
+            $this->import = null;
             $this->Flash->error($e->getMessage());
         }
-        if ((bool) $this->_archiveCount) {
-            $this->Flash->success("Total items imported for {$this->_customer}: {$this->_archiveCount}");
-            $this->Flash->success("Import data archive at: {$currentArchivePath}");
-            $this->_archiveCount = null;
-        }
-        if ((bool) $this->_errorCount) {
-            $this->Flash->success("Total lines with errors: {$this->_errorCount}");
-            $this->_errorCount = null;
-        }
-        $this->_customer = null;
-        //render a report page
-        //show archived lines
-        //show errors
-
     }
 
     private function checkHeaders($import)
