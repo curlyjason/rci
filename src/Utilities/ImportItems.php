@@ -78,8 +78,10 @@ class ImportItems
             while ($newLine = fgetcsv($this->source)) {
                 $result = $this->processLine($newLine, $headers);
                 if ($result) {
+                    $this->archiveCount++;
                     fwrite($this->archive, implode(',', $newLine) . "\n");
                 } else {
+                    $this->errorCount++;
                     fwrite($this->errors, implode(',', $newLine) . "\n");
                 }
             }
@@ -119,13 +121,17 @@ class ImportItems
         $data = [
             Fixture::QBC => $clean($newLine[$headers[Fixture::QBC]]),
             Fixture::N => $clean($newLine[$headers[Fixture::N]]),
+            'customers_items' => [[
+                'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
+                'customer_id' => $this->customer->id,
+            ],],
         ];
 
         $entity = $this->Items->newEntity($data);
         if (
             $this->Items->save($entity)
-            && $this->Items->Customers
-                ->link($entity, [$this->customer]))
+            /*&& $this->Items->Customers
+                ->link($entity, [$this->customer])*/)
         {
             return true;
         }

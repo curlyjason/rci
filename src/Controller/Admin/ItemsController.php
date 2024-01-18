@@ -137,7 +137,7 @@ class ItemsController extends AdminController
          */
         if ((bool) $importer->archiveCount) {
             $this->Flash->success(
-                "Total items imported for {$importer->customer}: {$importer->archiveCount}"
+                "Total items imported for {$importer->customer->name}: {$importer->archiveCount}"
             );
             $this->Flash->success("Import data archive at: {$importer->archivePath}");
         }
