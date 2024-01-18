@@ -123,10 +123,9 @@ class ItemsController extends AdminController
         if (!$this->uploadExists()) {
             return $this->render('upload');
         } else {
-            $importer = new ImportItems();
-            //only reach here when an uploaded file exists
-            $importer->processUploadFile();
         }
+        $importer = new ImportItems();
+        $importer->processUploadFile();
         /**
          * _processUploadFile set $this->import object
          * keys:

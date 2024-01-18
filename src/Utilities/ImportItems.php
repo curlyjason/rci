@@ -25,6 +25,18 @@ class ImportItems
         'name',
         'qb_code',
     ];
+    /**
+     * @var resource|null
+     */
+    public $source;
+    /**
+     * @var resource|null
+     */
+    public $archive;
+    /**
+     * @var resource|null
+     */
+    public $errors;
     public int $archiveCount = 0;
     public null|Customer|EntityInterface $customer;
     public null|string $archivePath;
@@ -52,36 +64,19 @@ class ImportItems
     public function processUploadFile()
     {
         try {
-            $this->import = new \stdClass();
-            $addProps = function($obj, $properties) {
-                foreach ($properties as $name => $value) {
-                    $obj->$$name = $value;
-                }
-            };
-            $addProps(
-                $this->import,
-                [
-                    'source' => fopen(self::IMPORT_PATH, 'r'),
-                    'archivePath' => $this->importArchivePath(),
-                ]
-            );
+            $this->source = fopen(self::IMPORT_PATH, 'r');
+            $this->archivePath = $this->importArchivePath();
 
             //read in the headers, throws exception
-            $headers = $this->checkHeaders($this->import->source);
+            $headers = $this->checkHeaders($this->source);
 
-            $addProps($this->import, [
-                'archive' => fopen($this->import->archivePath, 'w'),
-                'archiveCount' => 0,
-                'errors' => fopen(self::ERROR_PATH, 'r+'),
-                'errorCount' => 0,
-                'customer' => $this->customer,
-            ]);
+            $this->archive = fopen($this->archivePath, 'w');
+            $this->errors = fopen(self::ERROR_PATH, 'w');
 
-            while ($newLine = fgetcsv($this->import->source)) {
+            while ($newLine = fgetcsv($this->source)) {
                 $this->processLine($newLine, $headers);
             }
         } catch (Exception $e) {
-            $this->import = null;
             $this->flashError[] = ($e->getMessage());
         }
     }
