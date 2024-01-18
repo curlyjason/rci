@@ -6,8 +6,7 @@ namespace App\Controller\Admin;
 use App\Constants\Fixture;
 use App\Model\Entity\Item;
 use App\Utilities\CustomerFocus;
-use Cake\Utility\Inflector;
-use Exception;
+use App\Utilities\ImportItems;
 use SplFileInfo;
 /**
  * Items Controller
@@ -16,39 +15,6 @@ use SplFileInfo;
  */
 class ItemsController extends AdminController
 {
-    public const BULK_IMPORT_ROOT = WWW_ROOT . 'bulk-import/';
-    public const BULK_ARCHIVE_ROOT = self::BULK_IMPORT_ROOT . 'archive/';
-    protected string $importFilePath = self::BULK_IMPORT_ROOT . 'import.txt';
-    protected string $errorFilePath = self::BULK_IMPORT_ROOT . 'errors.txt';
-    public const REQUIRED_HEADERS = [
-        'name',
-        'qb_code',
-    ];
-
-    //<editor-fold desc="BULK IMPORT TEMPORARY PROPERTIES">
-    /**
-     * @var null|resource
-     */
-    private $_importSource;
-    /**
-     * @var null|resource
-     */
-    private $_importArchive;
-    /**
-     * @var null|resource
-     */
-    private $_importErrors;
-    private ?int $_archiveCount;
-    private ?int $_errorCount;
-    private \Cake\Datasource\EntityInterface|\App\Model\Entity\Customer|null $_customer;
-    //</editor-fold>
-    private \stdClass|null $import;
-
-    private function importArchivePath(): string
-    {
-        return self::BULK_ARCHIVE_ROOT . time();
-    }
-
         //<editor-fold desc="BAKED METHODS">
     /**
      * Index method
@@ -149,7 +115,6 @@ class ItemsController extends AdminController
         if (!(new CustomerFocus())->focus($this)) {
             return $this->render('customerFocus');
         }
-
         /**
          * if there is no uploaded file and upload() is not
          * successfully called (creates an upload file) during
@@ -158,8 +123,9 @@ class ItemsController extends AdminController
         if (!$this->uploadExists()) {
             return $this->render('upload');
         } else {
+            $importer = new ImportItems();
             //only reach here when an uploaded file exists
-            $this->_processUploadFile();
+            $importer->processUploadFile();
         }
         /**
          * _processUploadFile set $this->import object
@@ -171,14 +137,14 @@ class ItemsController extends AdminController
          *      archiveCount    int
          *      archivePath     string
          */
-        if ((bool) $this->import->archiveCount) {
+        if ((bool) $importer->archiveCount) {
             $this->Flash->success(
-                "Total items imported for {$this->import->customer}: {$this->import->archiveCount}"
+                "Total items imported for {$importer->customer}: {$importer->archiveCount}"
             );
-            $this->Flash->success("Import data archive at: {$this->import->archivePath}");
+            $this->Flash->success("Import data archive at: {$importer->archivePath}");
         }
-        if ((bool) $this->import->errorCount) {
-            $this->Flash->success("Total lines with errors: {$this->import->errorCount}");
+        if ((bool) $importer->errorCount) {
+            $this->Flash->success("Total lines with errors: {$importer->errorCount}");
         }
         //render a report page
         //show archived lines
@@ -196,7 +162,7 @@ class ItemsController extends AdminController
      */
     public function bulkImport()
     {
-        $file = new SplFileInfo($this->importFilePath);
+        $file = new SplFileInfo(ImportItems::IMPORT_PATH);
         /**
          * if there is no uploaded file and upload() is not
          * successfully called (creates an upload file) during
@@ -207,7 +173,7 @@ class ItemsController extends AdminController
         }
 
         //only reach here when an uploaded file exists
-        $import = fopen($this->importFilePath, 'r+');
+        $import = fopen(ImportItems::IMPORT_PATH, 'r+');
         $post = $this->request->getData();
         $schema = $this->Items->getSchema();
         $inputCols = [
@@ -238,7 +204,7 @@ class ItemsController extends AdminController
         /**
          * Code might move and rename an error file for retry
          */
-        if ((new SplFileInfo($this->importFilePath))->isFile()) {
+        if ((new SplFileInfo(ImportItems::IMPORT_PATH))->isFile()) {
             return true;
         }
 
@@ -253,7 +219,7 @@ class ItemsController extends AdminController
                 $this->Flash->error('Files over 1mb are not allowed');
             }
             if (empty($this->request->getSession()->read('Flash'))) {
-                $upload->moveTo($this->importFilePath);
+                $upload->moveTo(ImportItems::IMPORT_PATH);
 
                 return true;
             }
@@ -262,92 +228,8 @@ class ItemsController extends AdminController
         return false;
     }
 
-    private function _processUploadFile()
-    {
-        try {
-            $this->import = new \stdClass();
-            $addProps = function($obj, $properties) {
-                foreach ($properties as $name => $value) {
-                    $obj->$$name = $value;
-                }
-            };
-            $addProps(
-                $this->import,
-                [
-                    'source' => fopen($this->importFilePath, 'r'),
-                    'archivePath' => $this->importArchivePath(),
-                ]
-            );
-
-            //read in the headers, throws exception
-            $headers = $this->checkHeaders($this->import->source);
-
-            $addProps($this->import, [
-                'archive' => fopen($this->import->archivePath, 'w'),
-                'archiveCount' => 0,
-                'errors' => fopen($this->errorFilePath, 'r+'),
-                'errorCount' => 0,
-                'customer' => $this->Items->Customers->get($this->getIdentity()->customer_id),
-            ]);
-
-            while ($newLine = fgetcsv($this->import->source)) {
-                $this->processLine($newLine, $headers);
-            }
-        } catch (Exception $e) {
-            $this->import = null;
-            $this->Flash->error($e->getMessage());
-        }
-    }
-
-    private function checkHeaders($import)
-    {
-        $headers = fgetcsv($import);
-
-        $output = collection($headers)->reduce(function ($accum, $value, $index) {
-            $underscore = trim(Inflector::underscore($value));
-            if (in_array($underscore, self::REQUIRED_HEADERS)) {
-                $accum[$underscore] = $index;
-            }
-
-            return $accum;
-        }, []);
-
-        if (count($output) != 2) {
-            $import = null;
-            unlink($this->importFilePath);
-            throw new Exception("Input file did not have expected headers 'name' and 'qb_code'");
-        }
-
-        return $output;
-    }
-
-    private function processLine(array $newLine, mixed $headers): bool
-    {
-        $customer = $this->Items->Customers->get($this->getIdentity()->customer_id);
-        foreach (Fixture::DATA as $it) {
-            $item = new Item([]);
-            $data = $this->Items->patchEntity($item,[
-                Fixture::QBC => $it[0],
-                Fixture::N => $it[1],
-            ]);
-
-            $this->Items->save($data,['associated' => ['Customers']]);
-            $result = $this->Items->Customers->link($data, [$customer]);
-        }
-
-//        $record = $this->Items->findOrCreate(
-//            ['qb_code' => $newLine[$headers['qb_code']]],
-//            function (Item $entity) use ($newLine, $headers) {
-//                $entity->set('name', $newLine[$headers['name']]);
-//                $entity->set('qb_code', $newLine[$headers['qb_code']]);
-//            }
-//        );
-//        osd($record);
-    }
-
     private function customerFocus()
     {
-
         if ($this->Authentication->isImpersonating()) {
             return true;
         }
@@ -435,13 +317,6 @@ class ItemsController extends AdminController
 //
         die;
 
-    }
-
-    private function closeImportStreams(): void
-    {
-        $this->_importSource = null;
-        $this->_importArchive = null;
-        $this->_importErrors = null;
     }
 
 }
