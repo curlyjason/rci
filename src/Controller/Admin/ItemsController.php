@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Constants\Fixture;
-use App\Controller\Component\CompanyFocusComponent;
 use App\Model\Entity\Item;
 use App\Utilities\CustomerFocus;
 use Cake\Utility\Inflector;
@@ -25,6 +24,25 @@ class ItemsController extends AdminController
         'name',
         'qb_code',
     ];
+
+    //<editor-fold desc="BULK IMPORT TEMPORARY PROPERTIES">
+    /**
+     * @var null|resource
+     */
+    private $_importSource;
+    /**
+     * @var null|resource
+     */
+    private $_importArchive;
+    /**
+     * @var null|resource
+     */
+    private $_importErrors;
+    private ?int $_archiveCount;
+    private ?int $_errorCount;
+    private \Cake\Datasource\EntityInterface|\App\Model\Entity\Customer|null $_customer;
+    //</editor-fold>
+    private \stdClass $import;
 
     private function importArchivePath(): string
     {
@@ -217,34 +235,55 @@ class ItemsController extends AdminController
 
     private function _processUploadFile()
     {
-        //What if the file content is deemed invalid?
         try {
-            $import = fopen($this->importFilePath, 'r');
-            $errors = fopen($this->errorFilePath, 'r+');
+            $this->import = new \stdClass();
+            $addProps = function($properties) {
+                foreach ($properties as $name => $value) {
+                    $this->import->$$name = $value;
+                }
+            };
+            $addProps(['source' => fopen($this->importFilePath, 'r')];
+            $this->_importSource = fopen($this->importFilePath, 'r');
+            $currentArchivePath = $this->importArchivePath();
 
-            //read in the headers
-            $headers = $this->checkHeaders($import);
-            $archive = fopen($this->importArchivePath(), 'w');
-            while ($newLine = fgetcsv($import)) {
-                osd([
-                    'name' => $newLine[$headers['name']],
-                    'qb_code' => $newLine[$headers['qb_code']]
-                ]);
+            //read in the headers, throws exception
+            $headers = $this->checkHeaders($this->_importSource);
+
+            $addProps([
+                'archive' => fopen($currentArchivePath, 'w'),
+                'archiveCount' => 0,
+                'errors' => fopen($this->errorFilePath, 'r+'),
+                'errorCount' => 0,
+                'customer' => $this->Items->Customers->get($this->getIdentity()->customer_id),
+            ]);
+            $this->_importArchive = fopen($currentArchivePath, 'w');
+            $this->_archiveCount = 0;
+            $this->_importErrors = fopen($this->errorFilePath, 'r+');
+            $this->_errorCount = 0;
+            $this->_customer = $this->Items->Customers->get($this->getIdentity()->customer_id);
+
+            while ($newLine = fgetcsv($this->_importSource)) {
                 $this->processLine($newLine, $headers);
-                osd($newLine);
             }
+            $this->closeImportStreams();
         } catch (Exception $e) {
-            $import = null;
-            $errors = null;
-            $archive = null;
-            throw $e;
+            $this->closeImportStreams();
+            $this->Flash->error($e->getMessage());
         }
-        //  Flash message try again with detail
-        //walk through each line
-        //save it if it is new
-        //what if it is an edit?
-        //
-        //collect in a new file if it is not valid
+        if ((bool) $this->_archiveCount) {
+            $this->Flash->success("Total items imported for {$this->_customer}: {$this->_archiveCount}");
+            $this->Flash->success("Import data archive at: {$currentArchivePath}");
+            $this->_archiveCount = null;
+        }
+        if ((bool) $this->_errorCount) {
+            $this->Flash->success("Total lines with errors: {$this->_errorCount}");
+            $this->_errorCount = null;
+        }
+        $this->_customer = null;
+        //render a report page
+        //show archived lines
+        //show errors
+
     }
 
     private function checkHeaders($import)
@@ -269,8 +308,20 @@ class ItemsController extends AdminController
         return $output;
     }
 
-    private function processLine(array $newLine, mixed $headers)
+    private function processLine(array $newLine, mixed $headers): bool
     {
+        $customer = $this->Items->Customers->get($this->getIdentity()->customer_id);
+        foreach (Fixture::DATA as $it) {
+            $item = new Item([]);
+            $data = $this->Items->patchEntity($item,[
+                Fixture::QBC => $it[0],
+                Fixture::N => $it[1],
+            ]);
+
+            $this->Items->save($data,['associated' => ['Customers']]);
+            $result = $this->Items->Customers->link($data, [$customer]);
+        }
+
 //        $record = $this->Items->findOrCreate(
 //            ['qb_code' => $newLine[$headers['qb_code']]],
 //            function (Item $entity) use ($newLine, $headers) {
@@ -371,6 +422,13 @@ class ItemsController extends AdminController
 //
         die;
 
+    }
+
+    private function closeImportStreams(): void
+    {
+        $this->_importSource = null;
+        $this->_importArchive = null;
+        $this->_importErrors = null;
     }
 
 }
