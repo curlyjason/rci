@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Controller\AppController;
+use App\Constants\Fixture;
 use App\Controller\Component\CompanyFocusComponent;
 use App\Model\Entity\Item;
 use App\Utilities\CustomerFocus;
-use Cake\ORM\Entity;
 use Cake\Utility\Inflector;
 use Exception;
 use SplFileInfo;
@@ -308,4 +307,70 @@ class ItemsController extends AdminController
 
         return false;
     }
+
+    public function testPreparedStatements()
+    {
+//        osdd($this->getIdentity()->customer_id);
+
+        $t = osdTime();
+
+        // each one is a new Query
+        $t->start();
+        $customer = $this->Items->Customers->get($this->getIdentity()->customer_id);
+        foreach (Fixture::DATA as $it) {
+            $item = new Item([]);
+            $data = $this->Items->patchEntity($item,[
+                Fixture::QBC => $it[0],
+                Fixture::N => $it[1],
+            ]);
+
+            $this->Items->save($data,['associated' => ['Customers']]);
+            $result = $this->Items->Customers->link($data, [$customer]);
+        }
+        $t->end();
+        osd($t->result());
+
+//        $t->start();
+//        $data = [];
+//        foreach (Fixture::DATA as $it) {
+//            $data[] = $this->Items->newEntity([
+//                Fixture::QBC => $it[0],
+//                Fixture::N => $it[1],
+//            ]) ;
+//        }
+//        $result = $this->Items->saveMany($data) ? 'true ' : 'false ';
+//        osd($data);
+//        osd($result);
+//        $t->end();
+//        osd($t->result());
+
+
+//
+//        $t->start(2);
+//        $t->start(4);
+//
+//        // prepare vars for a prepared statement
+//        $q = $this->Orders->find()
+//            ->where(['Orders.id' => 5])
+//            ->contain(['Tenant'/* => ['Items']*/, 'OrderLines']);
+//        $c = $this->Orders->getConnection();
+//        $p1 = $c->prepare($q);
+//
+//        $t->end(4);
+//
+//        // each one is a prepared statement
+//        foreach (range(1, 100) as $i) {
+//            $p1->bindValue(':c0', 1100 + $i, 'integer');
+//            $p1->execute();
+//            $r = (new ResultSet($q, $p1))->first();
+////            debug($r->id);
+//        }
+//        $t->end(2);
+//        osd($t->result(4));
+//        osd($t->result(2));
+//
+        die;
+
+    }
+
 }
