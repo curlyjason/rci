@@ -7,8 +7,10 @@ use App\Constants\Fixture;
 use App\Model\Entity\Customer;
 use App\Model\Entity\Item;
 use App\Model\Entity\User;
+use App\Model\Table\ItemsTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\ServerRequest;
+use Cake\I18n\DateTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Inflector;
 use Exception;
@@ -41,11 +43,11 @@ class ImportItems
     public null|Customer|EntityInterface $customer;
     public null|string $archivePath;
     public int $errorCount = 0;
-    protected array $flashError = [];
-    protected array $flashSuccess = [];
+    public array $flashError = [];
+    public array $flashSuccess = [];
     private ServerRequest $request;
     private User $identity;
-    private \Cake\ORM\Table $Items;
+    private \Cake\ORM\Table|ItemsTable $Items;
 
     public function __construct()
     {
@@ -74,7 +76,12 @@ class ImportItems
             $this->errors = fopen(self::ERROR_PATH, 'w');
 
             while ($newLine = fgetcsv($this->source)) {
-                $this->processLine($newLine, $headers);
+                $result = $this->processLine($newLine, $headers);
+                if ($result) {
+                    fwrite($this->archive, implode(',', $newLine) . "\n");
+                } else {
+                    fwrite($this->errors, implode(',', $newLine) . "\n");
+                }
             }
         } catch (Exception $e) {
             $this->flashError[] = ($e->getMessage());
@@ -105,16 +112,25 @@ class ImportItems
 
     private function processLine(array $newLine, mixed $headers): bool
     {
-        foreach (Fixture::DATA as $it) {
-            $item = new Item([]);
-            $data = $this->Items->patchEntity($item,[
-                Fixture::QBC => $it[0],
-                Fixture::N => $it[1],
-            ]);
+        $clean = function ($string) {
+            $string = trim($string, ' ');
+            return empty($string) ? null : $string;
+        };
+        $data = [
+            Fixture::QBC => $clean($newLine[$headers[Fixture::QBC]]),
+            Fixture::N => $clean($newLine[$headers[Fixture::N]]),
+        ];
 
-            $this->Items->save($data,['associated' => ['Customers']]);
-            $result = $this->Items->Customers->link($data, [$this->customer]);
+        $entity = $this->Items->newEntity($data);
+        if (
+            $this->Items->save($entity)
+            && $this->Items->Customers
+                ->link($entity, [$this->customer]))
+        {
+            return true;
         }
+        //(new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01')
+        return false;
 
 //        $record = $this->Items->findOrCreate(
 //            ['qb_code' => $newLine[$headers['qb_code']]],

@@ -122,7 +122,6 @@ class ItemsController extends AdminController
          */
         if (!$this->uploadExists()) {
             return $this->render('upload');
-        } else {
         }
         $importer = new ImportItems();
         $importer->processUploadFile();
@@ -145,6 +144,13 @@ class ItemsController extends AdminController
         if ((bool) $importer->errorCount) {
             $this->Flash->success("Total lines with errors: {$importer->errorCount}");
         }
+        foreach($importer->flashError as $message) {
+            $this->Flash->error($message);
+        }
+        foreach($importer->flashSuccess as $message) {
+            $this->Flash->success($message);
+        }
+
         //render a report page
         //show archived lines
         //show errors
