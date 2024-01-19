@@ -74,7 +74,7 @@ class ImportItems
         $this->Items = $this->fetchTable('Items');
     }
 
-    public function processUploadFile()
+    public function processUploadFile(): void
     {
         $initArchiveAndErrorFiles = function () {
             $this->archivePath = $this->getImportArchivePath();
@@ -95,10 +95,7 @@ class ImportItems
 
         try {
             $this->source = fopen(self::IMPORT_PATH, 'r');
-
-            //read in the headers, throws exception
-            $this->checkHeaders();
-
+            $this->mapHeaderPositions(); //throws exception
             $initArchiveAndErrorFiles();
 
             while ($newLine = fgetcsv($this->source)) {
@@ -113,15 +110,33 @@ class ImportItems
         }
     }
 
+    private function processLine(array $inArray): bool
+    {
+        $data = [
+            'qb_code' => $this->valueOf('qb_code', $inArray),
+            'name' => $this->valueOf('name', $inArray),
+            'joins' => [
+                [
+                    'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
+                    'customer_id' => $this->customer->id,
+                    'target_quantity' => 1,
+                ]
+            ],
+        ];
+        $this->workingEntity = $this->Items->newEntity($data);
+
+        return (bool) $this->Items->save($this->workingEntity);
+    }
+
     /**
-     * Get a map to the offset of column values
+     * Create map to the offset of column values
      *
      * [header-string => offset, ...]
      *
      * @return void
      * @throws Exception
      */
-    private function checkHeaders(): void
+    private function mapHeaderPositions(): void
     {
         $this->rawHeaders = fgetcsv($this->source);
 
@@ -141,36 +156,19 @@ class ImportItems
         }
     }
 
-    private function processLine(array $inArray): bool
-    {
-        $clean = function ($string) {
-            $string = trim($string, ' ');
-            return empty($string) ? null : $string;
-        };
-
-        $data = [
-            'qb_code' => $clean($this->valueOf('qb_code', $inArray)),
-            'name' => $clean($this->valueOf('name', $inArray)),
-            'joins' => [
-                [
-                    'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
-                    'customer_id' => $this->customer->id,
-                    'target_quantity' => 1,
-                ]
-            ],
-        ];
-        $this->workingEntity = $this->Items->newEntity($data);
-
-        return (bool) $this->Items->save($this->workingEntity);
-    }
-
     private function getImportArchivePath(): string
     {
         return self::BULK_ARCHIVE_ROOT . time();
     }
 
-    private function valueOf(string $key, array $data
-    ) {
-        return $data[$this->headerMap[$key]];
-    }
+    /**
+     * Get input value w/leading-trailing spaces trimmed
+     *
+     * @param string $key
+     * @param array $data
+     * @return string|null
+     */
+    private function valueOf(string $key, array $data): ?string {
+        $string = trim($data[$this->headerMap[$key]], ' ');
+        return empty($string) ? null : $string;  }
 }
