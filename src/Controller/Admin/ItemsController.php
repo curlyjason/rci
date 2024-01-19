@@ -132,6 +132,11 @@ class ItemsController extends AdminController
         return $this->render();
     }
 
+    public function downloadErrorFile()
+    {
+        return $this->response->withFile(ImportItems::ERROR_PATH, ['download' => true]);
+    }
+
     /**
      * Dev method for the reusable bulk import system
      *

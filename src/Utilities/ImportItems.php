@@ -60,7 +60,7 @@ class ImportItems
     ];
     public null|string $archivePath;
     private string $errorOutputPattern = "ERROR => %s - %s\n";
-    protected array $rawHeaders;
+    public array $rawHeaders;
     protected array $headerMap;
     //</editor-fold>
     //<editor-fold desc="DYNAMIC PROPERTIES">
@@ -82,9 +82,11 @@ class ImportItems
     public function processUploadFile(): void
     {
         $initArchiveAndErrorFiles = function () {
+            $headers = implode(',',$this->rawHeaders) . "\n";
             $this->archive = fopen($this->archivePath, 'w');
+            fwrite($this->archive, $headers);
             $this->errors = fopen(self::ERROR_PATH, 'w');
-            fwrite($this->errors, implode(',',$this->rawHeaders) . "\n");
+            fwrite($this->errors, $headers);
         };
         $archive = function ($newLine, $status) {
             $this->archiveCount++;
@@ -117,7 +119,7 @@ class ImportItems
 
             while ($newLine = fgetcsv($this->source)) {
                 $status = $this->evaluateAgainstPersisted($newLine);
-                if ($this->processLine($newLine)) {
+                if ($this->processLine($newLine, $status)) {
                     $archive($newLine, $status);
                 } else {
                     $retainError($newLine);
@@ -129,8 +131,12 @@ class ImportItems
         }
     }
 
-    private function processLine(array $inArray): bool
+    private function processLine(array $inArray, string $status): bool
     {
+        if ($status === self::DUP) {
+            return true;
+        }
+
         $data = [
             'qb_code' => $this->valueOf('qb_code', $inArray),
             'name' => $this->valueOf('name', $inArray),
@@ -213,8 +219,8 @@ class ImportItems
         return $this->errors;
     }
 
-    private function evaluateAgainstPersisted(array $newLine)
+    private function evaluateAgainstPersisted(array $newLine): string
     {
-        return true;
+        return '@sample-status@';
     }
 }
