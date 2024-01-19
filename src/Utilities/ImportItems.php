@@ -95,6 +95,15 @@ class ImportItems
                 fwrite($this->errors, sprintf($this->errorOutputPattern, $path, $error));
             }
         };
+        $prepareFlashResult = function () {
+            if ((bool) $this->archiveCount) {
+                $this->flash['success'][] = "Total items imported for {$this->customer->name}: {$this->archiveCount}";
+                $this->flash['success'][] = "Import data archive at: {$this->archivePath}";
+            }
+            if ((bool) $this->errorCount) {
+                $this->flash['success'][] = "Total lines with errors: {$this->errorCount}";
+            }
+        };
 
         try {
             $this->source = fopen(self::IMPORT_PATH, 'r');
@@ -108,6 +117,7 @@ class ImportItems
                     $retainError($newLine);
                 }
             }
+            $prepareFlashResult();
         } catch (Exception $e) {
             $this->flash['error'][] = ($e->getMessage());
         }

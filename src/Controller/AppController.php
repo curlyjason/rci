@@ -16,6 +16,8 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Controller\Admin\ItemsController;
+use App\Utilities\ImportItems;
 use Cake\Controller\Controller;
 
 /**
@@ -44,6 +46,21 @@ class AppController extends Controller
         $this->loadComponent('Flash');
         $this->loadComponent('Authentication.Authentication');
         $this->loadComponent('Authorization.Authorization');
+    }
+
+    /**
+     * ['success' => [messages, ...], 'error' => [messages, ...]
+     *
+     * @param ImportItems $importer
+     * @return void
+     */
+    public function flashOutput(array $data): void
+    {
+        foreach ($data as $type => $messageSet) {
+            foreach ($messageSet as $message) {
+                $this->Flash->$type($message);
+            }
+        }
     }
 
     protected function readSession(?string $string = null, mixed $default = null)

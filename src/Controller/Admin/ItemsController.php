@@ -125,25 +125,9 @@ class ItemsController extends AdminController
         }
         $importer = new ImportItems();
         $importer->processUploadFile();
+        $this->flashOutput($importer->flash);
 
-        if ((bool) $importer->archiveCount) {
-            $this->Flash->success(
-                "Total items imported for {$importer->customer->name}: {$importer->archiveCount}"
-            );
-            $this->Flash->success("Import data archive at: {$importer->archivePath}");
-        }
-        if ((bool) $importer->errorCount) {
-            $this->Flash->success("Total lines with errors: {$importer->errorCount}");
-        }
-        foreach($importer->flash as $type => $messageSet) {
-            foreach ($messageSet as $message) {
-                $this->Flash->$$type($message);
-            }
-        }
-
-        //render a report page
-        //show archived lines
-        //show errors
+        $this->set(compact('importer'));
 
         return $this->render();
     }
