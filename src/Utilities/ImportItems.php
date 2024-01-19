@@ -129,6 +129,7 @@ class ImportItems
         } catch (Exception $e) {
             $this->flashError($e->getMessage());
         }
+        $this->closeResources();
     }
 
     private function processLine(array $inArray, string $status): bool
@@ -222,5 +223,9 @@ class ImportItems
     private function evaluateAgainstPersisted(array $newLine): string
     {
         return '@sample-status@';
+    }
+
+    public function closeResources() {
+        $this->archive = $this->errors = $this->source = null;
     }
 }
