@@ -34,15 +34,15 @@ class ImportItems
     //</editor-fold>
     //<editor-fold desc="FILE STREAMS: 2 lifespans, request-processing and response-rendering">
     /**
-     * @var resource|null
+     * @var resource|null|false
      */
-    public $source;
+    protected $source;
     /**
-     * @var resource|null
+     * @var resource|null|false
      */
     public $archive;
     /**
-     * @var resource|null
+     * @var resource|null|false
      */
     public $errors;
     //</editor-fold>
@@ -171,4 +171,26 @@ class ImportItems
     private function valueOf(string $key, array $data): ?string {
         $string = trim($data[$this->headerMap[$key]], ' ');
         return empty($string) ? null : $string;  }
+
+    /**
+     * sets property $archive
+     *
+     * @return false|resource|null
+     */
+    public function openArchiveToRead()
+    {
+        $this->archive = fopen($this->archivePath, 'r');
+        return $this->archive;
+    }
+
+    /**
+     * sets property $errors
+     *
+     * @return false|resource|null
+     */
+    public function openErrorsToRead()
+    {
+        $this->errors = fopen(self::ERROR_PATH, 'r');
+        return $this->errors;
+    }
 }
