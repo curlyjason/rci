@@ -51,10 +51,10 @@ class ImportItems
         'name',
         'qb_code',
     ];
-    protected array $rawHeaders;
-    protected array $headerMap;
     public null|string $archivePath;
     private string $errorOutputPattern = "ERROR => %s - %s\n";
+    protected array $rawHeaders;
+    protected array $headerMap;
     //</editor-fold>
     //<editor-fold desc="DYNAMIC PROPERTIES">
     public int $archiveCount = 0;
@@ -73,12 +73,12 @@ class ImportItems
         $this->customer = $this->fetchTable('Customers')
             ->get($this->identity->customer_id);
         $this->Items = $this->fetchTable('Items');
+        $this->archivePath = $this->setImportArchivePath();
     }
 
     public function processUploadFile(): void
     {
         $initArchiveAndErrorFiles = function () {
-            $this->archivePath = $this->getImportArchivePath();
             $this->archive = fopen($this->archivePath, 'w');
             $this->errors = fopen(self::ERROR_PATH, 'w');
             fwrite($this->errors, implode(',',$this->rawHeaders) . "\n");
@@ -159,7 +159,7 @@ class ImportItems
         }
     }
 
-    private function getImportArchivePath(): string
+    private function setImportArchivePath(): string
     {
         return self::BULK_ARCHIVE_ROOT . time();
     }
