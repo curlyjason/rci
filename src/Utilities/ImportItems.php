@@ -12,6 +12,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Http\ServerRequest;
 use Cake\I18n\DateTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Exception;
 
@@ -39,15 +40,21 @@ class ImportItems
      * @var resource|null
      */
     public $errors;
+    protected array $rawHeaders;
     public int $archiveCount = 0;
     public null|Customer|EntityInterface $customer;
     public null|string $archivePath;
     public int $errorCount = 0;
+    public array $flash = [
+        'success' => [],
+        'error' => [],
+    ];
     public array $flashError = [];
     public array $flashSuccess = [];
     private ServerRequest $request;
     private User $identity;
     private \Cake\ORM\Table|ItemsTable $Items;
+    private Item $workingEntity;
 
     public function __construct()
     {
@@ -70,10 +77,11 @@ class ImportItems
             $this->archivePath = $this->importArchivePath();
 
             //read in the headers, throws exception
-            $headers = $this->checkHeaders($this->source);
+            $headers = $this->checkHeaders();
 
             $this->archive = fopen($this->archivePath, 'w');
             $this->errors = fopen(self::ERROR_PATH, 'w');
+            fwrite($this->errors, implode(',',$this->rawHeaders) . "\n");
 
             while ($newLine = fgetcsv($this->source)) {
                 $result = $this->processLine($newLine, $headers);
@@ -83,18 +91,20 @@ class ImportItems
                 } else {
                     $this->errorCount++;
                     fwrite($this->errors, implode(',', $newLine) . "\n");
+                    $errors = Hash::flatten($this->workingEntity->getErrors());
+                    fwrite($this->errors, var_export($errors, true) . "\n");
                 }
             }
         } catch (Exception $e) {
-            $this->flashError[] = ($e->getMessage());
+            $this->flash['error'][] = ($e->getMessage());
         }
     }
 
-    private function checkHeaders($import)
+    private function checkHeaders()
     {
-        $headers = fgetcsv($import);
+        $this->rawHeaders = fgetcsv($this->source);
 
-        $output = collection($headers)->reduce(function ($accum, $value, $index) {
+        $output = collection($this->rawHeaders)->reduce(function ($accum, $value, $index) {
             $underscore = trim(Inflector::underscore($value));
             if (in_array($underscore, self::REQUIRED_HEADERS)) {
                 $accum[$underscore] = $index;
@@ -104,7 +114,7 @@ class ImportItems
         }, []);
 
         if (count($output) != 2) {
-            $import = null;
+            $this->source = null;
             unlink(self::IMPORT_PATH);
             throw new Exception("Input file did not have expected headers 'name' and 'qb_code'");
         }
@@ -130,9 +140,9 @@ class ImportItems
                 ]
             ],
         ];
-        $entity = $this->Items->newEntity($data);
+        $this->workingEntity = $this->Items->newEntity($data);
 
-        if ($this->Items->save($entity)) {
+        if ($this->Items->save($this->workingEntity)) {
             return true;
         }
 
