@@ -58,7 +58,7 @@ class CustomersTable extends Table
         $this->belongsToMany('Items', [
             'foreignKey' => 'customer_id',
             'targetForeignKey' => 'item_id',
-            'through' => 'customers_items',
+            'through' => 'CustomersItems',
         ]);
     }
 
