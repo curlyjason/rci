@@ -27,6 +27,12 @@ class ImportItems
     public const IMPORT_PATH = self::BULK_IMPORT_ROOT . 'import.txt';
     public const ERROR_PATH = self::BULK_IMPORT_ROOT . 'errors.txt';
     //</editor-fold>
+    //<editor-fold desc="CONSTANTS">
+    public const DUP = '@duplicate@';
+    public const EDIT = '@edit@';
+    public const NEW = '@new@';
+    public const STATUS_REGEX = '^@(duplicate|edit|new)@';
+    //</editor-fold>
     //<editor-fold desc="COMPOSED OBJECTS">
     private ServerRequest $request;
     private User $identity;
@@ -80,9 +86,9 @@ class ImportItems
             $this->errors = fopen(self::ERROR_PATH, 'w');
             fwrite($this->errors, implode(',',$this->rawHeaders) . "\n");
         };
-        $archive = function ($newLine) {
+        $archive = function ($newLine, $status) {
             $this->archiveCount++;
-            fwrite($this->archive, implode(',', $newLine) . "\n");
+            fwrite($this->archive, $status . implode(',', $newLine) . "\n");
         };
         $retainError = function ($newLine) {
             $this->errorCount++;
