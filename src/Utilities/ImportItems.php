@@ -54,6 +54,7 @@ class ImportItems
     protected array $rawHeaders;
     protected array $headerMap;
     public null|string $archivePath;
+    private string $errorOutputPattern = "ERROR => %s - %s\n";
     //</editor-fold>
     //<editor-fold desc="DYNAMIC PROPERTIES">
     public int $archiveCount = 0;
@@ -90,7 +91,9 @@ class ImportItems
             $this->errorCount++;
             fwrite($this->errors, implode(',', $newLine) . "\n");
             $errors = Hash::flatten($this->workingEntity->getErrors());
-            fwrite($this->errors, var_export($errors, true) . "\n");
+            foreach ($errors as $path => $error) {
+                fwrite($this->errors, sprintf($this->errorOutputPattern, $path, $error));
+            }
         };
 
         try {
