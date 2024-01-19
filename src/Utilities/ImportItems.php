@@ -52,6 +52,7 @@ class ImportItems
         'qb_code',
     ];
     protected array $rawHeaders;
+    protected array $headerMap;
     public null|string $archivePath;
     //</editor-fold>
     //<editor-fold desc="DYNAMIC PROPERTIES">
@@ -76,6 +77,7 @@ class ImportItems
     public function processUploadFile()
     {
         $initArchiveAndErrorFiles = function () {
+            $this->archivePath = $this->getImportArchivePath();
             $this->archive = fopen($this->archivePath, 'w');
             $this->errors = fopen(self::ERROR_PATH, 'w');
             fwrite($this->errors, implode(',',$this->rawHeaders) . "\n");
@@ -93,15 +95,14 @@ class ImportItems
 
         try {
             $this->source = fopen(self::IMPORT_PATH, 'r');
-            $this->archivePath = $this->getImportArchivePath();
 
             //read in the headers, throws exception
-            $headers = $this->checkHeaders();
+            $this->checkHeaders();
 
             $initArchiveAndErrorFiles();
 
             while ($newLine = fgetcsv($this->source)) {
-                if ($this->processLine($newLine, $headers)) {
+                if ($this->processLine($newLine)) {
                     $archive($newLine);
                 } else {
                     $retainError($newLine);
@@ -112,11 +113,19 @@ class ImportItems
         }
     }
 
-    private function checkHeaders()
+    /**
+     * Get a map to the offset of column values
+     *
+     * [header-string => offset, ...]
+     *
+     * @return void
+     * @throws Exception
+     */
+    private function checkHeaders(): void
     {
         $this->rawHeaders = fgetcsv($this->source);
 
-        $output = collection($this->rawHeaders)->reduce(function ($accum, $value, $index) {
+        $this->headerMap = collection($this->rawHeaders)->reduce(function ($accum, $value, $index) {
             $underscore = trim(Inflector::underscore($value));
             if (in_array($underscore, self::REQUIRED_HEADERS)) {
                 $accum[$underscore] = $index;
@@ -125,16 +134,14 @@ class ImportItems
             return $accum;
         }, []);
 
-        if (count($output) != 2) {
+        if (count($this->headerMap) != 2) {
             $this->source = null;
             unlink(self::IMPORT_PATH);
             throw new Exception("Input file did not have expected headers 'name' and 'qb_code'");
         }
-
-        return $output;
     }
 
-    private function processLine(array $newLine, mixed $headers): bool
+    private function processLine(array $inArray): bool
     {
         $clean = function ($string) {
             $string = trim($string, ' ');
@@ -142,8 +149,8 @@ class ImportItems
         };
 
         $data = [
-            Fixture::QBC => $clean($newLine[$headers[Fixture::QBC]]),
-            Fixture::N => $clean($newLine[$headers[Fixture::N]]),
+            'qb_code' => $clean($this->valueOf('qb_code', $inArray)),
+            'name' => $clean($this->valueOf('name', $inArray)),
             'joins' => [
                 [
                     'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
@@ -160,5 +167,10 @@ class ImportItems
     private function getImportArchivePath(): string
     {
         return self::BULK_ARCHIVE_ROOT . time();
+    }
+
+    private function valueOf(string $key, array $data
+    ) {
+        return $data[$this->headerMap[$key]];
     }
 }
