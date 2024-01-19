@@ -52,6 +52,11 @@ class ItemsTable extends Table
             'targetForeignKey' => 'customer_id',
             'through' => 'CustomersItems',
         ]);
+
+        $this->hasMany('Joins', [
+            'foreignKey' => 'item_id',
+            'className' => 'CustomersItems',
+        ]);
     }
 
     /**
