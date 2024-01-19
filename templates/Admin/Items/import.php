@@ -18,7 +18,7 @@ $errors = $importer->openErrorsToRead();
 </style>
 
 <?php if ($importer->errorCount) : ?>
-<?= $this->Html->link('Download Error File', 'admin/items/download-error-file', ['class' => 'button']) ?>
+<?= $this->Html->link('Download Error File', 'admin/items/download-file/' . htmlentities($importer::ERROR_PATH), ['class' => 'button']) ?>
 
 <table>
     <thead>
@@ -35,6 +35,7 @@ $errors = $importer->openErrorsToRead();
 endif;
 if ($importer->archiveCount) :
 ?>
+    <?= $this->Html->link('Download Archive File', 'admin/items/download-file/' . htmlentities($importer->archivePath), ['class' => 'button']) ?>
 
 <table>
     <thead>

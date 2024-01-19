@@ -132,9 +132,10 @@ class ItemsController extends AdminController
         return $this->render();
     }
 
-    public function downloadErrorFile()
+    public function downloadFile(...$path)
     {
-        return $this->response->withFile(ImportItems::ERROR_PATH, ['download' => true]);
+        $path = '/' . implode('/', $path);
+        return $this->response->withFile($path, ['download' => true]);
     }
 
     /**

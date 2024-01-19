@@ -130,6 +130,7 @@ class ImportItems
             $this->flashError($e->getMessage());
         }
         $this->closeResources();
+        unlink(self::IMPORT_PATH);
     }
 
     private function processLine(array $inArray, string $status): bool
@@ -184,7 +185,7 @@ class ImportItems
 
     private function setImportArchivePath(): string
     {
-        return self::BULK_ARCHIVE_ROOT . time();
+        return self::BULK_ARCHIVE_ROOT . time() . '.txt';
     }
 
     /**
