@@ -118,34 +118,25 @@ class ImportItems
             $string = trim($string, ' ');
             return empty($string) ? null : $string;
         };
+
         $data = [
             Fixture::QBC => $clean($newLine[$headers[Fixture::QBC]]),
             Fixture::N => $clean($newLine[$headers[Fixture::N]]),
-            'customers_items' => [[
-                'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
-                'customer_id' => $this->customer->id,
-            ],],
+            'joins' => [
+                [
+                    'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
+                    'customer_id' => $this->customer->id,
+                    'target_quantity' => 1,
+                ]
+            ],
         ];
-
         $entity = $this->Items->newEntity($data);
-        if (
-            $this->Items->save($entity)
-            /*&& $this->Items->Customers
-                ->link($entity, [$this->customer])*/)
-        {
+
+        if ($this->Items->save($entity)) {
             return true;
         }
-        //(new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01')
-        return false;
 
-//        $record = $this->Items->findOrCreate(
-//            ['qb_code' => $newLine[$headers['qb_code']]],
-//            function (Item $entity) use ($newLine, $headers) {
-//                $entity->set('name', $newLine[$headers['name']]);
-//                $entity->set('qb_code', $newLine[$headers['qb_code']]);
-//            }
-//        );
-//        osd($record);
+        return false;
     }
 
 
