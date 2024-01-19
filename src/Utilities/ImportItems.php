@@ -20,14 +20,19 @@ class ImportItems
 {
     use LocatorAwareTrait;
 
+    //<editor-fold desc="PATH CONSTANTS">
     public const BULK_IMPORT_ROOT = WWW_ROOT . 'bulk-import/';
     public const BULK_ARCHIVE_ROOT = self::BULK_IMPORT_ROOT . 'archive/';
     public const IMPORT_PATH = self::BULK_IMPORT_ROOT . 'import.txt';
     public const ERROR_PATH = self::BULK_IMPORT_ROOT . 'errors.txt';
-    public const REQUIRED_HEADERS = [
-        'name',
-        'qb_code',
-    ];
+    //</editor-fold>
+    //<editor-fold desc="COMPOSED OBJECTS">
+    private ServerRequest $request;
+    private User $identity;
+    public null|Customer|EntityInterface $customer;
+    private \Cake\ORM\Table|ItemsTable $Items;
+    //</editor-fold>
+    //<editor-fold desc="FILE STREAMS: 2 lifespans, request-processing and response-rendering">
     /**
      * @var resource|null
      */
@@ -40,21 +45,24 @@ class ImportItems
      * @var resource|null
      */
     public $errors;
+    //</editor-fold>
+    //<editor-fold desc="LIFESPAN PROPERTIES: once set they never change">
+    public const REQUIRED_HEADERS = [
+        'name',
+        'qb_code',
+    ];
     protected array $rawHeaders;
-    public int $archiveCount = 0;
-    public null|Customer|EntityInterface $customer;
     public null|string $archivePath;
+    //</editor-fold>
+    //<editor-fold desc="DYNAMIC PROPERTIES">
+    public int $archiveCount = 0;
     public int $errorCount = 0;
+    private Item $workingEntity;
     public array $flash = [
         'success' => [],
         'error' => [],
     ];
-    public array $flashError = [];
-    public array $flashSuccess = [];
-    private ServerRequest $request;
-    private User $identity;
-    private \Cake\ORM\Table|ItemsTable $Items;
-    private Item $workingEntity;
+    //</editor-fold>
 
     public function __construct()
     {
@@ -65,34 +73,38 @@ class ImportItems
         $this->Items = $this->fetchTable('Items');
     }
 
-    private function importArchivePath(): string
-    {
-        return self::BULK_ARCHIVE_ROOT . time();
-    }
-
     public function processUploadFile()
     {
+        $initArchiveAndErrorFiles = function () {
+            $this->archive = fopen($this->archivePath, 'w');
+            $this->errors = fopen(self::ERROR_PATH, 'w');
+            fwrite($this->errors, implode(',',$this->rawHeaders) . "\n");
+        };
+        $archive = function ($newLine) {
+            $this->archiveCount++;
+            fwrite($this->archive, implode(',', $newLine) . "\n");
+        };
+        $retainError = function ($newLine) {
+            $this->errorCount++;
+            fwrite($this->errors, implode(',', $newLine) . "\n");
+            $errors = Hash::flatten($this->workingEntity->getErrors());
+            fwrite($this->errors, var_export($errors, true) . "\n");
+        };
+
         try {
             $this->source = fopen(self::IMPORT_PATH, 'r');
-            $this->archivePath = $this->importArchivePath();
+            $this->archivePath = $this->getImportArchivePath();
 
             //read in the headers, throws exception
             $headers = $this->checkHeaders();
 
-            $this->archive = fopen($this->archivePath, 'w');
-            $this->errors = fopen(self::ERROR_PATH, 'w');
-            fwrite($this->errors, implode(',',$this->rawHeaders) . "\n");
+            $initArchiveAndErrorFiles();
 
             while ($newLine = fgetcsv($this->source)) {
-                $result = $this->processLine($newLine, $headers);
-                if ($result) {
-                    $this->archiveCount++;
-                    fwrite($this->archive, implode(',', $newLine) . "\n");
+                if ($this->processLine($newLine, $headers)) {
+                    $archive($newLine);
                 } else {
-                    $this->errorCount++;
-                    fwrite($this->errors, implode(',', $newLine) . "\n");
-                    $errors = Hash::flatten($this->workingEntity->getErrors());
-                    fwrite($this->errors, var_export($errors, true) . "\n");
+                    $retainError($newLine);
                 }
             }
         } catch (Exception $e) {
@@ -142,12 +154,11 @@ class ImportItems
         ];
         $this->workingEntity = $this->Items->newEntity($data);
 
-        if ($this->Items->save($this->workingEntity)) {
-            return true;
-        }
-
-        return false;
+        return (bool) $this->Items->save($this->workingEntity);
     }
 
-
+    private function getImportArchivePath(): string
+    {
+        return self::BULK_ARCHIVE_ROOT . time();
+    }
 }
