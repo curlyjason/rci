@@ -16,7 +16,10 @@ $errors = $importer->openErrorsToRead();
         column-span: 3;
     }
 </style>
+
+<?php if ($importer->errorCount) : ?>
 <?= $this->Html->link('Download Error File', 'admin/items/download-error-file', ['class' => 'button']) ?>
+
 <table>
     <thead>
         <?= $this->Html->tableHeaders(fgetcsv($errors)) ?>
@@ -28,6 +31,11 @@ $errors = $importer->openErrorsToRead();
     </tbody>
 </table>
 
+<?php
+endif;
+if ($importer->archiveCount) :
+?>
+
 <table>
     <thead>
         <?= $this->Html->tableHeaders(fgetcsv($archive)) ?>
@@ -38,3 +46,5 @@ $errors = $importer->openErrorsToRead();
     <?php endwhile; ?>
     </tbody>
 </table>
+
+<?php endif; ?>
