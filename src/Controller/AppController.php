@@ -48,21 +48,6 @@ class AppController extends Controller
         $this->loadComponent('Authorization.Authorization');
     }
 
-    /**
-     * ['success' => [messages, ...], 'error' => [messages, ...]
-     *
-     * @param ImportItems $importer
-     * @return void
-     */
-    public function flashOutput(array $data): void
-    {
-        foreach ($data as $type => $messageSet) {
-            foreach ($messageSet as $message) {
-                $this->Flash->$type($message);
-            }
-        }
-    }
-
     protected function readSession(?string $string = null, mixed $default = null)
     {
         return $this->request->getSession()->read($string, $default);

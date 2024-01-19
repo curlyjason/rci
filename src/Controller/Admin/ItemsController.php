@@ -107,7 +107,7 @@ class ItemsController extends AdminController
     }
     //</editor-fold>
 
-    public function import()
+    public function import(): \Cake\Http\Response
     {
         /**
          * uploading can only be done for one customer at a time
@@ -125,7 +125,7 @@ class ItemsController extends AdminController
         }
         $importer = new ImportItems();
         $importer->processUploadFile();
-        $this->flashOutput($importer->flash);
+        $importer->flashOutput($this->Flash);
 
         $this->set(compact('importer'));
 

@@ -19,6 +19,7 @@ use Exception;
 class ImportItems
 {
     use LocatorAwareTrait;
+    use FlashTrait;
 
     //<editor-fold desc="PATH CONSTANTS">
     public const BULK_IMPORT_ROOT = WWW_ROOT . 'bulk-import/';
@@ -60,10 +61,6 @@ class ImportItems
     public int $archiveCount = 0;
     public int $errorCount = 0;
     private Item $workingEntity;
-    public array $flash = [
-        'success' => [],
-        'error' => [],
-    ];
     //</editor-fold>
 
     public function __construct()
@@ -97,11 +94,13 @@ class ImportItems
         };
         $prepareFlashResult = function () {
             if ((bool) $this->archiveCount) {
-                $this->flash['success'][] = "Total items imported for {$this->customer->name}: {$this->archiveCount}";
-                $this->flash['success'][] = "Import data archive at: {$this->archivePath}";
+                $this->flashSuccess(
+                    "Total items imported for {$this->customer->name}: {$this->archiveCount}",
+                    "Import data archive at: {$this->archivePath}"
+                );
             }
             if ((bool) $this->errorCount) {
-                $this->flash['success'][] = "Total lines with errors: {$this->errorCount}";
+                $this->flashError("Total lines with errors: {$this->errorCount}");
             }
         };
 
@@ -111,15 +110,16 @@ class ImportItems
             $initArchiveAndErrorFiles();
 
             while ($newLine = fgetcsv($this->source)) {
+                $status = $this->evaluateAgainstPersisted($newLine);
                 if ($this->processLine($newLine)) {
-                    $archive($newLine);
+                    $archive($newLine, $status);
                 } else {
                     $retainError($newLine);
                 }
             }
             $prepareFlashResult();
         } catch (Exception $e) {
-            $this->flash['error'][] = ($e->getMessage());
+            $this->flashError($e->getMessage());
         }
     }
 
@@ -205,5 +205,10 @@ class ImportItems
     {
         $this->errors = fopen(self::ERROR_PATH, 'r');
         return $this->errors;
+    }
+
+    private function evaluateAgainstPersisted(array $newLine)
+    {
+        return true;
     }
 }
