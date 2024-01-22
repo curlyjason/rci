@@ -8,6 +8,8 @@ use App\Model\Entity\Customer;
 use App\Model\Entity\Item;
 use App\Model\Entity\User;
 use App\Model\Table\ItemsTable;
+use Cake\Database\Statement\Statement;
+use Cake\Database\ValueBinder;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\ServerRequest;
 use Cake\I18n\DateTime;
@@ -37,7 +39,7 @@ class ImportItems
     private ServerRequest $request;
     private User $identity;
     public null|Customer|EntityInterface $customer;
-    private \Cake\ORM\Table|ItemsTable $Items;
+    protected \Cake\ORM\Table|ItemsTable $Items;
     //</editor-fold>
     //<editor-fold desc="FILE STREAMS: 2 lifespans, request-processing and response-rendering">
     /**
@@ -66,8 +68,9 @@ class ImportItems
     //<editor-fold desc="DYNAMIC PROPERTIES">
     public int $archiveCount = 0;
     public int $errorCount = 0;
-    private Item $workingEntity;
+    protected Item $workingEntity;
     //</editor-fold>
+    protected mixed $itemQuery = null;
 
     public function __construct()
     {
@@ -77,10 +80,12 @@ class ImportItems
             ->get($this->identity->customer_id);
         $this->Items = $this->fetchTable('Items');
         $this->archivePath = $this->setImportArchivePath();
+        $this->prepareMatchingItemQuery('dummy value');
     }
 
     public function processUploadFile(): void
     {
+        //<editor-fold desc="LOCAL UTILITY FUNCTIONS">
         $initArchiveAndErrorFiles = function () {
             $headers = implode(',',$this->rawHeaders) . "\n";
             $this->archive = fopen($this->archivePath, 'w');
@@ -111,6 +116,7 @@ class ImportItems
                 $this->flashError("Total lines with errors: {$this->errorCount}");
             }
         };
+        //</editor-fold>
 
         try {
             $this->source = fopen(self::IMPORT_PATH, 'r');
@@ -119,6 +125,7 @@ class ImportItems
 
             while ($newLine = fgetcsv($this->source)) {
                 $status = $this->evaluateAgainstPersisted($newLine);
+                osdd($status);
                 if ($this->processLine($newLine, $status)) {
                     $archive($newLine, $status);
                 } else {
@@ -221,12 +228,35 @@ class ImportItems
         return $this->errors;
     }
 
-    private function evaluateAgainstPersisted(array $newLine): string
+    private function evaluateAgainstPersisted(array $line): mixed
     {
-        return '@sample-status@';
+        $qb_code = $this->valueOf('qb_code', $line);
+        $sql = preg_replace(
+            ['/:c0/', '/:c1/'],
+//            [1200, "'$qb_code'"],
+            [$this->customer->id, "'$qb_code'"],
+//            ['2035935068', "'path:to:Dolores dolorum amet iste laborum eius est dolor.'"],
+            $this->itemQuery
+        );
+
+        $r = $this->Items->getConnection()->execute($sql,)->fetchAssoc();
+        osdd($r);
+
+        return match(true) {
+            empty($r) => self::NEW,
+            $this->valueOf('name', $line) === $r['Items__name'] => self::DUP,
+            default => self::EDIT,
+        };
     }
 
     public function closeResources() {
         $this->archive = $this->errors = $this->source = null;
+    }
+
+    protected function prepareMatchingItemQuery(mixed $qb_code)
+    {
+        $this->itemQuery = $this->Items->findExistingCustomerItem(
+            $qb_code, $this->customer->id
+        )->sql();
     }
 }

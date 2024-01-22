@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -80,5 +81,27 @@ class ItemsTable extends Table
             ->requirePresence('qb_code');
 
         return $validator;
+    }
+
+    public function findExistingCustomerItem($customer_id, $qb_code): SelectQuery
+    {
+//        $qb_code = 'path:to:Dolores dolorum amet iste laborum eius est dolor.';
+//        $customer_id = 2035935068;
+        return $this->find()
+            ->matching('Customers', function($q) use ($customer_id) {
+                return $q->where(['Customers.id' => $customer_id]);
+            })
+            ->where(['qb_code' => $qb_code,])
+            ->select([
+                'Items.id',
+                'Items.qb_code',
+                'Items.name',
+                'Customers.id',
+                'CustomersItems.id',
+                'CustomersItems.target_quantity',
+                'CustomersItems.next_inventory',
+                'CustomersItems.item_id',
+                'CustomersItems.customer_id',
+            ]);
     }
 }
