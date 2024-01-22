@@ -125,7 +125,6 @@ class ImportItems
 
             while ($newLine = fgetcsv($this->source)) {
                 $status = $this->evaluateAgainstPersisted($newLine);
-                osdd($status);
                 if ($this->processLine($newLine, $status)) {
                     $archive($newLine, $status);
                 } else {
@@ -228,23 +227,19 @@ class ImportItems
         return $this->errors;
     }
 
-    private function evaluateAgainstPersisted(array $line): mixed
+    private function evaluateAgainstPersisted(array $line): string
     {
         $qb_code = $this->valueOf('qb_code', $line);
         $sql = preg_replace(
             ['/:c0/', '/:c1/'],
-//            [1200, "'$qb_code'"],
-            [$this->customer->id, "'$qb_code'"],
-//            ['2035935068', "'path:to:Dolores dolorum amet iste laborum eius est dolor.'"],
+            [(int) $this->customer->id, "'$qb_code'"],
             $this->itemQuery
         );
-
-        $r = $this->Items->getConnection()->execute($sql,)->fetchAssoc();
-        osdd($r);
+        $result = $this->Items->getConnection()->execute($sql,)->fetchAssoc();
 
         return match(true) {
-            empty($r) => self::NEW,
-            $this->valueOf('name', $line) === $r['Items__name'] => self::DUP,
+            empty($result) => self::NEW,
+            $this->valueOf('name', $line) === $result['Items__name'] => self::DUP,
             default => self::EDIT,
         };
     }
