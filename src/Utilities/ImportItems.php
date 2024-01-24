@@ -151,18 +151,15 @@ class ImportItems
         $data = [
             'qb_code' => $this->valueOf('qb_code', $inArray),
             'name' => $this->valueOf('name', $inArray),
-            'joins' => [
-                [
-                    'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
-                    'customer_id' => $this->customer->id,
-                    'target_quantity' => 1,
-                ]
-            ],
+            'joins' => [[
+                'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
+                'customer_id' => $this->customer->id,
+                'target_quantity' => 1,
+            ]],
         ];
         if ($status == self::NEW) {
             $this->workingEntity = $this->Items->newEntity($data);
-        }
-        else {
+        }else {
             $this->workingEntity = $this->prepareUpdateEntity($data);
         }
 
@@ -176,6 +173,7 @@ class ImportItems
     private function prepareUpdateEntity(array $data): Item
     {
         $data['joins'][0]['id'] = $this->persisted['CustomersItems__id'];
+        unset($data['joins'][0]['target_quantity']);
         $join = new Join($data['joins'][0]);
         $data['id'] = $this->persisted['Items__id'];
         $data['joins'][0] = $join
