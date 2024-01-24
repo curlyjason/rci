@@ -62,18 +62,18 @@ class ImportItems
     private string $errorOutputPattern = "ERROR => %s - %s\n";
     public array $rawHeaders;
     protected array $headerMap;
+    protected mixed $itemQuery = null;
     //</editor-fold>
     //<editor-fold desc="DYNAMIC PROPERTIES">
     public int $archiveCount = 0;
     public int $errorCount = 0;
     protected Item $workingEntity;
-    //</editor-fold>
-    protected mixed $itemQuery = null;
     /**
      * record in db that matches customer-id & item-qb_code
      * @var array|null
      */
     protected ?array $persisted;
+    //</editor-fold>
 
     public function __construct()
     {
