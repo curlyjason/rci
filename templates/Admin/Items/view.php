@@ -19,6 +19,10 @@
             <h3><?= h($item->name) ?></h3>
             <table>
                 <tr>
+                    <th><?= __('QB Code') ?></th>
+                    <td><?= h($item->qb_code) ?></td>
+                </tr>
+                <tr>
                     <th><?= __('Name') ?></th>
                     <td><?= h($item->name) ?></td>
                 </tr>
