@@ -3,13 +3,10 @@
 namespace App\Utilities;
 
 use App\Application;
-use App\Constants\Fixture;
 use App\Model\Entity\Customer;
 use App\Model\Entity\Item;
 use App\Model\Entity\User;
 use App\Model\Table\ItemsTable;
-use Cake\Database\Statement\Statement;
-use Cake\Database\ValueBinder;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\ServerRequest;
 use Cake\I18n\DateTime;
@@ -202,7 +199,7 @@ class ImportItems
      * @return string|null
      */
     private function valueOf(string $key, array $data): ?string {
-        $string = trim($data[$this->headerMap[$key]], ' ');
+        $string = trim($data[$this->headerMap[$key]] ?? '', ' ');
         return empty($string) ? null : $string;  }
 
     /**
@@ -230,12 +227,12 @@ class ImportItems
     private function evaluateAgainstPersisted(array $line): string
     {
         $qb_code = $this->valueOf('qb_code', $line);
-        $sql = preg_replace(
-            ['/:c0/', '/:c1/'],
-            [(int) $this->customer->id, "'$qb_code'"],
-            $this->itemQuery
-        );
-        $result = $this->Items->getConnection()->execute($sql,)->fetchAssoc();
+
+        $result = $this->Items->getConnection()->execute(
+            $this->itemQuery,
+            [':c0' => $this->customer->id, ':c1' => $qb_code,],
+            [':c0' => 'integer', ':c1' => 'string']
+        )->fetchAssoc();
 
         return match(true) {
             empty($result) => self::NEW,
@@ -244,7 +241,8 @@ class ImportItems
         };
     }
 
-    public function closeResources() {
+    public function closeResources(): void
+    {
         $this->archive = $this->errors = $this->source = null;
     }
 
