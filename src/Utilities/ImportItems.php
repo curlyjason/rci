@@ -13,6 +13,7 @@ use Cake\I18n\DateTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use App\Model\Entity\CustomersItem as Join;
 use Exception;
 
 class ImportItems
@@ -68,6 +69,11 @@ class ImportItems
     protected Item $workingEntity;
     //</editor-fold>
     protected mixed $itemQuery = null;
+    /**
+     * record in db that matches customer-id & item-qb_code
+     * @var array|null
+     */
+    protected ?array $persisted;
 
     public function __construct()
     {
@@ -153,9 +159,34 @@ class ImportItems
                 ]
             ],
         ];
-        $this->workingEntity = $this->Items->newEntity($data);
+        if ($status == self::NEW) {
+            $this->workingEntity = $this->Items->newEntity($data);
+        }
+        else {
+            $this->workingEntity = $this->prepareUpdateEntity($data);
+        }
 
         return (bool) $this->Items->save($this->workingEntity);
+    }
+
+    /**
+     * @param array $data
+     * @return void
+     */
+    private function prepareUpdateEntity(array $data): Item
+    {
+        $data['joins'][0]['id'] = $this->persisted['CustomersItems__id'];
+        $join = new Join($data['joins'][0]);
+        $data['id'] = $this->persisted['Items__id'];
+        $data['joins'][0] = $join
+            ->setNew(false)
+            ->setDirty('customer_id', false)
+            ->setDirty('id', false);
+
+        return (new Item($data))
+            ->setNew(false)
+            ->setDirty('id', false)
+            ->setDirty('qb_code', false);
     }
 
     /**
@@ -228,15 +259,15 @@ class ImportItems
     {
         $qb_code = $this->valueOf('qb_code', $line);
 
-        $result = $this->Items->getConnection()->execute(
+        $this->persisted = $this->Items->getConnection()->execute(
             $this->itemQuery,
             [':c0' => $this->customer->id, ':c1' => $qb_code,],
             [':c0' => 'integer', ':c1' => 'string']
         )->fetchAssoc();
 
         return match(true) {
-            empty($result) => self::NEW,
-            $this->valueOf('name', $line) === $result['Items__name'] => self::DUP,
+            empty($this->persisted) => self::NEW,
+            $this->valueOf('name', $line) === $this->persisted['Items__name'] => self::DUP,
             default => self::EDIT,
         };
     }
