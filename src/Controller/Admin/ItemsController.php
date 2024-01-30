@@ -304,4 +304,43 @@ class ItemsController extends AdminController
 
     }
 
+    public function testme()
+    {
+        $validId = 2035935068;
+        $tableAlias = 'Customers';
+        $repeats = range(0,1000);
+
+
+        $table = $this->fetchTable($tableAlias);
+        $connection = $table->getConnection();
+        $queryString = $table->find()
+            ->where(['id' => $validId])
+            ->sql();
+        $t = new \OSDTImer();
+
+        $t->start(0);
+        foreach ($repeats as $c) {
+            $table->find()
+                ->where(['id' => $validId])
+                ->first();
+        }
+        $t->end(0);
+
+        $t->start(1);
+        foreach ($repeats as $c) {
+            $connection->execute(
+                $queryString,
+                [':c0' => $validId],
+                [':c0' => 'integer']
+            )
+                ->fetchAssoc();
+        }
+        $t->end(1);
+
+        osd($t->result(0));
+        osdd($t->result(1));
+    }
+
+
+
 }
