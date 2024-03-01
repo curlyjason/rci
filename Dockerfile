@@ -1,6 +1,10 @@
 FROM php:8.2-apache
 
+COPY docker/php-apache .
 COPY . .
+
+RUN chmod 666 logs/*.log
+RUN chmod -R 777 tmp/cache
 
 EXPOSE 80
 
@@ -10,8 +14,8 @@ RUN apt-get -y update \
 && apt-get install -y libicu-dev \
     && apt-get install -y libzip-dev
 
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug
+RUN #pecl install xdebug \
+#    && docker-php-ext-enable xdebug
 
 RUN docker-php-ext-configure intl
 
@@ -29,3 +33,4 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
     && a2ensite 001-rci \
     && service apache2 restart
 
+#RUN ../vendor/bin/phinx migrate -e development
