@@ -8,7 +8,7 @@ services:
             MYSQL_USER: ${DB_USERNAME}
             MYSQL_PASSWORD: ${DB_USER_PASS}
         volumes:
-#            - mysqldata:/var/lib/mysql
+            - mysqldata:/var/lib/mysql
             - ./docker/mysql:/docker-entrypoint-initdb.d
 #            - ./:/var/www/html
         ports:
@@ -32,5 +32,5 @@ services:
 #        runtime: chmod 666 logs/*.log
 
 
-#volumes:
-#    mysqldata:
+volumes:
+    mysqldata:
