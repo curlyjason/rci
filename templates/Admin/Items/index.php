@@ -13,6 +13,7 @@
             <thead>
                 <tr>
                     <th><?= $this->Paginator->sort('id') ?></th>
+                    <th><?= $this->Paginator->sort('qb_code') ?></th>
                     <th><?= $this->Paginator->sort('name') ?></th>
                     <th><?= $this->Paginator->sort('created') ?></th>
                     <th><?= $this->Paginator->sort('modified') ?></th>
@@ -23,6 +24,7 @@
                 <?php foreach ($items as $item): ?>
                 <tr>
                     <td><?= $this->Number->format($item->id) ?></td>
+                    <td><?= h($item->qb_code) ?></td>
                     <td><?= h($item->name) ?></td>
                     <td><?= h($item->created) ?></td>
                     <td><?= h($item->modified) ?></td>

@@ -23,7 +23,8 @@ class ItemsController extends AdminController
      */
     public function index()
     {
-        $query = $this->Items->find();
+        $query = $this->Items->find()
+            ->orderByDesc('modified');
         $items = $this->paginate($query);
 
         $this->set(compact('items'));
@@ -51,6 +52,7 @@ class ItemsController extends AdminController
     {
         $item = $this->Items->newEmptyEntity();
         if ($this->request->is('post')) {
+//            osdd($this->request->getData());
             $item = $this->Items->patchEntity($item, $this->request->getData());
             if ($this->Items->save($item)) {
                 $this->Flash->success(__('The item has been saved.'));

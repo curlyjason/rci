@@ -18,8 +18,12 @@
             <fieldset>
                 <legend><?= __('Add Item') ?></legend>
                 <?php
+                    echo $this->Form->control('qb_code');
                     echo $this->Form->control('name');
-                    echo $this->Form->control('customers._ids', ['options' => $customers]);
+                    echo $this->Form->control('customers._ids[]', [
+                        'type' => 'hidden',
+                        'value' => $this->request->getSession()->read('Auth.customer_id'),
+                    ]);
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>

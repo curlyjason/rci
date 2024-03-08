@@ -23,8 +23,8 @@
             <fieldset>
                 <legend><?= __('Edit Item') ?></legend>
                 <?php
+                    echo $this->Form->control('qb_code');
                     echo $this->Form->control('name');
-                    echo $this->Form->control('customers._ids', ['options' => $customers]);
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>
