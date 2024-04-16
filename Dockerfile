@@ -3,8 +3,10 @@ FROM php:8.2-apache
 COPY docker/php-apache .
 COPY . .
 
-RUN chmod 666 logs/*.log
-RUN chmod -R 777 tmp/cache
+RUN chmod -R 744 logs
+RUN chown -R www-data:www-data logs
+RUN chmod -R 744 tmp
+RUN chown -R www-data:www-data tmp
 
 EXPOSE 80
 
