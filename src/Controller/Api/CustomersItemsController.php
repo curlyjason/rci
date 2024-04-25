@@ -4,11 +4,13 @@ namespace App\Controller\Api;
 
 use App\Controller\ApiController;
 use App\Model\Table\CustomersItemsTable;
+use App\Utilities\DateUtilityTrait;
 use Cake\I18n\DateTime;
 use Cake\Utility\Text;
 
 class CustomersItemsController extends ApiController
 {
+    use DateUtilityTrait;
 
     protected string|array $allowed_methods;
     /**
@@ -44,7 +46,7 @@ class CustomersItemsController extends ApiController
         }
         $this->set(compact('response'));
     }
-    
+
     /**
      * @return \stdClass
      */
@@ -65,10 +67,7 @@ class CustomersItemsController extends ApiController
             $entity = $this->CustomersItems->get($this->request->getdata('id'));
             $this->CustomersItems->patchEntity($entity, [
                 'quantity' => $this->request->getData('quantity'),
-                'next_inventory' => (new DateTime())
-                    ->firstOfMonth()
-                    ->modify('first day of next month')
-                    ->format('Y-m-d 00:00:01'),
+                'next_inventory' => $this->nextInventoryDate(),
             ]);
 
             if ($this->CustomersItems->save($entity)) {
