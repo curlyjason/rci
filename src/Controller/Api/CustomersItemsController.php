@@ -67,7 +67,7 @@ class CustomersItemsController extends ApiController
             $entity = $this->CustomersItems->get($this->request->getdata('id'));
             $this->CustomersItems->patchEntity($entity, [
                 'quantity' => $this->request->getData('quantity'),
-                'next_inventory' => $this->nextInventoryDate(),
+                'next_inventory' => $this->nextMonthsInventoryDate(),
             ]);
 
             if ($this->CustomersItems->save($entity)) {

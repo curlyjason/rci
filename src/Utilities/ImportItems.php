@@ -20,6 +20,7 @@ class ImportItems
 {
     use LocatorAwareTrait;
     use FlashTrait;
+    use DateUtilityTrait;
 
     //<editor-fold desc="PATH CONSTANTS">
     public const BULK_IMPORT_ROOT = WWW_ROOT . 'bulk-import/';
@@ -152,7 +153,7 @@ class ImportItems
             'qb_code' => $this->valueOf('qb_code', $inArray),
             'name' => $this->valueOf('name', $inArray),
             'joins' => [[
-                'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
+                'next_inventory' => $this->thisMonthsInventoryDate(),
                 'customer_id' => $this->customer->id,
                 'target_quantity' => 1,
             ]],
