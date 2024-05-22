@@ -33,10 +33,12 @@ class CustomersItemsController extends AppController
          * render take-inventory UI
          */
         $this->setUserCustomerVariable();
-        $query = $this->CustomersItems->find()
-            ->where(['customer_id' => $this->readSession('Auth')->customer_id])
-            ->contain(['Customers', 'Items']);
-        $customersItems = $this->paginate($query);
+
+        $customersItems = $this->paginate(
+            $this->CustomersItems->findInventoryForCustomer(
+                $this->readSession('Auth')->customer_id
+            )
+        );
 
         $this->set(compact('customersItems'));
 
