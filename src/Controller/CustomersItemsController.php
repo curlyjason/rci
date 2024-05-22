@@ -7,6 +7,7 @@ use App\Application;
 use App\Forms\OrderNowForm;
 use App\Model\Entity\Order;
 use App\Utilities\CustomerFocus;
+use App\Utilities\DateUtilityTrait;
 use Cake\Http\Response;
 
 /**
@@ -16,6 +17,7 @@ use Cake\Http\Response;
  */
 class CustomersItemsController extends AppController
 {
+    use DateUtilityTrait;
 
     protected array $paginate = [
         'limit' => 100,
@@ -33,12 +35,15 @@ class CustomersItemsController extends AppController
          * render take-inventory UI
          */
         $this->setUserCustomerVariable();
-        $query = $this->CustomersItems->find()
-            ->where(['customer_id' => $this->readSession('Auth')->customer_id])
-            ->contain(['Customers', 'Items']);
-        $customersItems = $this->paginate($query);
 
-        $this->set(compact('customersItems'));
+        $customersItems = $this->paginate(
+            $this->CustomersItems->findInventoryForCustomer(
+                $this->readSession('Auth')->customer_id
+            )
+        );
+        $nextInventoryDate = $this->nextMonthsInventoryDate('Y-m-d');
+
+        $this->set(compact('customersItems', 'nextInventoryDate'));
 
         return $this->render();
     }
