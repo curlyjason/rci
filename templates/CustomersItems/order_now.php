@@ -65,7 +65,7 @@ $description = function(CustomersItem $input):string {
     $itemTrigger = $input->target_quantity ?? '?';
     $itemQuantity = $input->quantity ?? '?';
     $pattern = '<span class="name">%s</span><br />
-<span style="font-size: small;">[Current inventory level: %s | Reorder trigger level: %s]</span>';
+<span style="font-size: small;">[Last entered inventory: %s | PAR: %s]</span>';
 
     return sprintf($pattern, $itemName, $itemQuantity, $itemTrigger);
 };

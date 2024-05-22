@@ -18,18 +18,18 @@ use Cake\I18n\DateTime;
  */
 trait DateUtilityTrait
 {
-    public function nextMonthsInventoryDate(): string
+    public function nextMonthsInventoryDate($format = null): string
     {
         return (new DateTime())
             ->firstOfMonth()
             ->modify('first day of next month')
-            ->format('Y-m-d 00:00:01');
+            ->format($format ?? 'Y-m-d 00:00:01');
     }
 
-    public function thisMonthsInventoryDate(): string
+    public function thisMonthsInventoryDate($format = null): string
     {
         return (new DateTime())
             ->firstOfMonth()
-            ->format('Y-m-d 00:00:01');
+            ->format($fomat ?? 'Y-m-d 00:00:01');
     }
 }
