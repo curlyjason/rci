@@ -2,6 +2,7 @@ const InventoryTools = {
     initialize: function () {
         InventoryTools.attachQuantityChangeHandlers(InventoryTools.getQuantityInputs());
         InventoryTools.attachOkButtonHanders(InventoryTools.getOkButtons());
+        InventoryTools.updateInventoryInstructions();
     },
 
     getQuantityInputs: function () {
@@ -55,7 +56,24 @@ const InventoryTools = {
         let row = $('tr[id="' + id + '"]');
         let tableBody = $('tbody.complete');
         tableBody.prepend(row);
+        InventoryTools.updateInventoryInstructions();
     },
+    updateInventoryInstructions: function() {
+        let $todoRows = $('tbody.todo').children('tr').length;
+        if ($todoRows > 0) {
+            $('#open').removeClass('hide');
+            $('#nextDate').addClass('hide');
+            $('#doneHeader').addClass('hide');
+            $('#todoHeader').removeClass('hide');
+            $('div.todo').removeClass('hide');
+        } else {
+            $('#open').addClass('hide');
+            $('#nextDate').removeClass('hide');
+            $('#doneHeader').removeClass('hide');
+            $('#todoHeader').addClass('hide');
+            $('div.todo').addClass('hide');
+        }
+    }
 };
 
 $(document).ready(InventoryTools.initialize);

@@ -19,6 +19,9 @@ $this->append('style');
     tr.hide {
         display: none;
     }
+    h3.defined {
+        margin-bottom: 0rem;
+    }
 </style>
 <?php
 $this->end();
@@ -32,7 +35,7 @@ $getId = function($data) {
 $description = function(CustomersItem $input):string {
     $itemName = $input?->item->name ?? 'Unknown';
     $itemQuantity = $input->quantity ?? '?';
-    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">[Current inventory level: %s]</span>';
+    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">[Last entered inventory: %s]</span>';
 
     return sprintf($pattern, $itemName, $itemQuantity);
 };
@@ -68,7 +71,8 @@ $this->append('script', $this->Html->script('trigger_tools.js'));
 
 ?>
 <div class="customersItems index content">
-    <h3><?= __('Set Reorder Trigger Levels') ?></h3>
+    <h3 class="defined"><?= __('Set PAR') ?></h3>
+    <p style="font-size: small">The PAR level determines the optimum amount of inventory stock.</p>
     <?php
     echo $this->Form->create();
     echo $this->Form->control('filter');

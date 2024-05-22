@@ -3,6 +3,7 @@
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\CustomersItem> $customersItems
  * @var \App\Model\Entity\User $user
+ * @var string $nextInventoryDate
  */
 
 use App\Model\Entity\CustomersItem;
@@ -33,6 +34,19 @@ $this->append('style');
         background-color:green;
         color:white;
     }
+    h3.defined {
+        margin-bottom: 0;
+    }
+    p.definition{
+        font-size: small;
+        margin-bottom: 0;
+    }
+    p.definition:last-of-type{
+        margin-bottom: 2rem;
+    }
+    .hide {
+        display: none;
+    }
 </style>
 <?php
 $this->end();
@@ -42,7 +56,7 @@ $this->end();
 $description = function(CustomersItem $input):string {
     $itemName = $input?->item->name ?? 'Unknown';
     $itemTrigger = $input->target_quantity ?? '?';
-    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">[Reorder trigger level: %s]</span>';
+    $pattern = '<span class="name">%s</span><br /><span style="font-size: small;">[PAR: %s]</span>';
 
     return sprintf($pattern, $itemName, $itemTrigger);
 };
@@ -84,17 +98,23 @@ $outputTableRow = function(bool $shouldOutput, $customersItem) use ($description
 //</editor-fold>
 
 $this->append('script', $this->Html->script('inventory_tools.js'));
-
 ?>
 <div class="customersItems index content">
-    <h3><?= __('Take Inventory') ?></h3>
-    <h4>To Do</h4>
+    <h3 class="defined"><?= __('Take Inventory') ?></h3>
+
+    <p class="definition hide" id="open" style="color: firebrick; font-weight: bold">Inventory now open.</p>
+    <p class="definition hide" id="nextDate">Next inventory due on <?= $nextInventoryDate?></p>
+    <p class="definition">The To Do section shows the last inventory count and your current PAR.</p>
+    <p class="definition">The Complete section shows your current inventory count (as you enter it).</p>
+
+    <h4 id="todoHeader" class="hide">To Do</h4>
+    <h2 id="doneHeader" class="hide" style="color: white; background-color: darkgreen">Inventory complete, thank you.</h2>
     <div class="table-responsive todo">
         <table>
             <thead>
                 <tr>
                     <th><?= $this->Paginator->sort('item_id') ?></th>
-                    <th><?= $this->Paginator->sort('quantity', 'On Shelf') ?></th>
+                    <th><?= $this->Paginator->sort('quantity', 'Last Count') ?></th>
                 </tr>
             </thead>
             <tbody class="todo">
@@ -106,13 +126,13 @@ $this->append('script', $this->Html->script('inventory_tools.js'));
             </tbody>
         </table>
     </div>
-    <h3>Complete</h3>
+    <h3>Submitted Inventory</h3>
     <div class="table-responsive complete">
         <table>
             <thead>
                 <tr>
                     <th><?= $this->Paginator->sort('item_id') ?></th>
-                    <th><?= $this->Paginator->sort('quantity', 'On Shelf') ?></th>
+                    <th><?= $this->Paginator->sort('quantity', 'Current Count') ?></th>
                 </tr>
             </thead>
             <tbody class="complete">
