@@ -101,4 +101,11 @@ class CustomersItemsTable extends Table
 
         return $rules;
     }
+
+    public function findInventoryForCustomer($customer_id): SelectQuery
+    {
+        return $this->find()
+            ->where(['customer_id' => $customer_id])
+            ->contain(['Customers', 'Items']);
+    }
 }
