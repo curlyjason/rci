@@ -30,7 +30,7 @@ services:
             - DB_USERNAME=${DB_USERNAME}
             - DB_USER_PASS=${DB_USER_PASS}
         depends_on:
-            - db
+            - mysql
 
 volumes:
     mysqldata:
