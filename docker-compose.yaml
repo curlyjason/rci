@@ -1,5 +1,5 @@
 services:
-    mysql:
+    db:
         image: mysql:8
         restart: always
         environment:
@@ -26,11 +26,11 @@ services:
             - SHORT_NAME=${SHORT_NAME}
             - WEB_PORT=${WEB_PORT}
             - DB_PORT=${DB_PORT}
-            - DB_HOST=mysql
+            - DB_HOST=db
             - DB_USERNAME=${DB_USERNAME}
             - DB_USER_PASS=${DB_USER_PASS}
         depends_on:
-            - mysql
+            - db
 
 volumes:
     mysqldata:

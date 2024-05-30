@@ -15,12 +15,12 @@ return
         'default_environment' => 'production',
         'production' => [
             'adapter' => 'mysql',
-            'dsn' => 'mysql:host=mysql;dbname=rci;port=3035',
-//            'host' => getenv('DB_HOST'),
-//            'name' => getenv('SHORT_NAME'),
+//            'dsn' => 'mysql:host=mysql;dbname=rci;port=3035',
+            'host' => getenv('DB_HOST'),
+            'name' => getenv('SHORT_NAME'),
             'user' => getenv('DB_USERNAME'),
             'pass' => getenv('DB_USER_PASS'),
-//            'port' => getenv('DB_PORT'),
+            'port' => getenv('DB_PORT'),
             'charset' => 'utf8',
         ],
         'test' => [
