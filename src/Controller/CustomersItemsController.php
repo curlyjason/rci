@@ -41,7 +41,7 @@ class CustomersItemsController extends AppController
                 $this->readSession('Auth')->customer_id
             )
         );
-        $nextInventoryDate = $this->nextMonthsInventoryDate('Y-m-d');
+        $nextInventoryDate = $this->nextMonthsInventoryDate(self::DATE_FORMAT_YYYY_MM_DD);
 
         $this->set(compact('customersItems', 'nextInventoryDate'));
 
