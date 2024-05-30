@@ -27,6 +27,9 @@ services:
             - WEB_PORT=${WEB_PORT}
             - DB_PORT=${DB_PORT}
             - DB_HOST=mysql
+            - DB_USERNAME=${DB_USERNAME}
+            - DB_USER_PASS=${DB_USER_PASS}
+
         depends_on:
             - mysql
 
