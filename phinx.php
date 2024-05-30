@@ -15,7 +15,6 @@ return
         'default_environment' => 'production',
         'production' => [
             'adapter' => 'mysql',
-//            'dsn' => 'mysql:host=mysql;dbname=rci;port=3035',
             'host' => getenv('DB_HOST'),
             'name' => getenv('SHORT_NAME'),
             'user' => getenv('DB_USERNAME'),
