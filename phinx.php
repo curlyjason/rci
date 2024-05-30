@@ -13,7 +13,7 @@ return
     'environments' => [
         'default_migration_table' => 'phinxlog',
         'default_environment' => 'production',
-        'development' => [
+        'production' => [
             'adapter' => 'mysql',
             'host' => getenv('DB_HOST'),
             'name' => getenv('SHORT_NAME'),
