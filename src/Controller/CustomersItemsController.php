@@ -155,7 +155,9 @@ class CustomersItemsController extends AppController
     public function sendReplenishInventory()
     {
         $mailer = new UserMailer('default');
-        $mailer->setFrom(['jason@curlymedia.com' => 'Curly Media'])
+        $mailer
+            ->setEmailFormat('text')
+            ->setFrom(['jason@curlymedia.com' => 'Curly Media'])
             ->setTo('jason@tempestinis.com')
             ->setSubject('About');
         osd($mailer);

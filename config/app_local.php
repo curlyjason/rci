@@ -56,11 +56,18 @@ return [
      */
     'EmailTransport' => [
         'default' => [
-            'host' => 'smtp.dreamhost.com',
+            'className' => 'Smtp',
+            'host' => 'ssl://smtp.dreamhost.com',
             'port' => 465,
             'username' => 'jason@curlymedia.com',
             'password' => '7J6F2Sgk',
-//            'client' => null,
+            'client' => null,
+//            'tls' => true,
+             'ssl' => [
+                 'verify_peer' => false,
+                 'verify_peer_name' => false,
+                 'allow_self_signed' => true
+                 ],
 //            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
