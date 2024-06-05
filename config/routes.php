@@ -88,6 +88,7 @@ return function (RouteBuilder $routes): void {
         $routes->connect('/set-inventory', ['controller' => 'CustomersItems', 'action' => 'setInventory']);
         $routes->connect('/set-trigger', ['controller' => 'CustomersItems', 'action' => 'setTrigger']);
         $routes->connect('/order-item', ['controller' => 'CustomersItems', 'action' => 'orderItem']);
+        $routes->connect('/send-email', ['controller' => 'CustomersItems', 'action' => 'sendReplenishInventory']);
     });
 
     $routes->prefix('Admin', function (RouteBuilder $routes): void {

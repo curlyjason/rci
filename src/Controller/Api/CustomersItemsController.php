@@ -5,8 +5,10 @@ namespace App\Controller\Api;
 use App\Controller\ApiController;
 use App\Model\Table\CustomersItemsTable;
 use App\Utilities\DateUtilityTrait;
+use App\Utilities\UserMailer;
 use Cake\I18n\DateTime;
 use Cake\Utility\Text;
+use Couchbase\User;
 
 class CustomersItemsController extends ApiController
 {
@@ -107,5 +109,14 @@ class CustomersItemsController extends ApiController
         }
 
         return $response;
+    }
+
+    public function sendReplenishInventory()
+    {
+        $mailer = new UserMailer('default');
+        $mailer->setFrom(['jason@curlymedia.com' => 'Curly Media'])
+            ->setTo('jason@tempestinis.com')
+            ->setSubject('About')
+            ->deliver('My message');
     }
 }

@@ -56,12 +56,12 @@ return [
      */
     'EmailTransport' => [
         'default' => [
-            'host' => 'localhost',
-            'port' => 25,
-            'username' => null,
-            'password' => null,
-            'client' => null,
-            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
+            'host' => 'smtp.dreamhost.com',
+            'port' => 465,
+            'username' => 'jason@curlymedia.com',
+            'password' => '7J6F2Sgk',
+//            'client' => null,
+//            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
     'Session' => [

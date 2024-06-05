@@ -8,6 +8,7 @@ use App\Forms\OrderNowForm;
 use App\Model\Entity\Order;
 use App\Utilities\CustomerFocus;
 use App\Utilities\DateUtilityTrait;
+use App\Utilities\UserMailer;
 use Cake\Http\Response;
 
 /**
@@ -150,4 +151,16 @@ class CustomersItemsController extends AppController
 
         return '/Admin/Orders/resolve-errors';
     }
+
+    public function sendReplenishInventory()
+    {
+        $mailer = new UserMailer('default');
+        $mailer->setFrom(['jason@curlymedia.com' => 'Curly Media'])
+            ->setTo('jason@tempestinis.com')
+            ->setSubject('About');
+        osd($mailer);
+        $mailer
+            ->deliver('My message');
+    }
+
 }
