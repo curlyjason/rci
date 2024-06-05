@@ -114,9 +114,13 @@ class CustomersItemsController extends ApiController
     public function sendReplenishInventory()
     {
         $mailer = new UserMailer('default');
-        $mailer->setFrom(['jason@curlymedia.com' => 'Curly Media'])
+        $mailer
+            ->setEmailFormat('text')
+            ->setFrom(['jason@curlymedia.com' => 'Curly Media'])
             ->setTo('jason@tempestinis.com')
-            ->setSubject('About')
+            ->setSubject('About');
+        osd($mailer);
+        $mailer
             ->deliver('My message');
     }
 }
