@@ -14,8 +14,10 @@ class ItemsTableTest extends \Cake\TestSuite\TestCase
     public function testFind()
     {
         $this->loadFixtureScenario('IntegrationData');
-        $this->fetchTable('Items')
+        $result = $this->fetchTable('Items')
             ->find()
-            ->all();
+            ->all()
+            ->toArray();
+        $this->assertTrue(count($result) > 0);
     }
 }
