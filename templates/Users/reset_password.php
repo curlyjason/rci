@@ -1,6 +1,5 @@
 <?php
 
-use App\Form\ResetPasswordForm;
 use App\Model\Entity\User;
 use App\View\AppView;
 use Cake\Routing\Router;
@@ -19,7 +18,8 @@ echo $this->Form->create($context, ['action' => Router::url(
         'controller' => 'Users',
         'action' => 'resetPassword',
         $User->username,
-        $User->idHash()
+        $User->password
+//        $User->idHash()
     ])
 ]);
 //$this->Form->create();

@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Form\ResetPasswordForm;
+use App\Forms\ResetPasswordForm;
 use App\Model\Entity\User;
 use Authentication\Controller\Component\AuthenticationComponent;
-use Cake\Auth\DefaultPasswordHasher;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Cake\Event\EventInterface;
 use Cake\Log\Log;
 
@@ -21,7 +21,7 @@ class UsersController extends AppController
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
-        $this->Authentication->allowUnauthenticated(['add', 'login']);
+        $this->Authentication->allowUnauthenticated(['add', 'login', 'reset-password', 'forgot-password']);
     }
 
 
@@ -62,10 +62,10 @@ class UsersController extends AppController
             return $this->logout();
         }
 
-        if(!$User->isHash($hash)){
-            $this->Flash->error("The chosen user is not valid.");
-            return $this->logout();
-        }
+//        if(!$User->isHash($hash)){
+//            $this->Flash->error("The chosen user is not valid.");
+//            return $this->logout();
+//        }
 
         if($User->modified->timestamp < time() - DAY){
             $this->Flash->error("The link has expired. Please request another.");
