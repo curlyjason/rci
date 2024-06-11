@@ -21,7 +21,7 @@ class UsersController extends AppController
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
-        $this->Authentication->allowUnauthenticated(['add', 'login', 'reset-password', 'forgot-password']);
+        $this->Authentication->allowUnauthenticated(['add', 'login', 'resetPassword', 'forgotPassword']);
     }
 
 
@@ -67,7 +67,7 @@ class UsersController extends AppController
 //            return $this->logout();
 //        }
 
-        if($User->modified->timestamp < time() - DAY){
+        if($User->modified->timestamp < time() - (60*60*24)){
             $this->Flash->error("The link has expired. Please request another.");
             return $this->logout();
         }

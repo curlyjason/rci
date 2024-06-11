@@ -4,6 +4,7 @@ namespace App\Test\TestCase\Controller;
 
 use App\Test\Scenario\IntegrationDataScenario;
 use App\Test\Traits\AuthTrait;
+use App\Test\Traits\DebugTrait;
 use Cake\TestSuite\IntegrationTestTrait;
 use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
 
@@ -12,6 +13,7 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
     use IntegrationTestTrait;
     use ScenarioAwareTrait;
     use AuthTrait;
+    use DebugTrait;
 
     public function test_mockALoggedInUser()
     {
@@ -29,6 +31,8 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
     public function test_ForgotPasswordPageRenders()
     {
         $this->get('http://localhost:8015/users/forgot-password');
+        $this->writeFile();
+
 
         $this->assertResponseCode('200',
             "The Forgot Password form did not render without errors");
