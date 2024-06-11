@@ -55,6 +55,7 @@ class CustomersTable extends Table
         $this->hasMany('Users', [
             'foreignKey' => 'customer_id',
         ]);
+        $this->hasMany('CustomersItems');
         $this->belongsToMany('Items', [
             'foreignKey' => 'customer_id',
             'targetForeignKey' => 'item_id',

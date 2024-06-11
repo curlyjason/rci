@@ -41,7 +41,9 @@ class CustomersController extends AppController
      */
     public function view($id = null)
     {
-        $customer = $this->Customers->get($id, contain: ['Items']);
+        $customer = $this->Customers->get($id, contain: [
+            'CustomersItems' => ['Items']
+        ]);
         $this->set(compact('customer'));
     }
 

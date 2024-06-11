@@ -33,7 +33,7 @@ class CustomersItemsController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $customersItem = $this->CustomersItems->get($id, contain: ['Customers', 'Items']);
         $this->set(compact('customersItem'));
@@ -68,7 +68,7 @@ class CustomersItemsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $customersItem = $this->CustomersItems->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -92,7 +92,7 @@ class CustomersItemsController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete(?string $id = null, bool $redir = true)
     {
         $this->request->allowMethod(['post', 'delete']);
         $customersItem = $this->CustomersItems->get($id);
@@ -102,6 +102,26 @@ class CustomersItemsController extends AppController
             $this->Flash->error(__('The customers item could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        if ($redir) {
+            return $this->redirect(['action' => 'index']);
+        }
+    }
+
+    /**
+     * @param $id
+     * @param $custId
+     * @return \Cake\Http\Response|null
+     */
+    public function customerDelete($id, $custId)
+    {
+        $this->delete($id, false);
+
+        return $this->redirect(
+            [
+                'controller' => 'customers',
+                'action' => 'view',
+                $custId,
+            ]
+        );
     }
 }

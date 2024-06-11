@@ -16,36 +16,27 @@
     </aside>
     <div class="column column-80">
         <div class="customers view content">
-            <h3><?= h($customer->name) ?></h3>
-            <table>
-                <tr>
-                    <th><?= __('Name') ?></th>
-                    <td><?= h($customer->name) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <td><?= $this->Number->format($customer->id) ?></td>
-                </tr>
-            </table>
+            <h2><?= h($customer->name) ?></h2>
             <div class="related">
-                <h4><?= __('Related Items') ?></h4>
-                <?php if (!empty($customer->items)) : ?>
+                <h4><?= __('Items') ?></h4>
+                <?php if (!empty($customer->customers_items)) : ?>
                 <div class="table-responsive">
                     <table>
                         <tr>
-                            <th><?= __('Id') ?></th>
+                            <th><?= __('Customer Items Id') ?></th>
                             <th><?= __('Name') ?></th>
 
                             <th class="actions"><?= __('Actions') ?></th>
                         </tr>
-                        <?php foreach ($customer->items as $items) : ?>
+                        <?php foreach ($customer->customers_items as $customerItem) : ?>
+                        <?php $item = $customerItem->item ?>
                         <tr>
-                            <td><?= h($items->id) ?></td>
-                            <td><?= h($items->name) ?></td>
+                            <td><?= h($customerItem->id) ?></td>
+                            <td><?= h($item->name) ?></td>
                             <td class="actions">
-                                <?= $this->Html->link(__('View'), ['controller' => 'Items', 'action' => 'view', $items->id]) ?>
-                                <?= $this->Html->link(__('Edit'), ['controller' => 'Items', 'action' => 'edit', $items->id]) ?>
-                                <?= $this->Form->postLink(__('Delete'), ['controller' => 'Items', 'action' => 'delete', $items->id], ['confirm' => __('Are you sure you want to delete # {0}?', $items->id)]) ?>
+                                <?= $this->Html->link(__('View'), ['controller' => 'Items', 'action' => 'view', $item->id]) ?>
+                                <?= $this->Html->link(__('Edit'), ['controller' => 'Items', 'action' => 'edit', $item->id]) ?>
+                                <?= $this->Form->postLink(__('Delete'), ['controller' => 'CustomersItems', 'action' => 'customerDelete', $customerItem->id, $customer->id], ['confirm' => __('Are you sure you want to remove the connection to # {0}?', $customerItem->id)]) ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
