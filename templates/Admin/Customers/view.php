@@ -26,14 +26,6 @@
                     <th><?= __('Id') ?></th>
                     <td><?= $this->Number->format($customer->id) ?></td>
                 </tr>
-                <tr>
-                    <th><?= __('Created') ?></th>
-                    <td><?= h($customer->created) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Modified') ?></th>
-                    <td><?= h($customer->modified) ?></td>
-                </tr>
             </table>
             <div class="related">
                 <h4><?= __('Related Items') ?></h4>
@@ -43,16 +35,13 @@
                         <tr>
                             <th><?= __('Id') ?></th>
                             <th><?= __('Name') ?></th>
-                            <th><?= __('Created') ?></th>
-                            <th><?= __('Modified') ?></th>
+
                             <th class="actions"><?= __('Actions') ?></th>
                         </tr>
                         <?php foreach ($customer->items as $items) : ?>
                         <tr>
                             <td><?= h($items->id) ?></td>
                             <td><?= h($items->name) ?></td>
-                            <td><?= h($items->created) ?></td>
-                            <td><?= h($items->modified) ?></td>
                             <td class="actions">
                                 <?= $this->Html->link(__('View'), ['controller' => 'Items', 'action' => 'view', $items->id]) ?>
                                 <?= $this->Html->link(__('Edit'), ['controller' => 'Items', 'action' => 'edit', $items->id]) ?>
