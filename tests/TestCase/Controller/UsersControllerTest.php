@@ -25,4 +25,13 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
                 "The user $role was not recognized as a valid, logged-in user");
         }
     }
+
+    public function test_ForgotPasswordPageRenders()
+    {
+        $this->get('http://localhost:8015/users/forgot-password');
+
+        $this->assertResponseCode('200',
+            "The Forgot Password form did not render without errors");
+
+    }
 }
