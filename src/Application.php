@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Forms\OrderNowForm;
+use App\Forms\ResetPasswordForm;
 use App\Policy\RequestPolicy;
 use App\Utilities\CustomerFocus;
 use Authorization\Exception\ForbiddenException;
@@ -164,6 +165,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         );
         $container->add(OrderNowForm::class);
         $container->add(CustomerFocus::class);
+        $container->add(ResetPasswordForm::class);
         self::$_container = $container;
     }
 

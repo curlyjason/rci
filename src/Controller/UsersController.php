@@ -45,7 +45,7 @@ class UsersController extends AppController
         return $this->redirect(['controller' => 'Users', 'action' => 'login']);
     }
 
-    public function resetPassword($username, $hash)
+    public function resetPassword($username, $hash, ResetPasswordForm $context)
     {
         /**
          * @var User $User
@@ -72,7 +72,7 @@ class UsersController extends AppController
             return $this->logout();
         }
 
-        $context = new ResetPasswordForm();
+//        $context = new ResetPasswordForm(); went to Dependency Injection
 
         if($this->getRequest()->is('post') && $context->execute($this->getRequest()->getData())){
             $data = $this->getRequest()->getData();
@@ -109,12 +109,13 @@ class UsersController extends AppController
                 $this->Flash->success("Reset password link has been emailed to $User->username. Please follow the instructions.");
                 $this->Users->patchEntity($User, ['modified' => time()]);
                 $this->Users->save($User);
-                $this->trigger('resetPasswordNotification', ['User' => $User, 'new' => false]);
+//                $this->trigger('resetPasswordNotification', ['User' => $User, 'new' => false]);
             }
             else {
                 $this->Flash->error("No user found with that email address");
             }
             $this->logout();
+
         }
     }
 
