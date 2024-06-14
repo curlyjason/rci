@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
+use App\Utilities\HashIdTrait;
 use Cake\ORM\Entity;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 
@@ -20,6 +21,16 @@ use Authentication\PasswordHasher\DefaultPasswordHasher;
  */
 class User extends Entity
 {
+
+    use HashIdTrait;
+
+    const DIGEST_COLUMNS = [
+        'email' ,
+        'id' ,
+//        'verified', we need a way of activating and or verifying users
+        'modified',
+        'created'
+    ];
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -52,6 +63,7 @@ class User extends Entity
         if (strlen($password) > 0) {
             return (new DefaultPasswordHasher())->hash($password);
         }
+        return null;
     }
 
     public function isAdmin()
