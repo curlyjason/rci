@@ -33,9 +33,14 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->get('http://localhost:8015/users/forgot-password');
         $this->writeFile();
 
-
         $this->assertResponseCode('200',
             "The Forgot Password form did not render without errors");
+
+    }
+
+    public function test_ForgotPasswordFormClassExecutes()
+    {
+        $this->post('http://localhost:8015/users/forgot-password');
 
     }
 }
