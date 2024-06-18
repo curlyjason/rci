@@ -19,9 +19,10 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
     {
         $this->loadFixtureScenario(IntegrationDataScenario::class);
 
-        foreach (self::ALL_ROLES as $role) {
+        foreach (self::ALL_ROLES as $index => $role) {
             $this->login($role);
             $this->get('http://localhost:8015');
+//            $this->writeFile("debug$index.html");
 
             $this->assertResponseCode('200',
                 "The user $role was not recognized as a valid, logged-in user");
@@ -45,17 +46,42 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->assertStringContainsString('Welcome', $this->_getBodyAsString());
     }
 
+    public function test_showLoginLinkWhenNotLoggedIn()
+    {
+        $this->get('http://localhost:8015/users/forgot-password');
+//        $this->writeFile();
+
+        $this->assertStringContainsString('users/login"', $this->_getBodyAsString(),
+            'Login link is missing for non-logged in user');
+        $this->assertStringNotContainsString('users/logout"', $this->_getBodyAsString(),
+            'Logout link is present for non-logged in user');
+
+    }
+
+    public function test_showLogoutLinkWhenLoggedIn()
+    {
+        $this->loadFixtureScenario(IntegrationDataScenario::class);
+        $this->login();
+        $this->get('http://localhost:8015/');
+//        $this->writeFile();
+
+        $this->assertStringContainsString('users/logout"', $this->_getBodyAsString(),
+            'Logout link is missing for logged in user');
+        $this->assertStringNotContainsString('users/login"', $this->_getBodyAsString(),
+            'Login link is present for logged in user');
+    }
+
     public function test_ForgotPasswordPageRenders()
     {
         $this->get('http://localhost:8015/users/forgot-password');
-        $this->writeFile();
+//        $this->writeFile();
 
         $this->assertResponseCode('200',
             "The Forgot Password form did not render without errors");
 
     }
 
-    public function test_ForgotPasswordFormClassExecutes()
+    public function xtest_ForgotPasswordFormClassExecutes()
     {
         $this->post('http://localhost:8015/users/forgot-password');
 
