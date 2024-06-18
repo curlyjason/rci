@@ -51,9 +51,9 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->get('http://localhost:8015/users/forgot-password');
 //        $this->writeFile();
 
-        $this->assertStringContainsString('users/login"', $this->_getBodyAsString(),
+        $this->assertResponseRegExp('!href="/?users/login"!',
             'Login link is missing for non-logged in user');
-        $this->assertStringNotContainsString('users/logout"', $this->_getBodyAsString(),
+        $this->assertResponseNotRegExp('!href="/?users/logout"!',
             'Logout link is present for non-logged in user');
 
     }
@@ -63,14 +63,13 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->loadFixtureScenario(IntegrationDataScenario::class);
         $this->login();
         $this->get('http://localhost:8015/');
-//        $this->writeFile();
+        $this->writeFile();
 
-        $this->assertStringContainsString('users/logout"', $this->_getBodyAsString(),
+        $this->assertResponseRegExp('!href=".?users/logout"!',
             'Logout link is missing for logged in user');
-        $this->assertStringNotContainsString('users/login"', $this->_getBodyAsString(),
+        $this->assertResponseNotRegExp('!href=".?users/login"!',
             'Login link is present for logged in user');
     }
-
     public function test_ForgotPasswordPageRenders()
     {
         $this->get('http://localhost:8015/users/forgot-password');
