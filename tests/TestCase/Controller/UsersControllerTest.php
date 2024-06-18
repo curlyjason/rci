@@ -28,6 +28,23 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         }
     }
 
+    public function test_welcomeOmittedWhenNotLoggedIn()
+    {
+        $this->get('http://localhost:8015/users/forgot-password');
+
+        $this->assertStringNotContainsString('Welcome', $this->_getBodyAsString());
+
+    }
+
+    public function test_welcomeShowsWhenLoggedIn()
+    {
+        $this->loadFixtureScenario(IntegrationDataScenario::class);
+        $this->login();
+        $this->get('http://localhost:8015/');
+
+        $this->assertStringContainsString('Welcome', $this->_getBodyAsString());
+    }
+
     public function test_ForgotPasswordPageRenders()
     {
         $this->get('http://localhost:8015/users/forgot-password');
