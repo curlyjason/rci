@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Forms\ResetPasswordForm;
 use App\Model\Entity\User;
+use App\Utilities\EventTrigger;
 use Authentication\Controller\Component\AuthenticationComponent;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Cake\Event\EventInterface;
@@ -18,6 +19,8 @@ use Cake\Log\Log;
  */
 class UsersController extends AppController
 {
+    use EventTrigger;
+
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
@@ -99,24 +102,34 @@ class UsersController extends AppController
     public function forgotPassword()
     {
         if($this->getRequest()->is('post')){
-            $User = $this->Users->find('all')
-                ->where([
-                    'username' => $this->getRequest()->getData('email'),
-                    'active' => 1
-                ])
-                ->first();
-            if(!is_null($User)){
-                $this->Flash->success("Reset password link has been emailed to $User->username. Please follow the instructions.");
-                $this->Users->patchEntity($User, ['modified' => time()]);
-                $this->Users->save($User);
-//                $this->trigger('resetPasswordNotification', ['User' => $User, 'new' => false]);
-            }
-            else {
-                $this->Flash->error("No user found with that email address");
+            $User = $this->Users->findByEmail($this->getRequest()->getData('email'))->first();
+
+            switch (true) {
+                case is_null($User):
+                    $this->Flash->error("No user found with that email address");
+                    break;
+                case !$this->updateUserModifiedDate($User):
+                    $this->Flash->error("Database update failed. Please try again");
+                    break;
+                default:
+                    $this->trigger('resetPasswordNotification', ['User' => $User, 'new' => false]);
+                    $this->Flash->success("Reset password link has been emailed to $User->email. Please follow the instructions.");
             }
             $this->logout();
 
         }
+    }
+
+    /**
+     * Enforce 24 hour lifespan for password change links
+     *
+     * @param $User
+     * @return User|false
+     */
+    private function updateUserModifiedDate($User)
+    {
+        $this->Users->patchEntity($User, ['modified' => time()]);
+        return $this->Users->save($User);
     }
 
 }
