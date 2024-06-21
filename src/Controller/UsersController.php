@@ -48,15 +48,14 @@ class UsersController extends AppController
         return $this->redirect(['controller' => 'Users', 'action' => 'login']);
     }
 
-    public function resetPassword($username, $hash, ResetPasswordForm $context)
+    public function resetPassword($email, $hash, ResetPasswordForm $context)
     {
         /**
          * @var User $User
          */
         $User = $this->Users->find('all')
             ->where([
-                'username' => $username,
-                'active' => 1
+                'email' => $email,
             ])
             ->first();
 
@@ -82,8 +81,6 @@ class UsersController extends AppController
             $Hash = new DefaultPasswordHasher();
             $data = [
                 'password' => $Hash->hash($data['new_password']),
-                'verified' => true,
-                'active' => 1
             ];
             $this->Users->patchEntity($User, $data);
             $this->Users->save($User);
@@ -93,7 +90,7 @@ class UsersController extends AppController
             }
             else {
                 $this->Flash->error('Password did not save, please try again.');
-                Log::error("$User->username could not reset password.");
+                Log::error("$User->email could not reset password.");
             }
         }
         $this->set(compact('User', 'context'));
