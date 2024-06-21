@@ -17,8 +17,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Admin\ItemsController;
+use App\Utilities\AccountManagementListeners;
 use App\Utilities\ImportItems;
 use Cake\Controller\Controller;
+use Cake\Event\EventManager;
 
 /**
  * Application Controller
@@ -46,6 +48,7 @@ class AppController extends Controller
         $this->loadComponent('Flash');
         $this->loadComponent('Authentication.Authentication');
         $this->loadComponent('Authorization.Authorization');
+        EventManager::instance()->on(new AccountManagementListeners());
     }
 
     protected function readSession(?string $string = null, mixed $default = null)
