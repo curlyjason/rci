@@ -53,28 +53,18 @@ class UsersController extends AppController
         /**
          * @var User $User
          */
-        $User = $this->Users->find('all')
-            ->where([
-                'email' => $email,
-            ])
-            ->first();
+        $User = $this->Users->findByEmail($email)->first();
 
-        if(is_null($User)){
-            $this->Flash->error("The chosen user does not exist.");
+        $errMessage = match (true) {
+            is_null($User) => 'The chosen user does not exist.',
+            !$User->isHash($hash) => 'The chosen user is not valid.',
+            $User->modified->timestamp < time() - (60 * 60 * 24) => 'The link has expired. Please request another.',
+            default => false,
+        };
+        if ($errMessage) {
+            $this->Flash->error($errMessage);
             return $this->logout();
         }
-
-//        if(!$User->isHash($hash)){
-//            $this->Flash->error("The chosen user is not valid.");
-//            return $this->logout();
-//        }
-
-        if($User->modified->timestamp < time() - (60*60*24)){
-            $this->Flash->error("The link has expired. Please request another.");
-            return $this->logout();
-        }
-
-//        $context = new ResetPasswordForm(); went to Dependency Injection
 
         if($this->getRequest()->is('post') && $context->execute($this->getRequest()->getData())){
             $data = $this->getRequest()->getData();
