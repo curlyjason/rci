@@ -35,6 +35,7 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         }
     }
 
+    //<editor-fold desc="UX FEATURES">
     public function test_welcomeOmittedWhenNotLoggedIn()
     {
         $this->get(TestCons::HOST . '/users/forgot-password');
@@ -74,7 +75,9 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->assertResponseNotRegExp('!href=".?users/login"!',
             'Login link is present for logged in user');
     }
+    //</editor-fold>
 
+    //<editor-fold desc="FORGOT-PASSWORD PAGE">
     public function test_ForgotPasswordPageRenders()
     {
         $this->get(TestCons::HOST . '/users/forgot-password');
@@ -135,7 +138,9 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
 
         $this->assertFlashElement('flash/success');
     }
+    //</editor-fold>
 
+    //<editor-fold desc="RESET-PASSWORD PAGE">
     public function test_resetPasswordPageRenders()
     {
         $this->loadFixtureScenario(IntegrationDataScenario::class);
@@ -182,6 +187,7 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->assertFlashElement('flash/error');
         $this->assertFlashMessage('The link has expired. Please request another.');
     }
+    //</editor-fold>
 
     /**
      * @return mixed
