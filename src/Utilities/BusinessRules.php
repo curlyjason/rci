@@ -99,7 +99,7 @@ class BusinessRules
      * @param $options array options for the rule
      * @return bool result of the test
      */
-    static public function uniqueSkuInScope($entity, $options)
+    static public function uniqueSkuInScope($entity, $options): bool
     {
         /**
          * @var SkusTable $table
@@ -140,7 +140,8 @@ class BusinessRules
      * @param string[] $columns
      * @return string
      */
-    static public function digest($entity, $columns) {
+    static public function digest($entity, $columns): string
+    {
         $rawData = $entity;
         if ($entity instanceof EntityInterface) {
             $rawData = $entity->toArray();
@@ -154,41 +155,5 @@ class BusinessRules
             }, '');
 
         return sha1($string);
-    }
-
-    /**
-     * Validate that a sku has been assigned to at least one store
-     *
-     * @param $candidateValue
-     * @param $patchArray
-     * @return bool
-     */
-    static public function hasAStore($candidateValue, $patchArray)
-    {
-        return !empty($candidateValue['_ids']);
-    }
-
-    /**
-     * Make a notification key from a cycle and event
-     *
-     * @param $cycle
-     * @param $event
-     * @return string
-     */
-    public static function makeKey($cycle, $event)
-    {
-        return "$cycle---$event";
-    }
-
-    /**
-     * split a notification key into cycle and event
-     *
-     * @param $key
-     * @return string[] 0 = cycle, 1 = event
-     */
-    public static function splitKey($key)
-    {
-        return explode('---', $key);
-
     }
 }
