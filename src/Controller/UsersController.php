@@ -57,7 +57,7 @@ class UsersController extends AppController
 
         $errMessage = match (true) {
             is_null($User) => 'The chosen user does not exist.',
-            !$User->isHash($hash) => 'The chosen user is not valid.',
+            !$User->digestIs($hash) => 'The chosen user is not valid.',
             $User->modified->timestamp < time() - (60 * 60 * 24) => 'The link has expired. Please request another.',
             default => false,
         };

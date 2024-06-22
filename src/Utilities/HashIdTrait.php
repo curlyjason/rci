@@ -8,14 +8,14 @@ namespace App\Utilities;
 trait HashIdTrait
 {
 
-    public function idHash()
+    public function getDigest()
     {
         return BusinessRules::digest($this, self::DIGEST_COLUMNS);
     }
 
-    public function isHash($hash)
+    public function digestIs($hash)
     {
-        return $hash === $this->idHash();
+        return $hash === $this->getDigest();
     }
 
 }

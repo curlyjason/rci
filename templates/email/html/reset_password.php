@@ -12,7 +12,7 @@ $link = $this->Html->link('Reset Password',
     [
         'controller' => 'users',
         'action' => 'reset_password',
-        $User->email, $User->idHash()
+        $User->email, $User->getDigest()
     ],
     ['fullBase' => true]);
 ?>

@@ -141,7 +141,7 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->loadFixtureScenario(IntegrationDataScenario::class);
         $user = $this->getUser();
 
-        $this->get(TestCons::HOST . "/users/reset-password/{$user->email}/{$user->idHash()}");
+        $this->get(TestCons::HOST . "/users/reset-password/{$user->email}/{$user->getDigest()}");
 //        $this->writeFile();
 
         $this->assertResponseCode('200',
@@ -177,7 +177,7 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->loadFixtureScenario(IntegrationDataScenario::class);
         $user = $this->setExpiredModifiedDate($this->getUser());
 
-        $this->get(TestCons::HOST . "/users/reset-password/{$user->email}/{$user->idHash()}");
+        $this->get(TestCons::HOST . "/users/reset-password/{$user->email}/{$user->getDigest()}");
 
         $this->assertFlashElement('flash/error');
         $this->assertFlashMessage('The link has expired. Please request another.');
