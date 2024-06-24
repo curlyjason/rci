@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Test\Factory;
 
+use Cake\I18n\DateTime;
 use CakephpFixtureFactories\Factory\BaseFactory as CakephpBaseFactory;
 use Faker\Generator;
 

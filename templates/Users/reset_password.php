@@ -17,9 +17,8 @@ echo $this->Form->create($context, ['action' => Router::url(
     [
         'controller' => 'Users',
         'action' => 'resetPassword',
-        $User->username,
-        $User->password
-//        $User->idHash()
+        $User->email,
+        $User->getDigest()
     ])
 ]);
 //$this->Form->create();

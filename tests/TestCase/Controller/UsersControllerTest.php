@@ -2,6 +2,7 @@
 
 namespace App\Test\TestCase\Controller;
 
+use App\Forms\ResetPasswordForm;
 use App\Model\Entity\User;
 use App\Model\Table\UsersTable;
 use App\Test\Scenario\IntegrationDataScenario;
@@ -11,15 +12,18 @@ use App\Test\Traits\MockModelTrait;
 use App\Test\Utilities\TestCons;
 use Cake\I18n\FrozenTime;
 use Cake\TestSuite\IntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
+use CakephpTestSuiteLight\Fixture\TruncateDirtyTables;
 
-class UsersControllerTest extends \Cake\TestSuite\TestCase
+class UsersControllerTest extends TestCase
 {
     use IntegrationTestTrait;
     use ScenarioAwareTrait;
     use AuthTrait;
     use DebugTrait;
     use MockModelTrait;
+    use TruncateDirtyTables;
 
     public function test_mockALoggedInUser()
     {
@@ -93,7 +97,7 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->loadFixtureScenario(IntegrationDataScenario::class);
         $this->enableRetainFlashMessages();
         $this->enableCsrfToken();
-        $postData = ['email' => self::USER,];
+        $postData = ['email' => $this->getUser()->email,];
 
         $this->post(TestCons::HOST . '/users/forgot-password', $postData);
 
@@ -118,7 +122,7 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->loadFixtureScenario(IntegrationDataScenario::class);
         $this->enableRetainFlashMessages();
         $this->enableCsrfToken();
-        $postData = ['email' => self::USER,];
+        $postData = ['email' => $this->getUser()->email,];
 
         $this->post(TestCons::HOST . '/users/forgot-password', $postData);
 
@@ -132,7 +136,7 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->loadFixtureScenario(IntegrationDataScenario::class);
         $this->enableRetainFlashMessages();
         $this->enableCsrfToken();
-        $postData = ['email' => self::USER,];
+        $postData = ['email' => $this->getUser()->email,];
 
         $this->post(TestCons::HOST . '/users/forgot-password', $postData);
 
@@ -146,7 +150,7 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->loadFixtureScenario(IntegrationDataScenario::class);
         $user = $this->getUser();
 
-        $this->get(TestCons::HOST . "/users/reset-password/{$user->email}/{$user->getDigest()}");
+        $this->get($this->getValidResetPasswordEndpoint($user));
 //        $this->writeFile();
 
         $this->assertResponseCode('200',
@@ -182,31 +186,97 @@ class UsersControllerTest extends \Cake\TestSuite\TestCase
         $this->loadFixtureScenario(IntegrationDataScenario::class);
         $user = $this->setExpiredModifiedDate($this->getUser());
 
-        $this->get(TestCons::HOST . "/users/reset-password/{$user->email}/{$user->getDigest()}");
+        $this->get($this->getValidResetPasswordEndpoint($user));
 
         $this->assertFlashElement('flash/error');
         $this->assertFlashMessage('The link has expired. Please request another.');
     }
-    //</editor-fold>
 
-    /**
-     * @return mixed
-     */
-    private function getUser(): mixed
+    public function test_resetPassword_badPostData()
     {
-        $user = $this->fetchTable('Users')
-            ->findByEmail(self::USER)
-            ->first();
-        return $user;
+        $form = $this->createMock(ResetPasswordForm::class);
+        $form->expects($this->once())->method('execute')->willReturn(false);
+        $form->expects($this->any())->method('getErrors')->willReturn(['confirm_password' => 'Mismatch Error',]);
+        $this->containerServices = [ResetPasswordForm::class => $form];
+
+        $this->loadFixtureScenario(IntegrationDataScenario::class);
+        $this->enableRetainFlashMessages();
+        $this->enableCsrfToken();
+        $user = $this->getUser();
+//        $postData = ['new_password' => 'string', 'confirm_password' => 'other string'];
+
+//        debug('relevant');
+        $this->post($this->getValidResetPasswordEndpoint($user));
+//        $this->writeFile();
+
+        $this->assertResponseCode('200');
+        $this->assertResponseRegExp('/Mismatch Error/');
+//        $this->assertResponseRegExp('/Passwords do not match/');
     }
 
+    public function test_resetPassword_goodPostData()
+    {
+        $form = $this->createMock(ResetPasswordForm::class);
+        $form->expects($this->any())->method('execute')->willReturn(true);
+        $form->expects($this->any())->method('getErrors')->willReturn([]);
+        $this->containerServices = [ResetPasswordForm::class => $form];
+
+        $this->loadFixtureScenario(IntegrationDataScenario::class);
+        $this->enableRetainFlashMessages();
+        $this->enableCsrfToken();
+        $user = $this->getUser();
+
+        $postData = ['new_password' => 'string'];
+        $this->post($this->getValidResetPasswordEndpoint($user), $postData);
+//        $this->writeFile();
+
+        $this->assertResponseCode('302');
+        $this->assertFlashElement('flash/success');
+        $this->assertFlashMessage('Password reset, please log in');
+    }
+
+    public function test_resetPassword_goodPostData_failedSave()
+    {
+        $form = $this->createMock(ResetPasswordForm::class);
+        $form->expects($this->any())->method('execute')->willReturn(true);
+        $form->expects($this->any())->method('getErrors')->willReturn([]);
+        $this->containerServices = [ResetPasswordForm::class => $form];
+
+        $this->mockForFailedSave('Users', UsersTable::class, $this->any());
+
+        $this->loadFixtureScenario(IntegrationDataScenario::class);
+        $this->enableRetainFlashMessages();
+        $this->enableCsrfToken();
+        $user = $this->getUser();
+
+        $postData = ['new_password' => 'string'];
+        $this->post($this->getValidResetPasswordEndpoint($user), $postData);
+//        $this->writeFile();
+
+        $this->assertResponseCode('200');
+        $this->assertFlashElement('flash/error');
+        $this->assertFlashMessage('Password did not save, please try again.');
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="PRIVATE CONVENIENCE METHODS">
     private function setExpiredModifiedDate(User $user): bool|\Cake\Datasource\EntityInterface
     {
-        $modified = new FrozenTime(time() - 60 * 60 * 24 * 1.1);
-        $user->set('modified', $modified);
+        $user->set('modified', FrozenTime::now()->modify('-1 day -10 minutes'));
 
         return $this->fetchTable('Users')
             ->save($user);
     }
+
+    /**
+     * @param mixed $user
+     * @return string
+     */
+    private function getValidResetPasswordEndpoint(mixed $user): string
+    {
+        $validResetPasswordEndpoint = TestCons::HOST . "/users/reset-password/{$user->email}/{$user->getDigest()}";
+        return $validResetPasswordEndpoint;
+    }
+    //</editor-fold>
 
 }

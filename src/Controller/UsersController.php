@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Forms\ResetPasswordForm;
 use App\Model\Entity\User;
+use App\Utilities\DateUtilityTrait;
 use App\Utilities\EventTrigger;
 use Authentication\Controller\Component\AuthenticationComponent;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
@@ -20,6 +21,7 @@ use Cake\Log\Log;
 class UsersController extends AppController
 {
     use EventTrigger;
+    use DateUtilityTrait;
 
     public function beforeFilter(EventInterface $event)
     {
@@ -58,13 +60,14 @@ class UsersController extends AppController
         $errMessage = match (true) {
             is_null($User) => 'The chosen user does not exist.',
             !$User->digestIs($hash) => 'The chosen user is not valid.',
-            $User->modified->timestamp < time() - (60 * 60 * 24) => 'The link has expired. Please request another.',
+            $User->modified < $this->twentyfourHoursAgo() => 'The link has expired. Please request another.',
             default => false,
         };
         if ($errMessage) {
             $this->Flash->error($errMessage);
             return $this->logout();
         }
+        debug(get_class($this->Users));
 
         if($this->getRequest()->is('post') && $context->execute($this->getRequest()->getData())){
             $data = $this->getRequest()->getData();
@@ -73,8 +76,8 @@ class UsersController extends AppController
                 'password' => $Hash->hash($data['new_password']),
             ];
             $this->Users->patchEntity($User, $data);
-            $this->Users->save($User);
-            if($User){
+
+            if($this->Users->save($User)){
                 $this->Flash->success('Password reset, please log in');
                 return $this->logout();
             }

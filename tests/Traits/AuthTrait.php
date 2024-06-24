@@ -2,6 +2,7 @@
 
 namespace App\Test\Traits;
 
+use App\Model\Entity\User;
 use Cake\TestSuite\TestCase;
 
 trait AuthTrait
@@ -15,13 +16,23 @@ trait AuthTrait
 
     public function login($role = self::USER): void
     {
-        $user = $this->getTableLocator()
-            ->get('Users')
-            ->find()
-            ->where(['email' => $role])
-            ->all()
-            ->first();
+        $user = $this->getUser($role);
 
         $this->session(['Auth' => $user]);
+    }
+
+    /**
+     * @param mixed $role
+     * @return mixed
+     */
+    private function getUser(mixed $role = self::USER): User
+    {
+        $condition = $role === self::ADMIN_USER ? ['email' => $role] : [];
+        return $this->getTableLocator()
+            ->get('Users')
+            ->find()
+            ->where($condition)
+            ->all()
+            ->first();
     }
 }

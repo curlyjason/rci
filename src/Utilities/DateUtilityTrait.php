@@ -36,4 +36,10 @@ trait DateUtilityTrait
             ->firstOfMonth()
             ->format($format);
     }
+
+    public function twentyfourHoursAgo(): DateTime
+    {
+        $datetime = DateTime::now();
+        return $datetime->modify('-1 day');
+    }
 }
