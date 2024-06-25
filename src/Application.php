@@ -22,7 +22,6 @@ use App\Forms\ResetPasswordForm;
 use App\Policy\RequestPolicy;
 use App\Utilities\CustomerFocus;
 use Authorization\Exception\ForbiddenException;
-use Authorization\Exception\MissingIdentityException;
 use Authorization\Middleware\RequestAuthorizationMiddleware;
 use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
@@ -40,7 +39,6 @@ use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Identifier\AbstractIdentifier;
-use Authentication\Identifier\IdentifierInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
@@ -49,8 +47,6 @@ use Authorization\AuthorizationServiceInterface;
 use Authorization\AuthorizationServiceProviderInterface;
 use Authorization\Middleware\AuthorizationMiddleware;
 use Authorization\Policy\MapResolver;
-use Authorization\Policy\OrmResolver;
-use Psr\Http\Message\ResponseInterface;
 
 
 /**
