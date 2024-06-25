@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace App;
 
+use App\Forms\NewUserForm;
 use App\Forms\OrderNowForm;
 use App\Forms\ResetPasswordForm;
 use App\Policy\RequestPolicy;
@@ -166,6 +167,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $container->add(OrderNowForm::class);
         $container->add(CustomerFocus::class);
         $container->add(ResetPasswordForm::class);
+        $container->add(NewUserForm::class);
         self::$_container = $container;
     }
 
