@@ -67,7 +67,6 @@ class UsersController extends AppController
             $this->Flash->error($errMessage);
             return $this->logout();
         }
-        debug(get_class($this->Users));
 
         if($this->getRequest()->is('post') && $context->execute($this->getRequest()->getData())){
             $data = $this->getRequest()->getData();
