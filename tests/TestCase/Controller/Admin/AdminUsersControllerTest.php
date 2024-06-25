@@ -11,7 +11,7 @@ use Cake\TestSuite\IntegrationTestTrait;
 use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
 use CakephpTestSuiteLight\Fixture\TruncateDirtyTables;
 
-class UsersControllerTest extends \Cake\TestSuite\TestCase
+class AdminUsersControllerTest extends \Cake\TestSuite\TestCase
 {
     use IntegrationTestTrait;
     use ScenarioAwareTrait;
