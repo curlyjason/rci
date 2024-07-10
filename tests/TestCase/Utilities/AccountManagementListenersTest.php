@@ -9,6 +9,7 @@ use App\Utilities\AccountManagementListeners;
 use Cake\Event\Event;
 use Cake\TestSuite\EmailTrait;
 use Cake\TestSuite\TestCase;
+use Cake\TestSuite\TestEmailTransport;
 use CakephpTestSuiteLight\Fixture\TruncateDirtyTables;
 
 class AccountManagementListenersTest extends TestCase
@@ -26,6 +27,8 @@ class AccountManagementListenersTest extends TestCase
 
     public function test_resetPasswordNotification_forgot()
     {
+        $this->setupTransports();
+
         $this->loadRoutes();
         $subject = new \stdClass();
         $to = 'name@domain.com';
@@ -35,10 +38,13 @@ class AccountManagementListenersTest extends TestCase
         $listener = new AccountManagementListeners();
 
         $listener->resetPasswordNotification($event);
+//        $msg = TestEmailTransport::getMessages();
 
         $this->assertMailSentTo($to);
         $this->assertMailSubjectContains(EmailCon::RESET_PASSWORD_EMAIL_TITLE);
         $this->assertMailContains('Password reset for Rods and Cones');
+
+        $this->cleanupEmailTrait();
     }
 
 }
