@@ -101,8 +101,9 @@ class UsersControllerTest extends TestCase
         $this->enableRetainFlashMessages();
         $this->enableCsrfToken();
         $postData = ['email' => $this->getUser()->email,];
-        $resetPasswordNotificationEvent = $this->createMock(Event::class);
 
+        $resetPasswordNotificationEvent = $this->createMock(Event::class);
+        $resetPasswordNotificationEvent->expects($this->any())->method('setResult')->willReturn(true);
         $this->containerServices = [Event::class => $resetPasswordNotificationEvent] ;
 
         $this->post(TestCons::HOST . '/users/forgot-password', $postData);
@@ -145,6 +146,10 @@ class UsersControllerTest extends TestCase
         $this->enableRetainFlashMessages();
         $this->enableCsrfToken();
         $postData = ['email' => $this->getUser()->email,];
+
+        $resetPasswordNotificationEvent = $this->createMock(Event::class);
+        $resetPasswordNotificationEvent->expects($this->any())->method('setResult')->willReturn(true);
+        $this->containerServices = [Event::class => $resetPasswordNotificationEvent] ;
 
         $this->post(TestCons::HOST . '/users/forgot-password', $postData);
 
