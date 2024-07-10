@@ -7,14 +7,14 @@ use App\Model\Entity\User;
 use App\Model\Table\UsersTable;
 use App\Utilities\AccountManagementListeners;
 use Cake\Event\Event;
-use Cake\Event\EventListenerInterface;
-use Cake\Mailer\MailerAwareTrait;
 use Cake\TestSuite\EmailTrait;
 use Cake\TestSuite\TestCase;
+use CakephpTestSuiteLight\Fixture\TruncateDirtyTables;
 
 class AccountManagementListenersTest extends TestCase
 {
 
+    use TruncateDirtyTables;
     use EmailTrait;
 
     /**
