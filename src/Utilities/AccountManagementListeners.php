@@ -54,6 +54,9 @@ class AccountManagementListeners implements EventListenerInterface
     public function resetPasswordNotification($event)
     {
         $data = $event->getData();
+        /**
+         * @todo make a `match` statement here
+         */
         if($data['new']){
             $template = 'new_user_password';
             $subject = EmailCon::REGISTRATION_EMAIL_TITLE;
@@ -63,13 +66,13 @@ class AccountManagementListeners implements EventListenerInterface
             $subject = EmailCon::RESET_PASSWORD_EMAIL_TITLE;
         }
         /**
-         * @todo fix the recipient email
+         * @todo abstract the recipient email bcc's so there is a central repository of addresses
          */
         $this->Mailer
             ->setEmailFormat('html')
             ->addTo($event->getData()['User']->email)
-            ->addTo('jason@curlymedia.com')
-//            ->addTo('ddrake@dreamingmind.com')
+            ->addBcc('jason@curlymedia.com')
+            ->addBcc('ddrake@dreamingmind.com')
             ->setSubject($subject)
             ->setViewVars(['User' => $data['User']])
             ->viewBuilder()
