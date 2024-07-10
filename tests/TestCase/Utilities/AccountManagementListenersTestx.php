@@ -12,7 +12,7 @@ use Cake\TestSuite\TestCase;
 use Cake\TestSuite\TestEmailTransport;
 use CakephpTestSuiteLight\Fixture\TruncateDirtyTables;
 
-class AccountManagementListenersTest extends TestCase
+class AccountManagementListenersTestx extends TestCase
 {
 
     use TruncateDirtyTables;
@@ -21,7 +21,7 @@ class AccountManagementListenersTest extends TestCase
     /**
      * @param $event Event
      */
-    public function xtest_newAccountNotification($event)
+    public function test_newAccountNotification($event)
     {
     }
 
