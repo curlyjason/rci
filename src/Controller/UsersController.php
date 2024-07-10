@@ -9,6 +9,7 @@ use App\Utilities\DateUtilityTrait;
 use App\Utilities\EventTrigger;
 use Authentication\Controller\Component\AuthenticationComponent;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Log\Log;
 
@@ -88,7 +89,11 @@ class UsersController extends AppController
         $this->set(compact('User', 'context'));
     }
 
-    public function forgotPassword()
+    /**
+     * @param Event $event allows tests to mock email tools to prevent `send`
+     * @return void
+     */
+    public function forgotPassword(Event $event)
     {
         if($this->getRequest()->is('post')){
             $User = $this->Users->findByEmail($this->getRequest()->getData('email'))->first();
@@ -101,7 +106,7 @@ class UsersController extends AppController
                     $this->Flash->error("Database update failed. Please try again");
                     break;
                 default:
-                    $this->trigger('resetPasswordNotification', ['User' => $User, 'new' => false]);
+                    $this->trigger('resetPasswordNotification', ['User' => $User, 'new' => false], $event);
                     $this->Flash->success("Reset password link has been emailed to $User->email. Please follow the instructions.");
             }
             $this->logout();

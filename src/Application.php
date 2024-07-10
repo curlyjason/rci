@@ -27,6 +27,7 @@ use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Datasource\FactoryLocator;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
+use Cake\Event\Event;
 use Cake\Http\BaseApplication;
 use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\Middleware\CsrfProtectionMiddleware;
@@ -164,6 +165,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $container->add(CustomerFocus::class);
         $container->add(ResetPasswordForm::class);
         $container->add(NewUserForm::class);
+        $container->add(Event::class, new Event(' '));
         self::$_container = $container;
     }
 

@@ -10,7 +10,9 @@ use App\Test\Traits\AuthTrait;
 use App\Test\Traits\DebugTrait;
 use App\Test\Traits\MockModelTrait;
 use App\Test\Utilities\TestCons;
+use Cake\Event\Event;
 use Cake\I18n\FrozenTime;
+use Cake\TestSuite\EmailTrait;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
@@ -24,6 +26,7 @@ class UsersControllerTest extends TestCase
     use DebugTrait;
     use MockModelTrait;
     use TruncateDirtyTables;
+    use EmailTrait;
 
     public function test_mockALoggedInUser()
     {
@@ -98,10 +101,15 @@ class UsersControllerTest extends TestCase
         $this->enableRetainFlashMessages();
         $this->enableCsrfToken();
         $postData = ['email' => $this->getUser()->email,];
+        $resetPasswordNotificationEvent = $this->createMock(Event::class);
+
+        $this->containerServices = [Event::class => $resetPasswordNotificationEvent] ;
 
         $this->post(TestCons::HOST . '/users/forgot-password', $postData);
 
         $this->assertFlashElement('flash/success');
+        $this->assertResponseCode(302);
+
     }
 
     public function test_forgotPassword_invalidEmail()
