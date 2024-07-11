@@ -10,13 +10,13 @@ use Cake\TestSuite\TestCase;
 trait MockModelTrait
 {
 
-    public function mockForSave($alias, $class, $callsExpected)
+    public function mockForSave($alias, $class, $callsExpected, $providedEntity = null)
     {
         /* @var TestCase $this */
         $mock = $this->getMockForModel($class, ['save']);
         $mock->expects($callsExpected)
             ->method('save')
-            ->willReturn(new Entity([]));
+            ->willReturn($this->getReturnEntity($providedEntity));
         $mock->setAlias($alias);
         $this->getTableLocator()->set($alias, $mock);
     }
@@ -41,6 +41,14 @@ trait MockModelTrait
             ->willReturn(false);
         $mock->setAlias($alias);
         return $this->getTableLocator()->set($alias, $mock);
+    }
+
+    /**
+     * @return Entity
+     */
+    private function getReturnEntity($providedValue): Entity
+    {
+        return $providedValue ?? new Entity([]);
     }
 
 }
