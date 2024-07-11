@@ -31,6 +31,7 @@ class AdminUsersControllerTest extends \Cake\TestSuite\TestCase
         parent::tearDown();
         unset($this->_session);
     }
+
     //<editor-fold desc="PAGE ACCESS">
 
     public function test_nonAdminsDisallowed()
@@ -55,6 +56,7 @@ class AdminUsersControllerTest extends \Cake\TestSuite\TestCase
     }
     //</editor-fold>
 
+    //<editor-fold desc="POSTED DATA OUTCOMES">
     public function test_successfullyPostAndSaveNewUserData()
     {
         $form = $this->createMock(NewUserForm::class);
@@ -114,6 +116,7 @@ class AdminUsersControllerTest extends \Cake\TestSuite\TestCase
         $this->assertResponseRegExp('/correct the input errors/');
 
     }
+    //</editor-fold>
 
     /**
      * @return string
