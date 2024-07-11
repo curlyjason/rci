@@ -3,6 +3,7 @@
 
 namespace App\Test\Traits;
 
+use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 
 
@@ -14,7 +15,8 @@ trait MockModelTrait
         /* @var TestCase $this */
         $mock = $this->getMockForModel($class, ['save']);
         $mock->expects($callsExpected)
-            ->method('save');
+            ->method('save')
+            ->willReturn(new Entity([]));
         $mock->setAlias($alias);
         $this->getTableLocator()->set($alias, $mock);
     }

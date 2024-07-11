@@ -49,13 +49,17 @@ class UsersController extends AppController
     {
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post') && $context->execute($this->request->getData())) {
+
             $user = $this->Users->patchEntity($user, $this->request->getData());
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
-
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+            $this->Flash->error(
+                !empty($user->getErrors())
+                ? 'Please correct the input errors'
+                : __('User save failed due to a DB error. Please, try again.')
+            );
         }
         $customers = $this->Users->Customers->find('list', limit: 200)->all();
         $this->set(compact('user', 'customers'));
