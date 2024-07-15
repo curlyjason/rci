@@ -24,10 +24,14 @@ class NewUserFormTest extends \Cake\TestSuite\TestCase
     public function test_execute()
     {
         $data = [
-            'email' => false,
+//            'email' => false,
             'new_customer' => false,
             'customers' => false,
         ];
+
+
+        debug($this->Form->validate($data));
+        debug($this->Form->getErrors());
         $this->assertTrue($this->Form->execute([]));
     }
 }
