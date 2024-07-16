@@ -36,13 +36,14 @@ class InventoryStatusAlertCommand extends Command
             });
 
         collection($customerInventoryStatusReporters)
-            ->map(function ($statusReport) {
+            ->map(function ($statusReport, $index) {
                 if ($statusReport->inventoryComplete()) {
                     $this->trigger('inventoryComplete', ['statusReporter' => $statusReport]);
                 }
                 else {
                     $this->trigger('inventoryDue', ['statusReporter' => $statusReport]);
                 }
+                debug($index);
             })
             ->toArray();
     }

@@ -85,23 +85,25 @@ class AccountManagementListeners implements EventListenerInterface
 
     public function inventoryComplete(Event $event)
     {
-        debug('inventoryComplete');
-        debug($event->getData());
         $this->Mailer
-            ->setEmailFormat('text')
+            ->setEmailFormat('html')
             ->addTo('ddrake@dreamingmind.com')
-            ->setSubject(EmailCon::INVENTORY_DONE);
+            ->setSubject(EmailCon::INVENTORY_DONE)
+            ->setViewVars(['statusReporter' => $event->getData('statusReporter')])
+            ->viewBuilder()
+            ->setTemplate('inventory_complete_customer');
         $this->Mailer->send();
     }
 
     public function inventoryDue(Event $event)
     {
-        debug('inventoryDue');
-        debug($event->getData());
         $this->Mailer
-            ->setEmailFormat('text')
+            ->setEmailFormat('html')
             ->addTo('ddrake@dreamingmind.com')
-            ->setSubject(EmailCon::INVENTORY_DUE);
+            ->setSubject(EmailCon::INVENTORY_DUE)
+            ->setViewVars(['statusReporter' => $event->getData('statusReporter')])
+            ->viewBuilder()
+            ->setTemplate('inventory_due');
         $this->Mailer->send();
     }
 
