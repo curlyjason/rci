@@ -30,6 +30,8 @@ class AccountManagementListeners implements EventListenerInterface
         return [
             'newAccountNotification' => 'newAccountNotification',
             'resetPasswordNotification' => 'resetPasswordNotification',
+            'inventoryComplete' => 'inventoryComplete',
+            'inventoryDue' => 'inventoryDue',
         ];
     }
 
@@ -78,6 +80,28 @@ class AccountManagementListeners implements EventListenerInterface
             ->viewBuilder()
             ->setTemplate($template);
 
+        $this->Mailer->send();
+    }
+
+    public function inventoryComplete(Event $event)
+    {
+        debug('inventoryComplete');
+        debug($event->getData());
+        $this->Mailer
+            ->setEmailFormat('text')
+            ->addTo('ddrake@dreamingmind.com')
+            ->setSubject(EmailCon::INVENTORY_DONE);
+        $this->Mailer->send();
+    }
+
+    public function inventoryDue(Event $event)
+    {
+        debug('inventoryDue');
+        debug($event->getData());
+        $this->Mailer
+            ->setEmailFormat('text')
+            ->addTo('ddrake@dreamingmind.com')
+            ->setSubject(EmailCon::INVENTORY_DUE);
         $this->Mailer->send();
     }
 

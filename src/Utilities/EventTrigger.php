@@ -45,7 +45,7 @@ trait EventTrigger
      */
     public function isNotMockEvent(?Event $event)
     {
-        return !is_null($event) && !$event instanceof MockObject;
+        return is_null($event) || !$event instanceof MockObject;
     }
 
 }

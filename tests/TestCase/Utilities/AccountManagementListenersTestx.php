@@ -21,8 +21,9 @@ class AccountManagementListenersTestx extends TestCase
     /**
      * @param $event Event
      */
-    public function test_newAccountNotification($event)
+    public function test_newAccountNotification()
     {
+//        $this->markTestSkipped();
     }
 
     public function test_resetPasswordNotification_forgot()
