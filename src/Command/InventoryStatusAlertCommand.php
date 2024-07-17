@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Model\Entity\CustomersItem;
+use App\Model\Table\CustomersTable;
 use App\Utilities\AccountManagementListeners;
 use App\Utilities\CustomerInventoryStatusReporter;
 use App\Utilities\EventTrigger;
@@ -12,13 +13,14 @@ use Cake\Console\ConsoleIo;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Table;
 use function debug;
 
 class InventoryStatusAlertCommand extends Command
 {
     use EventTrigger;
 
-    private \Cake\ORM\Table $Customers;
+    private CustomersTable|Table $Customers;
 
     public function __construct()
     {
@@ -30,22 +32,17 @@ class InventoryStatusAlertCommand extends Command
     {
         parent::execute($args, $io);
 
-        $customerInventoryStatusReporters = collection($this->Customers->find()->all())
+        collection(collection($this->Customers->withIncompleteInventory()))
             ->map(function ($customer) {
-                return new CustomerInventoryStatusReporter($customer);
-            });
+                $statusReport = new CustomerInventoryStatusReporter($customer);
+                $eventHandler = $statusReport->inventoryComplete()
+                    ? 'inventoryComplete'
+                    : 'inventoryDue';
 
-        collection($customerInventoryStatusReporters)
-            ->map(function ($statusReport, $index) {
-                if ($statusReport->inventoryComplete()) {
-                    $this->trigger('inventoryComplete', ['statusReporter' => $statusReport]);
-                }
-                else {
-                    $this->trigger('inventoryDue', ['statusReporter' => $statusReport]);
-                }
-                debug($index);
+                $this->trigger($eventHandler, ['statusReporter' => $statusReport]);
             })
             ->toArray();
+
     }
 
 }
