@@ -41,7 +41,7 @@ class CustomersItemsTableTest extends \Cake\TestSuite\TestCase
             ->persist();
 
         $this->assertNull($ci->next_inventory,
-            'fixture bakes with data-to-be-tested by default');
+            'fixture bakes with data-to-be-tested by default, next assertion will be moot');
 
         $ci = CustomersItemFactory::make()
             ->withCustomers()
