@@ -35,6 +35,13 @@ class CustomersTableTest extends TestCase
         unset($this->Customers);
     }
 
+    public function test_beforeSaveEventInsuresFieldIsSet_nextInventory()
+    {
+        $customer = CustomerFactory::make()->listeningToModelEvents('Model.beforeSave')->persist();
+
+        $this->assertIsString($customer->next_inventory,
+            'no value was set for Customer->next_inventory on record creation');
+    }
 
     public function test_thisMonthsInventoryDate()
     {
@@ -57,14 +64,6 @@ class CustomersTableTest extends TestCase
             'Company with modified date before 1st of this month not found');
         $this->assertNotEmpty($result[0]->users,
             'no user records were contained in the result');
-    }
-
-    public function test_beforeSaveEventInsuresFieldIsSet_nextInventory()
-    {
-        $customer = CustomerFactory::make()->listeningToModelEvents('Model.beforeSave')->persist();
-
-        $this->assertIsString($customer->next_inventory,
-            'no value was set for Customer->next_inventory on record creation');
     }
 
     protected function getFixturesDir()
