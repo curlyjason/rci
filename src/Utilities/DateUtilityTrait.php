@@ -15,6 +15,18 @@ use Cake\I18n\DateTime;
  * @todo these methods could get args with defaults
  *      so customers could get something other than
  *      the-first-of-the-month as an inventory day
+ * @todo THIS MUST BECOME POLYMORPHIC
+ *      so that customers can have different trigger dates
+ *
+ * One way to make this polymorphic:
+ * Make this a static class rather than a trait.
+ * Customers that need a new rule just need to substitute
+ * their named class. The class name can be based on
+ * the Customer->name if we're can tolerate the
+ * possibility of having duplicate classes (more than
+ * one customer that triggers on the 15th of the month).
+ * Otherwise, we can use a field value on Customer to
+ * hold null or the name of the rule-class.
  */
 trait DateUtilityTrait
 {
@@ -24,10 +36,12 @@ trait DateUtilityTrait
 
     public function nextMonthsInventoryDate($format = self::DATE_FORMAT_SQL): string
     {
-        return (new DateTime())
-            ->firstOfMonth()
-            ->modify('first day of next month')
-            ->format($format);
+        return /*$this->lookForSpecialRule()
+            ? $this->propertyThatGotSet
+            :*/  (new DateTime())
+                ->firstOfMonth()
+                ->modify('first day of next month')
+                ->format($format);
     }
 
     public function thisMonthsInventoryDate($format = self::DATE_FORMAT_SQL): string
