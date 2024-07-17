@@ -52,6 +52,14 @@ class CustomerInventoryStatusReporter
         return $this->$status;
     }
 
+    public function getUserEmails(): array {
+        return collection($this->customer()->users)
+            ->extract(function($user) {
+                return $user->email;
+            })
+            ->toArray();
+    }
+
     public function __debugInfo(): ?array
     {
         return [
