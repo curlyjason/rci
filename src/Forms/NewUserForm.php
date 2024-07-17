@@ -89,13 +89,13 @@ class NewUserForm extends \Cake\Form\Form
 
     private function prepareLinkedCompany(mixed $data): bool
     {
-        $foundCustomer = $this->Customers->findByName($data[self::FIELD_CUSTOMERS_SELECT])->first();
+        $foundCustomer = $this->Customers->findById($data[self::FIELD_CUSTOMERS_SELECT])->first();
         if(!is_null($foundCustomer)) {
             $this->patchData[self::FIELD_CUSTOMER_ID] = $data[self::FIELD_CUSTOMERS_SELECT];
             $result = true;
         }
         else {
-            $this->_errors[self::FIELD_CUSTOMER_NEW] = ['nonexistent' => 'Select a customer for this user'];
+            $this->_errors[self::FIELD_CUSTOMERS_SELECT] = ['nonexistent' => 'Select a customer for this user'];
             $result = false;
         }
         return $result;
@@ -103,17 +103,16 @@ class NewUserForm extends \Cake\Form\Form
 
     private function prepareEmail(array $data): bool
     {
-//        if(!is_null($this->Customers->findByName($data[self::FIELD_CUSTOMERS_SELECT]))) {
-//            $this->patchData[self::FIELD_CUSTOMER_ID] = $data[self::FIELD_CUSTOMERS_SELECT];
-//            $result = true;
-//        }
-//        else {
-//            $this->_errors[self::FIELD_CUSTOMER_NEW] = ['nonexistent' => 'Select a customer for this user'];
-//            $result = false;
-//        }
-//        return $result;
-        $this->patchData[self::FIELD_EMAIL] = $data[self::FIELD_EMAIL];
-        return true;
+        $foundUser = $this->Users->findByEmail($data[self::FIELD_EMAIL])->first();
+        if(is_null($foundUser)) {
+            $this->patchData[self::FIELD_EMAIL] = $data[self::FIELD_EMAIL];
+            $result = true;
+        }
+        else {
+            $this->_errors[self::FIELD_EMAIL] = ['duplicate' => 'A user with this email already exists'];
+            $result = false;
+        }
+        return $result;
     }
     //</editor-fold>
 
