@@ -85,6 +85,13 @@ class CustomersTable extends Table
         (new CustomerFocus())->resetFocusLookup();
     }
 
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options)
+    {
+        if(empty($entity->next_inventory)) {
+            $entity->set('next_inventory', $this->thisMonthsInventoryDate());
+        }
+    }
+
     public function withIncompleteInventory(): SelectQuery
     {
         return $this->find()
