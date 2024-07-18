@@ -88,6 +88,7 @@ class NewUserFormTest extends \Cake\TestSuite\TestCase
     }
     //</editor-fold>
 
+    //<editor-fold desc="FAILED EXECUTION">
     public function test_execute_duplicateEmail()
     {
         $customer = CustomerFactory::make()->withUsers()->persist();
@@ -125,5 +126,6 @@ class NewUserFormTest extends \Cake\TestSuite\TestCase
         $this->assertArrayHasKey('customers', $this->Form->getErrors());
         $this->assertArrayHasKey('nonexistent', $this->Form->getErrors()['customers']);
     }
+    //</editor-fold>
 
 }
