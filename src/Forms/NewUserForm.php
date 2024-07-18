@@ -23,7 +23,7 @@ class NewUserForm extends \Cake\Form\Form
     const FIELD_CUSTOMER_NEW = 'new_customer';
     //</editor-fold>
 
-    protected $patchData = [];
+    protected $patchData = ['password' => 'default-password'];
     protected CustomersTable|Table $Customers;
     protected UsersTable|Table $Users;
 

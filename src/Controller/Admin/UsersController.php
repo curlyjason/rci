@@ -45,12 +45,12 @@ class UsersController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add(NewUserForm $context)
+    public function add(NewUserForm $newUserForm)
     {
         $user = $this->Users->newEmptyEntity();
-        if ($this->request->is('post') && $context->execute($this->request->getData())) {
+        if ($this->request->is('post') && $newUserForm->execute($this->request->getData())) {
 
-            $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user = $this->Users->patchEntity($user, $newUserForm->patchData());
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
                 return $this->redirect(['action' => 'index']);
@@ -62,7 +62,7 @@ class UsersController extends AppController
             );
         }
         $customers = $this->Users->Customers->find('list', limit: 200)->all();
-        $this->set(compact('user', 'customers'));
+        $this->set(compact('user', 'customers', 'newUserForm'));
     }
 
     /**

@@ -3,7 +3,10 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\User $user
  * @var \Cake\Collection\CollectionInterface|string[] $customers
+ * @var \App\Forms\NewUserForm $newUserForm
  */
+osd($user->getErrors(), 'user errors');
+osd($newUserForm->getErrors(), 'form errors');
 ?>
 <div class="row">
     <aside class="column">
@@ -14,13 +17,13 @@
     </aside>
     <div class="column column-80">
         <div class="users form content">
-            <?= $this->Form->create($user) ?>
+            <?= $this->Form->create($newUserForm) ?>
             <fieldset>
                 <legend><?= __('Add User') ?></legend>
                 <?php
                     echo $this->Form->control('email');
-                    echo $this->Form->control('password');
-                    echo $this->Form->control('customer_id', ['options' => $customers, 'empty' => true]);
+                    echo $this->Form->control('new_customer');
+                    echo $this->Form->control('customers', ['options' => $customers, 'empty' => true]);
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>
