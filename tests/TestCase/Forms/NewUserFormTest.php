@@ -55,6 +55,7 @@ class NewUserFormTest extends \Cake\TestSuite\TestCase
     public function test_execute_goodWithNewCustomer()
     {
         $expected = [
+            'password' => 'default-password',
             'email' => 'false@true.com',
             'customer' => ['name' => 'blafoo',],
         ];
@@ -79,6 +80,7 @@ class NewUserFormTest extends \Cake\TestSuite\TestCase
         ];
 
         $expected = [
+            'password' => 'default-password',
             'email' => 'false@true.com',
             'customer_id' => $customer->id,
         ];

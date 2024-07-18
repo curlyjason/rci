@@ -59,11 +59,12 @@ class AdminUsersControllerTest extends \Cake\TestSuite\TestCase
     //<editor-fold desc="POSTED DATA OUTCOMES">
     public function test_successfullyPostAndSaveNewUserData()
     {
+        $postData = ['email' => 'name@host.com', 'new_customer' => 'NewCustomer', 'password' => 'password'];
         $form = $this->createMock(NewUserForm::class);
         $form->expects($this->once())->method('execute')->willReturn(true);
+        $form->expects($this->once())->method('patchData')->willReturn($postData);
         $this->containerServices[NewUserForm::class] = $form;
         $this->mockForSave('Users', UsersTable::class, $this->any());
-        $postData = ['email' => 'name@host.com', 'password' => 'password'];
 
         $this->loadFixtureScenario(IntegrationDataScenario::class);
         $this->login(self::ADMIN_USER);
@@ -71,6 +72,7 @@ class AdminUsersControllerTest extends \Cake\TestSuite\TestCase
         $this->enableCsrfToken();
 
         $this->post($this->getUrl(), $postData);
+//        $this->writeFile();
 
         $this->assertResponseCode(302);
         $this->assertFlashMessage('The user has been saved.');
@@ -99,6 +101,7 @@ class AdminUsersControllerTest extends \Cake\TestSuite\TestCase
     {
         $form = $this->createMock(NewUserForm::class);
         $form->expects($this->once())->method('execute')->willReturn(true);
+        $form->expects($this->once())->method('patchData')->willReturn([]);
         $this->containerServices[NewUserForm::class] = $form;
         $this->mockForFailedSave('Users', UsersTable::class, $this->any());
 
