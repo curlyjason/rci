@@ -44,7 +44,7 @@ class CustomersItemsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add(bool $redir = true)
     {
         $customersItem = $this->CustomersItems->newEmptyEntity();
         if ($this->request->is('post')) {
@@ -52,13 +52,15 @@ class CustomersItemsController extends AppController
             if ($this->CustomersItems->save($customersItem)) {
                 $this->Flash->success(__('The customers item has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                if ($redir) {
+                    return $this->redirect(['action' => 'index']);
+                }
             }
             $this->Flash->error(__('The customers item could not be saved. Please, try again.'));
         }
         $customers = $this->CustomersItems->Customers->find('list', limit: 200)->all();
         $items = $this->CustomersItems->Items->find('list', limit: 200)->all();
-        $this->set(compact('customersItem', 'customers', 'items'));
+        $this->set(compact('customersItem', 'customers', 'items', 'redir'));
     }
 
     /**
@@ -123,5 +125,20 @@ class CustomersItemsController extends AppController
                 $custId,
             ]
         );
+    }
+
+    public function customerAdd($custId)
+    {
+        $customer = $this->CustomersItems->Customers->get($custId);
+        $this->set(compact('customer'));
+        
+        return $this->redirect(
+            [
+                'controller' => 'customers',
+                'action' => 'view',
+                $custId,
+            ]
+        );
+
     }
 }

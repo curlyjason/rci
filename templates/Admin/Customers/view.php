@@ -18,6 +18,14 @@
         <div class="customers view content">
             <h2><?= h($customer->name) ?></h2>
             <div class="related">
+                <?= $this->Html->link(
+                    __('New Item'),
+                    [
+                        'controller' => 'CustomersItems',
+                        'action' => 'customerAdd', $customer->id,
+                    ],
+                    ['class' => 'button float-right']
+                ) ?>
                 <h4><?= __('Items') ?></h4>
                 <?php if (!empty($customer->customers_items)) : ?>
                 <div class="table-responsive">
@@ -29,7 +37,7 @@
                             <th class="actions"><?= __('Actions') ?></th>
                         </tr>
                         <?php foreach ($customer->customers_items as $customerItem) : ?>
-                        <?php $item = $customerItem->item ?>
+                            <?php $item = $customerItem->item ?>
                         <tr>
                             <td><?= h($customerItem->id) ?></td>
                             <td><?= h($item->name) ?></td>

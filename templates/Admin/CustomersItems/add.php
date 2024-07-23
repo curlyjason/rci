@@ -2,8 +2,9 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\CustomersItem $customersItem
- * @var \Cake\Collection\CollectionInterface|string[] $customers
- * @var \Cake\Collection\CollectionInterface|string[] $items
+ * @var \Cake\Collection\CollectionInterface|array<string> $customers
+ * @var \Cake\Collection\CollectionInterface|array<string> $items
+ * @var \App\Model\Entity\Customer $customer
  */
 ?>
 <div class="row">
@@ -22,8 +23,13 @@
                     echo $this->Form->control('quantity');
                     echo $this->Form->control('target_quantity');
                     echo $this->Form->control('next_inventory', ['empty' => true]);
+                if (isset($customer)) {
+                    echo $this->Form->control('customer_id', ['options' => $customers, 'choice' => $customer->id]);
+                }
+                else {
                     echo $this->Form->control('customer_id', ['options' => $customers]);
-                    echo $this->Form->control('item_id', ['options' => $items]);
+                }
+                echo $this->Form->control('item_id', ['options' => $items]);
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>
