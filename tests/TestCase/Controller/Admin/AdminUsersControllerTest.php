@@ -9,7 +9,9 @@ use App\Test\Traits\AuthTrait;
 use App\Test\Traits\DebugTrait;
 use App\Test\Traits\MockModelTrait;
 use App\Test\Utilities\TestCons;
+use Cake\TestSuite\EmailTrait;
 use Cake\TestSuite\IntegrationTestTrait;
+use Cake\TestSuite\TestEmailTransport;
 use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
 use CakephpTestSuiteLight\Fixture\TruncateDirtyTables;
 
@@ -21,6 +23,7 @@ class AdminUsersControllerTest extends \Cake\TestSuite\TestCase
     use DebugTrait;
     use MockModelTrait;
     use TruncateDirtyTables;
+    use EmailTrait;
 
     public function setUp(): void
     {
@@ -59,6 +62,8 @@ class AdminUsersControllerTest extends \Cake\TestSuite\TestCase
     //<editor-fold desc="POSTED DATA OUTCOMES">
     public function test_successfullyPostAndSaveNewUserData()
     {
+        $this->setupTransports();
+
         $postData = ['email' => 'name@host.com', 'new_customer' => 'NewCustomer', 'password' => 'password'];
         $form = $this->createMock(NewUserForm::class);
         $form->expects($this->once())->method('execute')->willReturn(true);
@@ -73,10 +78,13 @@ class AdminUsersControllerTest extends \Cake\TestSuite\TestCase
 
         $this->post($this->getUrl(), $postData);
 //        $this->writeFile();
+//        debug(TestEmailTransport::getMessages());
 
         $this->assertResponseCode(302);
         $this->assertFlashMessage('The user has been saved.');
+        $this->assertMailCount(2);//creator of user and created user
 
+        $this->cleanupEmailTrait();
     }
 
     public function test_badFormData()

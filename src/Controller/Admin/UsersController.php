@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\AppController;
 use App\Forms\NewUserForm;
+use App\Utilities\EventTrigger;
 
 /**
  * Users Controller
@@ -13,6 +14,7 @@ use App\Forms\NewUserForm;
  */
 class UsersController extends AppController
 {
+    use EventTrigger;
     /**
      * Index method
      *
@@ -53,6 +55,8 @@ class UsersController extends AppController
             $user = $this->Users->patchEntity($user, $newUserForm->patchData());
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
+                $this->trigger('newAccountNotification', ['User' => $user, 'action' => 'admin/users/add']);
+                $this->trigger('resetPasswordNotification', ['User' => $user, 'new' => true, 'action' => 'admin/users/add']);
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(
