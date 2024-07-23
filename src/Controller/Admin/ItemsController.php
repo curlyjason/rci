@@ -50,8 +50,14 @@ class ItemsController extends AdminController
      */
     public function add()
     {
+        /**
+         * uploading can only be done for one customer at a time
+         */
+        if (!(new CustomerFocus())->focus($this)) {
+            return $this->render('customerFocus');
+        }
         $item = $this->Items->newEmptyEntity();
-        if ($this->request->is('post')) {
+        if ($this->request->is('post') && !$this->request->getData('focusing')) {
 //            osdd($this->request->getData());
             $item = $this->Items->patchEntity($item, $this->request->getData());
             if ($this->Items->save($item)) {

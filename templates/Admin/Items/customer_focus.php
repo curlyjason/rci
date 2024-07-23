@@ -14,7 +14,8 @@ $customerChoice = function($customer){
         null,
         ['data' => [
             'customer_id' => $customer->id,
-            'customer_focus' => true //signal for CustomerFocus to process the post
+            'customer_focus' => true, //signal for CustomerFocus to process the post
+            'focusing' => true, //signal to items/add to ignore the post
         ]]);
 }
 
