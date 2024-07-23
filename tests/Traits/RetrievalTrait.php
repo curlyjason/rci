@@ -6,6 +6,7 @@ namespace App\Test\Traits;
 
 use App\Constants\RoleCon;
 use App\Test\Factory\PersonFactory;
+use Cake\ORM\Entity;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query;
 
@@ -14,7 +15,7 @@ trait RetrievalTrait
 
     use LocatorAwareTrait;
 
-    public function getFirst($alias)
+    public function getFirst($alias): Entity
     {
         $records = $this->getRecords($alias);
         if (empty($records)) {
@@ -48,6 +49,15 @@ trait RetrievalTrait
             ->orderBy($sort)
             ->toArray();
         return $records;
+    }
+
+    protected function countRecords($alias): int
+    {
+        $table = $this->getTableLocator()->get($alias);
+        return $table
+            ->find()
+            ->all()
+            ->count();
     }
 
     /**

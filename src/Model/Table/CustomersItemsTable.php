@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Utilities\DateUtilityTrait;
+use ArrayObject;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -32,6 +36,7 @@ use Cake\Validation\Validator;
  */
 class CustomersItemsTable extends Table
 {
+    use DateUtilityTrait;
     /**
      * Initialize method
      *
@@ -56,6 +61,13 @@ class CustomersItemsTable extends Table
             'foreignKey' => 'item_id',
             'joinType' => 'INNER',
         ]);
+    }
+
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options)
+    {
+        if(empty($entity->next_inventory)) {
+            $entity->set('next_inventory', $this->thisMonthsInventoryDate());
+        }
     }
 
     /**

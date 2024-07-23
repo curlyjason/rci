@@ -16,16 +16,18 @@ declare(strict_types=1);
  */
 namespace App;
 
+use App\Forms\NewUserForm;
 use App\Forms\OrderNowForm;
+use App\Forms\ResetPasswordForm;
 use App\Policy\RequestPolicy;
 use App\Utilities\CustomerFocus;
 use Authorization\Exception\ForbiddenException;
-use Authorization\Exception\MissingIdentityException;
 use Authorization\Middleware\RequestAuthorizationMiddleware;
 use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Datasource\FactoryLocator;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
+use Cake\Event\Event;
 use Cake\Http\BaseApplication;
 use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\Middleware\CsrfProtectionMiddleware;
@@ -38,7 +40,6 @@ use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Identifier\AbstractIdentifier;
-use Authentication\Identifier\IdentifierInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
@@ -47,8 +48,6 @@ use Authorization\AuthorizationServiceInterface;
 use Authorization\AuthorizationServiceProviderInterface;
 use Authorization\Middleware\AuthorizationMiddleware;
 use Authorization\Policy\MapResolver;
-use Authorization\Policy\OrmResolver;
-use Psr\Http\Message\ResponseInterface;
 
 
 /**
@@ -164,6 +163,9 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         );
         $container->add(OrderNowForm::class);
         $container->add(CustomerFocus::class);
+        $container->add(ResetPasswordForm::class);
+        $container->add(NewUserForm::class);
+        $container->add(Event::class, new Event(' '));
         self::$_container = $container;
     }
 

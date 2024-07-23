@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Table;
 
 use App\Utilities\CustomerFocus;
+use App\Utilities\DateUtilityTrait;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
@@ -36,6 +37,7 @@ use Cake\Validation\Validator;
  */
 class CustomersTable extends Table
 {
+    use DateUtilityTrait;
     /**
      * Initialize method
      *
@@ -82,5 +84,19 @@ class CustomersTable extends Table
     public function afterSaveCommit(EventInterface $event, EntityInterface $entity, ArrayObject $options)
     {
         (new CustomerFocus())->resetFocusLookup();
+    }
+
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options)
+    {
+        if(empty($entity->next_inventory)) {
+            $entity->set('next_inventory', $this->thisMonthsInventoryDate());
+        }
+    }
+
+    public function withIncompleteInventory(): SelectQuery
+    {
+        return $this->find()
+            ->where(['modified <' => $this->thisMonthsInventoryDate()])
+            ->contain(['Users']);
     }
 }

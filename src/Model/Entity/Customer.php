@@ -10,6 +10,8 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string|null $name
+ * @property \Cake\I18n\DateTime|null $next_inventory
+ * @property \Cake\I18n\DateTime|null $last_inventory_notification
  * @property \Cake\I18n\DateTime|null $created
  * @property \Cake\I18n\DateTime|null $modified
  *
@@ -31,5 +33,7 @@ class Customer extends Entity
         'created' => true,
         'modified' => true,
         'items' => true,
+        'next_inventory' => true,
+        'last_inventory_notification' => true,
     ];
 }

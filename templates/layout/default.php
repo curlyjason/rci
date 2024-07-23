@@ -124,13 +124,13 @@ $cakeDescription = env('SHORT_NAME') . '/' . env('WEB_PORT') . '/' . env('DB_POR
             </div>
             <?= $this->element('layout/public_menus') ?>
             <?= $this->element('layout/admin_menus') ?>
-            <a class="section-break" href="/users/logout">Logout</a>
+            <?= $this->element('layout/login_outMenuEntry') ?>
         </div>
         <!-- Minimal menu displayed by default -->
         <div class="top-nav-links">
             <div id="masterMenu">
                 <a href="javascript:void(0);" onclick="menuToggle()">Menu</a>
-                <br/><span style="font-size: x-small">Welcome <?= $this->getIdentity()?->email ?></span>
+                <?= $this->element('layout/welcomeIdentityLine') ?>
             </div>
     <?php if (!is_null($this->getIdentity())) : ?>
             <?php endif; ?>
