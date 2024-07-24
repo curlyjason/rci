@@ -69,7 +69,7 @@ class IntegrationDataScenario implements FixtureScenarioInterface
                             'customer_id' => $customer->id,
                             'item_id' => $items[$ci]->id,
                             'quantity' => 5,
-                            'trigger_quantity' => 10,
+                            'target_quantity' => 10,
                             'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
                         ]
                     );
@@ -91,7 +91,7 @@ class IntegrationDataScenario implements FixtureScenarioInterface
                     'customer_id' => $customer->id,
                     'item_id' => $i->id,
                     'quantity' => 5,
-                    'trigger_quantity' => 10,
+                    'target_quantity' => 10,
                     'next_inventory' => (new DateTime())->firstOfMonth()->format('Y-m-d 00:00:01'),
                 ])->persist();
             })
