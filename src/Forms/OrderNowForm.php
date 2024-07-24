@@ -2,8 +2,10 @@
 
 namespace App\Forms;
 
+use App\Model\Entity\Order;
 use App\Model\Table\ItemsTable;
 use App\Model\Table\OrderLinesTable;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventManager;
 use Cake\Form\Form;
@@ -15,6 +17,8 @@ use Cake\Validation\Validator;
 class OrderNowForm extends Form
 {
     use LocatorAwareTrait;
+
+    protected ?EntityInterface $orderEntity = null;
 
     /**
      * @param array $data
@@ -32,7 +36,7 @@ class OrderNowForm extends Form
              * @var ItemsTable $ITable
              * @var OrderLinesTable $OLTable
              */
-            $order = $OLTable->Orders->newEntity([
+            $this->orderEntity = $OLTable->Orders->newEntity([
                 'order_number' => uniqid(),
                 'ordered_by' => $this->getData('name'),
                 'ordered_by_email' => $this->getData('email'),
@@ -45,11 +49,13 @@ class OrderNowForm extends Form
                     $itemId = $this->getData('id')[$index];
                     $entity = $OLTable->newEntity($ITable->get($itemId)->toArray());
                     $entity->set('quantity', $qty);
-                    $order['order_lines'][] = $entity;
+                    $this->orderEntity['order_lines'][] = $entity;
                 }
             }
-            $OLTable->Orders->checkRules($order);
-            $this->set('result', $order);
+            $OLTable->Orders->checkRules($this->orderEntity);
+//            osd($this->getData());
+//            osdd($this->orderEntity->toArray());
+            $this->set('result', $this->orderEntity);
 
             return true;
         }
@@ -68,6 +74,11 @@ class OrderNowForm extends Form
         $validator->requirePresence('order_now');
 
         return $validator;
+    }
+
+    public function getOrderEntity()
+    {
+        return $this->orderEntity ?? new Order([]);
     }
 
 }
