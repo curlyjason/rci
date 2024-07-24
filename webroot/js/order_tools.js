@@ -1,4 +1,25 @@
-
+/**
+ * Form data submits to CustomersOrdersController order-now
+ * Form data required structure:
+ * <pre>
+ *  [
+ *      'order_now' => '1',
+ *      'name' => '',
+ *      'email' => 'ddrake@dreamingmind.com',
+ *      'order_quantity' => [
+ *          (int) 0 => '',
+ *          (int) 1 => '7',
+ *          (int) 2 => '5',
+ *      ],
+ *      'id' => [
+ *          (int) 0 => '291608622',
+ *          (int) 1 => '291608625',
+ *          (int) 2 => '291608628',
+ *      ],
+ *  ]
+ * </pre>
+ * @type {{keypressHandler: OrderTools.keypressHandler, init: OrderTools.init, getOrderLineToggles: (function(): *|jQuery|HTMLElement), radioChanged: OrderTools.radioChanged, filterKeyDownHandler: OrderTools.filterKeyDownHandler, setRadioListeners: OrderTools.setRadioListeners, toggleOrderLine: OrderTools.toggleOrderLine, checkSubmitButtonVisiblity: OrderTools.checkSubmitButtonVisiblity, getOrderLineInputs: (function(): *|jQuery|HTMLElement), setOrderLineInputListeners: OrderTools.setOrderLineInputListeners, setOrderLineToggleListeners: OrderTools.setOrderLineToggleListeners}}
+ */
 const OrderTools = {
     init: function () {
         $('input[name="filter"]').on('keyup', OrderTools.keypressHandler)
