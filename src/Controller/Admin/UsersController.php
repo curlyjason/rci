@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\AppController;
 use App\Forms\NewUserForm;
+use App\Utilities\EventTrigger;
 
 /**
  * Users Controller
@@ -13,6 +14,7 @@ use App\Forms\NewUserForm;
  */
 class UsersController extends AppController
 {
+    use EventTrigger;
     /**
      * Index method
      *
@@ -45,14 +47,16 @@ class UsersController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add(NewUserForm $context)
+    public function add(NewUserForm $newUserForm)
     {
         $user = $this->Users->newEmptyEntity();
-        if ($this->request->is('post') && $context->execute($this->request->getData())) {
+        if ($this->request->is('post') && $newUserForm->execute($this->request->getData())) {
 
-            $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user = $this->Users->patchEntity($user, $newUserForm->patchData());
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
+                $this->trigger('newAccountNotification', ['User' => $user, 'action' => 'admin/users/add']);
+                $this->trigger('resetPasswordNotification', ['User' => $user, 'new' => true, 'action' => 'admin/users/add']);
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(
@@ -62,7 +66,7 @@ class UsersController extends AppController
             );
         }
         $customers = $this->Users->Customers->find('list', limit: 200)->all();
-        $this->set(compact('user', 'customers'));
+        $this->set(compact('user', 'customers', 'newUserForm'));
     }
 
     /**
