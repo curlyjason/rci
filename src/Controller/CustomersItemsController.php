@@ -149,6 +149,10 @@ class CustomersItemsController extends AppController
         $this->Flash->error('The order has not been saved');
         $this->set(compact('executedForm'));
 
+        /**
+         * @todo this endpoint does not exist
+         *     what would an order-data error be and how would users resolve them?
+         */
         return '/Admin/Orders/resolve-errors';
     }
 
