@@ -44,8 +44,20 @@ class CustomersItem extends Entity
         'item' => true,
     ];
 
+    /**
+     * next_inventory in the future = inventory done for now
+     *
+     * @return bool
+     */
     public function hasBeenInventoried(): bool
     {
         return new DateTime() < new DateTime($this->next_inventory);
+    }
+
+    public function orderAmount()
+    {
+        return $this->target_quantity > $this->quantity
+            ? $this->target_quantity - $this->quantity
+            : 0;
     }
 }
