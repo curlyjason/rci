@@ -16,6 +16,13 @@ class CustomerInventoryStatusReporter
     protected Customer $_customer;
     protected array $_completeItems = [];
     protected array $_incompleteItems = [];
+    protected $_newOrderPost = [
+        'order_now' => false,
+        'name' => '',
+        'email' => '',
+        'order_quantity' => [],
+        'id' => [],
+    ];
 
     public function __construct(Customer $customer)
     {
@@ -30,10 +37,10 @@ class CustomerInventoryStatusReporter
     protected function insert(CustomersItem $item):void
     {
         if ($item->hasBeenInventoried()) {
-            $this->_completeItems[] = $item->item;
+            $this->_completeItems[] = $item;
         }
         else {
-            $this->_incompleteItems[] = $item->item;
+            $this->_incompleteItems[] = $item;
         }
     }
 
@@ -58,6 +65,25 @@ class CustomerInventoryStatusReporter
                 return $user->email;
             })
             ->toArray();
+    }
+
+    /**
+     * Make data required by OrderNowForm
+     *
+     * @return array
+     */
+    public function getNewOrderPost($user)
+    {
+        $this->_newOrderPost['email'] = $user->email;
+        if ($this->inventoryComplete()) {
+            $this->_newOrderPost['order_now'] = true;
+            /* @var CustomersItem $completeItem */
+            foreach ($this->_completeItems as $index => $completeItem) {
+                $this->_newOrderPost['order_quantity'][] = $completeItem->orderAmount();
+                $this->_newOrderPost['id'][] = $completeItem->id;
+            }
+        }
+        return $this->_newOrderPost;
     }
 
     public function __debugInfo(): ?array
