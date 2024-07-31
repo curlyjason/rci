@@ -2,9 +2,14 @@
 
 namespace App\Test\Fixture;
 
-class FixtureStructureStandard
+use Cake\TestSuite\TestCase;
+
+class FixtureStructureStandard extends TestCase
 {
 
+    /**
+     * post array structure for /order-now
+     */
     protected static $orderPostArray = [
         'order_now' => false,
         'name' => '',
@@ -13,9 +18,33 @@ class FixtureStructureStandard
         'id' => [3, 6, 9]
     ];
 
-    public static function orderPostKeys()
+    /**
+     * post array structure for ajax/set-inventory
+     */
+    protected static array $ajax_setInventory = [
+        'id' =>  '7' ,
+        'quantity' =>  '52' ,
+    ];
+
+    public static function assertKeysMatch_orderNow($sut, $message = '')
     {
-        $keys = array_keys(self::$orderPostArray);
+        $keys_under_test = self::getSortedKeys($sut);
+        $defined_keys = self::getSortedKeys(self::$orderPostArray);
+
+        self::assertEquals($defined_keys, $keys_under_test, $message);
+    }
+
+    public static function assertKeysMatch_setInventory($sut, $message = '')
+    {
+        $keys_under_test = self::getSortedKeys($sut);
+        $defined_keys = self::getSortedKeys(self::$ajax_setInventory);
+
+        self::assertEquals($defined_keys, $keys_under_test, $message);
+    }
+
+    private static function getSortedKeys($sut)
+    {
+        $keys = array_keys($sut);
         return sort($keys);
     }
 }

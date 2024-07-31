@@ -43,9 +43,8 @@ class CustomerInventoryStatusReporterTest extends \Cake\TestSuite\TestCase
         $user = $this->getLast('Users');
 
         $result = $this->DataStructure->getNewOrderPost($user);
-        $keys = array_keys($result);
 
-        $this->assertEquals(FixtureStructureStandard::orderPostKeys(), sort($keys),
+        FixtureStructureStandard::assertKeysMatch_orderNow($result,
             'Order POST-array keys don\'t match keys in the standard reference array');
     }
 
