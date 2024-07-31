@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        rci/8015/3015:
+        CustomersItems    </title>
+    <link href="/favicon.ico" type="image/x-icon" rel="icon"><link href="/favicon.ico" type="image/x-icon" rel="shortcut icon">
+    
+	<link rel="stylesheet" href="/css/normalize.min.css">
+	<link rel="stylesheet" href="/css/milligram.min.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	<link rel="stylesheet" href="/css/cake.css">
+
+            <script src="/js/node_modules/jquery/dist/jquery.js"></script><script src="/js/trigger_tools.js"></script><script src="/js/tooltip.js"></script>    <style>
+    tbody input.target_quantity {
+        font-size: 200%;
+        max-width: 7rem;
+    }
+    tr.hide {
+        display: none;
+    }
+    h3.defined {
+        margin-bottom: 0rem;
+    }
+</style>
+    <!-- Site Wide CSS overrides-->
+    <style>
+        #refocus {
+            margin-bottom: -1px;
+            height: 1.5rem;
+        }
+        .top-nav #myLinks {
+            display: none;
+        }
+        #myLinks a, a#masterMenu {
+            display: block;
+        }
+        span.rci-tool-tip {
+            position: absolute;
+            display: inline-block;
+            border-radius: 6px;
+            font-size: x-small;
+            padding: 2px 1rem;
+            background-color: gold;
+            margin-bottom: -10px;
+            white-space: nowrap;
+            overflow: visible;
+            width: auto;
+        }
+        span.rci-arrow {
+            position: absolute;
+            display: inline-block;
+            width: 0;
+            border-top: 10px;
+            border-style: solid;
+            border-color: gold transparent transparent transparent;
+        }
+        .section-break {
+            border-top: thin solid black;
+        }
+        .top-nav a {
+            font-size: smaller;
+        }
+    </style>
+    <!-- Menu toggle listener-->
+    <script>
+        function menuToggle() {
+            let x = document.getElementById("myLinks");
+            let y = document.getElementById("masterMenu");
+            if (x.style.display === "block") {
+                x.style.display = "none";
+                y.style.display = "block"
+            } else {
+                x.style.display = "block";
+                y.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+<nav class="top-nav">
+        <!-- Expanded menu revealed onClick -->
+        <div id="myLinks" class="top-nav-titlex">
+            <div class="top-nav-links side-nav">
+                <a href="javascript:void(0);" onclick="menuToggle()">Close Menu</a>
+            </div>
+            <a class="section-break" href="/">Home</a>
+<a href="/take-inventory">Take Inventory</a>
+<a href="/set-trigger-levels">Set PAR</a>
+<a href="/order-now">Order Now</a>
+                            <a class="section-break" href="/users/logout">Logout</a>
+        </div>
+        <!-- Minimal menu displayed by default -->
+        <div class="top-nav-links">
+            <div id="masterMenu">
+                <a href="javascript:void(0);" onclick="menuToggle()">Menu</a>
+                
+<br/><span style="font-size: x-small">Welcome prudence56@yahoo.com</span>
+
+            </div>
+                        </div>
+    </nav>
+    <main class="main">
+        <div class="container">
+            <h4 style="margin-bottom: 0;">Rods & Cones Inventory</h4>
+            <p> Purdy-Hirthe</p>
+                        <div class="customersItems index content">
+    <h3 class="defined">Set PAR</h3>
+    <p style="font-size: small">The PAR level determines the optimum amount of inventory stock.</p>
+    <form method="post" accept-charset="utf-8" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input text"><label for="filter">Filter</label><input type="text" name="filter" id="filter"></div></form>    <div class="table-responsive">
+        <table>
+            <thead>
+            <tr>
+                <th><a href="/set-trigger-levels?sort=item_id&amp;direction=asc">Item</a></th>
+                <th><a href="/set-trigger-levels?sort=quantity&amp;direction=asc">Target Level</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr id="1"><td><span class="name">Dolores dolorum amet iste laborum eius est dolor.</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="1" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-1" value="10"></div></form></td></tr><tr id="4"><td><span class="name">Veniam sed fuga aspernatur natus earum.</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="4" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-4" value="10"></div></form></td></tr><tr id="7"><td><span class="name">Id nisi qui id.</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="7" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-7" value="10"></div></form></td></tr><tr id="63666462"><td><span class="name">C12C935711 P900 Maintenance Tank</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="63666462" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-63666462" value="10"></div></form></td></tr><tr id="335953897"><td><span class="name">1319-1 MS Premium Pearl 13x19 (100 sheets)</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="335953897" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-335953897" value="10"></div></form></td></tr><tr id="445306074"><td><span class="name">T46Y400 P900 50ml Photo Yellow</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="445306074" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-445306074" value="10"></div></form></td></tr><tr id="459236902"><td><span class="name">T46Y900 P900 50ml Ultrachrome PRO10 Light Gray</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="459236902" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-459236902" value="10"></div></form></td></tr><tr id="540341262"><td><span class="name">T46Y700 P900 50ml Photo Gray</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="540341262" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-540341262" value="10"></div></form></td></tr><tr id="823201926"><td><span class="name">T46Y600 P900 50ml Photo Lite Magenta</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="823201926" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-823201926" value="10"></div></form></td></tr><tr id="835274872"><td><span class="name">PLQP26544100 MS Premium Luster 265 44in roll</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="835274872" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-835274872" value="10"></div></form></td></tr><tr id="1825338435"><td><span class="name">T46Y800 P900 50ml Ultrachrome PRO10 Matte Black</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="1825338435" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-1825338435" value="10"></div></form></td></tr><tr id="1888923594"><td><span class="name">T46Y300 P900 50ml Photo Magenta</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="1888923594" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-1888923594" value="10"></div></form></td></tr><tr id="1924850843"><td><span class="name">T46Y100 P900 50ml Photo Black</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="1924850843" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-1924850843" value="10"></div></form></td></tr><tr id="1946760362"><td><span class="name">T46Y200 P900 50ml Photo Cyan</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="1946760362" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-1946760362" value="10"></div></form></td></tr><tr id="2087597026"><td><span class="name">T46YD00 P900 50ml Ultrachrome PRO10 Violet</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="2087597026" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-2087597026" value="10"></div></form></td></tr><tr id="2104189511"><td><span class="name">T46Y500 P900 50ml Photo Lite Cyan</span><br /><span style="font-size: small;">[Last entered inventory: 5]</span></td><td><form method="post" accept-charset="utf-8" id="2104189511" action="/set-trigger-levels"><div style="display:none;"><input type="hidden" name="_method" value="PUT"><input type="hidden" name="_csrfToken" value="BfNtMLK7CpYNwdnlR2v7hYuOA5/4guhZSx6dnrSLsbxVLhmovTirffGh5duPoi/DSgabSvwfAMW77btYhzzg+4EPAVlvwXqTvL00rsrm2msve6z9hbuHhDYcIMyICp4cwJTU7+6bTqB6NqhzmS1lpw=="></div><div class="input char"><input type="char" name="target_quantity" class="target_quantity tipMe" title="Amount on shelf" id="target_quantity-2104189511" value="10"></div></form></td></tr>            </tbody>
+        </table>
+    </div>
+    <div class="paginator">
+        <ul class="pagination">
+                        <li class="prev disabled"><a href="" onclick="return false;">&lt; previous</a></li>                        <li class="next disabled"><a href="" onclick="return false;">next &gt;</a></li>                    </ul>
+        <p>Page 1 of 1, showing 16 record(s) out of 16 total</p>
+    </div>
+</div>
+<script>
+    const itemMap = {"1":"Dolores dolorum amet iste laborum eius est dolor.","4":"Veniam sed fuga aspernatur natus earum.","7":"Id nisi qui id.","63666462":"C12C935711 P900 Maintenance Tank","335953897":"1319-1 MS Premium Pearl 13x19 (100 sheets)","445306074":"T46Y400 P900 50ml Photo Yellow","459236902":"T46Y900 P900 50ml Ultrachrome PRO10 Light Gray","540341262":"T46Y700 P900 50ml Photo Gray","823201926":"T46Y600 P900 50ml Photo Lite Magenta","835274872":"PLQP26544100 MS Premium Luster 265 44in roll","1825338435":"T46Y800 P900 50ml Ultrachrome PRO10 Matte Black","1888923594":"T46Y300 P900 50ml Photo Magenta","1924850843":"T46Y100 P900 50ml Photo Black","1946760362":"T46Y200 P900 50ml Photo Cyan","2087597026":"T46YD00 P900 50ml Ultrachrome PRO10 Violet","2104189511":"T46Y500 P900 50ml Photo Lite Cyan"} ;
+</script>
+        </div>
+    </main>
+    <footer>
+    </footer>
+</body>
+</html>
