@@ -6,6 +6,7 @@ use App\Model\Entity\CustomersItem;
 use App\Model\Entity\User;
 use App\Test\Factory\CustomersItemFactory;
 use App\Test\Factory\UserFactory;
+use App\Test\Fixture\FixtureStructureStandard;
 use App\Test\Traits\AuthTrait;
 use App\Test\Traits\RetrievalTrait;
 use App\Utilities\CustomerInventoryStatusReporter;
@@ -36,13 +37,16 @@ class CustomerInventoryStatusReporterTest extends \Cake\TestSuite\TestCase
         unset($this->DataStructure);
     }
 
-    public function test_getNewOrderPost()
+    public function test_getNewOrderPost_checkKeys()
     {
         $this->makeInventoryComplete();
         $user = $this->getLast('Users');
-        $result = $this->DataStructure->getNewOrderPost($user);
 
-        debug($result);
+        $result = $this->DataStructure->getNewOrderPost($user);
+        $keys = array_keys($result);
+
+        $this->assertEquals(FixtureStructureStandard::orderPostKeys(), sort($keys),
+            'Order POST-array keys don\'t match keys in the standard reference array');
     }
 
     protected function makeInventoryComplete()
