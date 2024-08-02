@@ -7,10 +7,11 @@ use Cake\TestSuite\TestCase;
 class FixtureStructureStandard extends TestCase
 {
 
+    //<editor-fold desc="EXPECTED POST DATA ARRAY STRUCTURES">
     /**
      * post array structure for /order-now
      */
-    protected static $orderPostArray = [
+    protected static $ajax_orderNow = [
         'order_now' => false,
         'name' => '',
         'email' => 'jason@curlymedia.com',
@@ -26,10 +27,19 @@ class FixtureStructureStandard extends TestCase
         'quantity' =>  '52' ,
     ];
 
+    /**
+     * post array structure for ajax/set-trigger-levels
+     */
+    protected static array $ajax_setTriggerLevel = [
+        'id' =>  '7' ,
+        'target_quantity' =>  '52' ,
+    ];
+    //</editor-fold>
+
     public static function assertKeysMatch_orderNow($sut, $message = '')
     {
         $keys_under_test = self::getSortedKeys($sut);
-        $defined_keys = self::getSortedKeys(self::$orderPostArray);
+        $defined_keys = self::getSortedKeys(self::$ajax_orderNow);
 
         self::assertEquals($defined_keys, $keys_under_test, $message);
     }
@@ -42,9 +52,19 @@ class FixtureStructureStandard extends TestCase
         self::assertEquals($defined_keys, $keys_under_test, $message);
     }
 
+    public static function assertKeysMatch_setTriggerLevel($sut, $message = '')
+    {
+        $keys_under_test = self::getSortedKeys($sut);
+        $defined_keys = self::getSortedKeys(self::$ajax_setTriggerLevel);
+
+        self::assertEquals($defined_keys, $keys_under_test, $message);
+    }
+
     private static function getSortedKeys($sut)
     {
         $keys = array_keys($sut);
-        return sort($keys);
+        sort($keys);
+
+        return $keys;
     }
 }

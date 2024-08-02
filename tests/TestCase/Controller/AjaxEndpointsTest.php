@@ -44,6 +44,27 @@ class AjaxEndpointsTest extends \Cake\TestSuite\TestCase
         $this->assertResponseCode(200);
     }
 
+    public function test_api_setTriggerLevel()
+    {
+        $this->loadFixtureScenario('IntegrationData');
+        $this->login();
+        $item = $this->getFirstItemForLoggedInUser();
+        $postData = [
+            'id' =>  $item->id ,
+            'target_quantity' =>  '52' ,
+        ];
+        FixtureStructureStandard::assertKeysMatch_setTriggerLevel($postData,
+            'setTriggerLevel POST-array keys don\'t match keys in the standard reference array');
+
+        $this->enableCsrfToken();
+
+        $this->post('api/set-trigger-levels', $postData);
+//        debug($this->_response);
+//        $this->writeFile();
+
+//        $this->assertResponseCode(200);
+    }
+
     /**
      * @return mixed
      */
