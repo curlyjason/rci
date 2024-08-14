@@ -18,4 +18,6 @@ if ($this->getIdentity()?->isAdmin()):
     <?= $decorateOpen ?> <a href="<?= $this->Url->build('admin/items/import') ?>">Item Import</a><?= $decorateClose ?>
     <?= $decorateOpen ?> <a href="<?= $this->Url->build('admin/orders') ?>">Orders</a><?= $decorateClose ?>
     <?= $decorateOpen ?> <a href="<?= $this->Url->build('admin/customers') ?>">Customers</a><?= $decorateClose ?>
+    <?= $decorateOpen ?> <a href="<?= $this->Url->build('admin/admin/inventory-reporter') ?>">Inventory Reporter</a><?= $decorateClose ?>
+    <?= $decorateOpen ?> <a href="<?= $this->Url->build('admin/admin/reset-inventory') ?>">Reset Inventory</a><?= $decorateClose ?>
 <?php endif ?>
