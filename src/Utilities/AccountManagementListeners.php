@@ -85,6 +85,7 @@ class AccountManagementListeners implements EventListenerInterface
 
     public function inventoryComplete(Event $event)
     {
+        //set the flag value to show 'complete' was processed this month
         $this->Mailer
             ->setEmailFormat('html')
             ->addTo('ddrake@dreamingmind.com')
