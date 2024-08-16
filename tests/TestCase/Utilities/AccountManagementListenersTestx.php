@@ -5,7 +5,7 @@ namespace App\Test\TestCase\Utilities;
 use App\Constants\EmailCon;
 use App\Model\Entity\User;
 use App\Model\Table\UsersTable;
-use App\Utilities\AccountManagementListeners;
+use App\Utilities\NotificationListeners;
 use Cake\Event\Event;
 use Cake\TestSuite\EmailTrait;
 use Cake\TestSuite\TestCase;
@@ -36,7 +36,7 @@ class AccountManagementListenersTestx extends TestCase
         $user = new User(['email' => $to]);
         $event = new Event('resetPasswordNotification', $subject,['User' => $user, 'new' => false]);
         $this->assertInstanceOf(Event::class, $event);
-        $listener = new AccountManagementListeners();
+        $listener = new NotificationListeners();
 
         $listener->resetPasswordNotification($event);
 //        $msg = TestEmailTransport::getMessages();

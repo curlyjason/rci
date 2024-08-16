@@ -4,7 +4,7 @@ namespace App\Command;
 
 use App\Model\Entity\CustomersItem;
 use App\Model\Table\CustomersTable;
-use App\Utilities\AccountManagementListeners;
+use App\Utilities\NotificationListeners;
 use App\Utilities\CustomerInventoryStatusReporter;
 use App\Utilities\EventTrigger;
 use Cake\Command\Command;
@@ -25,7 +25,7 @@ class InventoryStatusAlertCommand extends Command
     public function __construct()
     {
         $this->Customers = $this->fetchTable('Customers');
-        EventManager::instance()->on(new AccountManagementListeners());
+        EventManager::instance()->on(new NotificationListeners());
     }
 
     public function execute(Arguments $args, ConsoleIo $io)

@@ -9,7 +9,7 @@ use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Mailer\Mailer;
 
-class AccountManagementListeners implements EventListenerInterface
+class NotificationListeners implements EventListenerInterface
 {
 
     /**
