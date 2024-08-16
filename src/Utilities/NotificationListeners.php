@@ -40,15 +40,16 @@ class NotificationListeners implements EventListenerInterface
      */
     public function newAccountNotification($event)
     {
-        $message = "The email sent to {$event->getData('User')->email} provides instructions to complete your registration."
+        $userEmail = $event->getData('User')->email;
+        $message = "The email sent to {$userEmail} provides instructions to complete your registration."
             . ' Look for the subject line ' . EmailCon::REGISTRATION_EMAIL_TITLE;
 
         $this->Mailer
-            ->addTo($event->getData('User')->email)
-            ->addBcc('jason@curlymedia.com')
-            ->addBcc('ddrake@dreamingmind.com')
-            ->setSubject(EmailCon::REGISTRATION_EMAIL_TITLE)
-            ->deliver($message);
+            ->addTo($userEmail)
+            ->setSubject(EmailCon::REGISTRATION_EMAIL_TITLE);
+
+        $this->addBccs(EmailCon::ADMINS);
+        $this->Mailer->deliver($message);
 
         $event->getSubject()->Flash->success($message);
     }
@@ -106,6 +107,13 @@ class NotificationListeners implements EventListenerInterface
             ->viewBuilder()
             ->setTemplate('inventory_due');
         $this->Mailer->send();
+    }
+
+    private function addBccs(array $emails)
+    {
+        foreach ($emails as $email){
+            $this->Mailer->addBcc($email);
+        }
     }
 
 }

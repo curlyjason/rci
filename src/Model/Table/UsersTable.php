@@ -92,4 +92,12 @@ class UsersTable extends Table
 
         return $rules;
     }
+
+    public function getCustomerUsersEmails(int $cust_id)
+    {
+        return $this->find('list', keyField: 'id', valueField: 'email')
+            ->where(['customer_id' => $cust_id])
+            ->toArray();
+//        return $result->toList();
+    }
 }

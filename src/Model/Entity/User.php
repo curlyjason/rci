@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
+use App\Constants\EmailCon;
 use App\Utilities\HashIdTrait;
 use Cake\ORM\Entity;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
@@ -68,9 +69,6 @@ class User extends Entity
 
     public function isAdmin()
     {
-        return in_array($this->email, [
-            'ddrake@dreamingmind.com',
-            'jason@curlymedia.com',
-        ]);
+        return EmailCon::isAdmin($this->email);
     }
 }
