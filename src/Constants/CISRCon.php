@@ -15,14 +15,14 @@ namespace App\Constants;
 class CISRCon
 {
     //<editor-fold desc="TESTING CONSTANTS">
-    const COMPLETE = 'complete';
-    const INCOMPLETE = 'incomplete';
     const PARTIALLY_COMPLETE = 'partial';
     const ONE_EMAIL = 'oneEmail';
     const MULTI_EMAIL = 'multiEmail';
     const NO_EMAIL = 'noEmail';
     //</editor-fold>
     //<editor-fold desc="DATA-STRUCTURE CONSTANTS">
+    public const COMPLETE = '_completeItems';
+    public const INCOMPLETE = '_incompleteItems';
     /**
      * none required yet
      */

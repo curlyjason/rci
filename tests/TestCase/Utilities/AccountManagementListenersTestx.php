@@ -66,15 +66,24 @@ class AccountManagementListenersTestx extends TestCase
             variant: CISRCon::COMPLETE
         );
 
-        debug($customerInventoryStatusReporter);
+        $this->setupTransports();
 
-//        debug($customerInventoryStatusReporter->customer());
+        $this->loadRoutes();
+        $subject = new \stdClass();
 
-        debug($customerInventoryStatusReporter->getUserEmails());
+        $event = new Event('inventoryComplete', $subject, ['statusReporter' => $customerInventoryStatusReporter]);
+        $this->assertInstanceOf(Event::class, $event);
+        $listener = new NotificationListeners();
 
-//        $this->setupTransports();
-//
-//        $this->loadRoutes();
+        $listener->inventoryComplete($event);
+
+        $this->writeEmails(TestEmailTransport::getMessages());
+
+//        $this->assertMailSentTo($to);
+//        $this->assertMailSubjectContains(EmailCon::RESET_PASSWORD_EMAIL_TITLE);
+//        $this->assertMailContains('Password reset for Rods and Cones');
+
+        $this->cleanupEmailTrait();
 
     }
 

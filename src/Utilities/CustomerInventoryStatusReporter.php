@@ -10,9 +10,6 @@ class CustomerInventoryStatusReporter
 {
     use LocatorAwareTrait;
 
-    const COMPLETE = '_completeItems';
-    const INCOMPLETE = '_incompleteItems';
-
     protected Customer $_customer;
     protected array $_completeItems = [];
     protected array $_incompleteItems = [];
