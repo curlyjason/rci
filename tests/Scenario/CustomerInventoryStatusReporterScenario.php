@@ -18,10 +18,15 @@ class CustomerInventoryStatusReporterScenario implements FixtureScenarioInterfac
     use ScenarioAwareTrait;
 
     /**
-     * @inheritDoc
+     * Create/return a CustomerStatusReporter variant
+     *
+     * The $arg['variant'] lets you control the structure of the 'reporter' class
+     * The $arg['customer_id'] 
      */
     public function load(...$args): mixed
     {
+        debug($args['variant'] ?? 'missing');
+//        debug($args);
         $this->loadFixtureScenario(IntegrationDataScenario::class);
         $items = $this->getRecords('CustomersItems');
         /* @var CustomersItem $item */
@@ -37,4 +42,6 @@ class CustomerInventoryStatusReporterScenario implements FixtureScenarioInterfac
 
         return new CustomerInventoryStatusReporter($customer);
     }
+
+
 }

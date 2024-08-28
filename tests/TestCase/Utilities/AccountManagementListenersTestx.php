@@ -2,6 +2,7 @@
 
 namespace App\Test\TestCase\Utilities;
 
+use App\Constants\CISRCon;
 use App\Constants\EmailCon;
 use App\Model\Entity\User;
 use App\Model\Table\UsersTable;
@@ -28,7 +29,7 @@ class AccountManagementListenersTestx extends TestCase
      */
     public function test_newAccountNotification()
     {
-//        $this->markTestSkipped();
+        $this->markTestSkipped();
     }
 
     public function test_resetPasswordNotification_forgot()
@@ -57,7 +58,10 @@ class AccountManagementListenersTestx extends TestCase
     public function test_inventoryCompleteNotification()
     {
         /* @var CustomerInventoryStatusReporter $customerInventoryStatusReporter */
-        $customerInventoryStatusReporter = $this->loadFixtureScenario(CustomerInventoryStatusReporterScenario::class);
+        $customerInventoryStatusReporter = $this->loadFixtureScenario(
+            CustomerInventoryStatusReporterScenario::class,
+            variant: CISRCon::COMPLETE
+        );
 
         debug($customerInventoryStatusReporter);
 
