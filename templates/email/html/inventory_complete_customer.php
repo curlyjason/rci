@@ -9,5 +9,5 @@
     <?= gettype($statusReporter) ?>
 </p>
 <pre>
-<!--    <?php //debug($statusReporter) ?>-->
+    <?php debug($statusReporter) ?>
 </pre>

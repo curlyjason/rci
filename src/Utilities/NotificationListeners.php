@@ -68,32 +68,48 @@ class NotificationListeners implements EventListenerInterface
             $template = 'reset_password';
             $subject = EmailCon::RESET_PASSWORD_EMAIL_TITLE;
         }
-        /**
-         * @todo abstract the recipient email bcc's so there is a central repository of addresses
-         */
+
         $this->Mailer
             ->setEmailFormat('html')
             ->addTo($event->getData()['User']->email)
-            ->addBcc('jason@curlymedia.com')
-            ->addBcc('ddrake@dreamingmind.com')
             ->setSubject($subject)
             ->setViewVars(['User' => $data['User']])
             ->viewBuilder()
             ->setTemplate($template);
 
+        $this->addBccs(EmailCon::ADMINS);
         $this->Mailer->send();
     }
 
     public function inventoryComplete(Event $event)
     {
-        //set the flag value to show 'complete' was processed this month
+        /* @todo set the flag value to show 'complete' was processed this month */
+        $this->inventoryStatusEmailSender(
+            $event->getData('statusReporter'),
+            'inventory_complete_customer'
+        );
+    }
+
+    public function orderToBePlaced(Event $event)
+    {
+        /* @todo set the flag value to show 'order_placed' was processed this month */
+        $this->inventoryStatusEmailSender(
+            $event->getData('statusReporter'),
+            'order_placed'
+        );
+    }
+
+    private function inventoryStatusEmailSender(CustomerInventoryStatusReporter $statusReporter, $template)
+    {
         $this->Mailer
             ->setEmailFormat('html')
-            ->addTo('ddrake@dreamingmind.com')
-            ->setSubject(EmailCon::INVENTORY_DONE)
-            ->setViewVars(['statusReporter' => $event->getData('statusReporter')])
+            ->setSubject(EmailCon::NEW_ORDER)
+            ->setViewVars(['statusReporter' => $statusReporter])
             ->viewBuilder()
-            ->setTemplate('inventory_complete_customer');
+            ->setTemplate($template);
+
+        $this->addTos($statusReporter->getUserEmails());
+        $this->addBccs(EmailCon::ORDER_EMAILS);
         $this->Mailer->send();
     }
 
@@ -109,10 +125,17 @@ class NotificationListeners implements EventListenerInterface
         $this->Mailer->send();
     }
 
-    private function addBccs(array $emails)
+    private function addBccs(array $emails) : void
     {
         foreach ($emails as $email){
             $this->Mailer->addBcc($email);
+        }
+    }
+
+    private function addTos(array $emails) : void
+    {
+        foreach ($emails as $email){
+            $this->Mailer->addTo($email);
         }
     }
 
