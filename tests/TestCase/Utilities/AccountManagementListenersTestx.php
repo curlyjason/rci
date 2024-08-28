@@ -8,9 +8,11 @@ use App\Model\Entity\User;
 use App\Model\Table\UsersTable;
 use App\Test\Scenario\CustomerInventoryStatusReporterScenario;
 use App\Test\Scenario\IntegrationDataScenario;
+use App\Test\Traits\DebugTrait;
 use App\Utilities\CustomerInventoryStatusReporter;
 use App\Utilities\NotificationListeners;
 use Cake\Event\Event;
+use Cake\Mailer\Message;
 use Cake\TestSuite\EmailTrait;
 use Cake\TestSuite\TestCase;
 use Cake\TestSuite\TestEmailTransport;
@@ -23,6 +25,7 @@ class AccountManagementListenersTestx extends TestCase
     use TruncateDirtyTables;
     use EmailTrait;
     use ScenarioAwareTrait;
+    use DebugTrait;
 
     /**
      * @param $event Event
@@ -45,8 +48,8 @@ class AccountManagementListenersTestx extends TestCase
         $listener = new NotificationListeners();
 
         $listener->resetPasswordNotification($event);
-//        $msg = TestEmailTransport::getMessages();
-//        debug($msg);
+
+//        $this->writeEmails(TestEmailTransport::getMessages());
 
         $this->assertMailSentTo($to);
         $this->assertMailSubjectContains(EmailCon::RESET_PASSWORD_EMAIL_TITLE);
