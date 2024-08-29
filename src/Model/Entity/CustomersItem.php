@@ -44,6 +44,10 @@ class CustomersItem extends Entity
         'item' => true,
     ];
 
+    protected array $_virtual = [
+        'order_amount',
+    ];
+
     /**
      * next_inventory in the future = inventory done for now
      *
@@ -54,7 +58,7 @@ class CustomersItem extends Entity
         return new DateTime() < new DateTime($this->next_inventory);
     }
 
-    public function orderAmount()
+    public function _getOrderAmount()
     {
         return $this->target_quantity > $this->quantity
             ? $this->target_quantity - $this->quantity

@@ -34,7 +34,7 @@ class CustomersItemTest extends \Cake\TestSuite\TestCase
     public function test_this($eData, $result)
     {
         $entity = $this->getCustomersItemEntity($eData);
-        $this->assertEquals($result, $entity->orderAmount());
+        $this->assertEquals($result, $entity->order_amount);
 
     }
 

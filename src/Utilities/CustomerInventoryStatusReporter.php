@@ -76,7 +76,7 @@ class CustomerInventoryStatusReporter
             $this->_newOrderPost['order_now'] = true;
             /* @var CustomersItem $completeItem */
             foreach ($this->_completeItems as $index => $completeItem) {
-                $this->_newOrderPost['order_quantity'][] = $completeItem->orderAmount();
+                $this->_newOrderPost['order_quantity'][] = $completeItem->order_amount;
                 $this->_newOrderPost['id'][] = $completeItem->id;
             }
         }
