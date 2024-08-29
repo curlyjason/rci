@@ -22,6 +22,15 @@ class EntityAccessDecorator
         return Hash::get($this->_array, $path);
     }
 
+    public function collate(...$paths)
+    {
+        return \Cake\Collection\collection($paths)
+            ->map(function ($path) {
+                return $this->get($path);
+            })
+            ->toArray();
+    }
+
     public function extract(string $path): array
     {
         return Hash::extract($this->_array, $path);
