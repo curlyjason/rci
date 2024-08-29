@@ -8,7 +8,7 @@ use App\Constants\CISRCon;
 //var_dump($statusReporter);
 
 ?>
-<pre>
+<!--<pre>-->
 <!--    --><?php //debug($statusReporter->getItems(CISRCon::COMPLETE)) ?>
     <?php
 //        debug($statusReporter->getItems(CISRCon::COMPLETE));
@@ -16,4 +16,4 @@ use App\Constants\CISRCon;
         echo $this->element('email/html/item_reporter', ['completeCustomersItem' => $completeCustomersItem]);
         }
     ?>
-</pre>
+<!--</pre>-->
