@@ -10,9 +10,9 @@ $completeCustomersItem->extra = ['one', 'two', 'three'];
 $item = new EntityAccessDecorator($completeCustomersItem);
 ?>
 <pre>
-    <?= var_export($item->paths()) ?>
+    <?= var_export($item->paths(), true) ?>
 </pre>
 <pre>
-    <?= var_export($item->extract('item.name')) ?>
+    <?= var_export($item->extract('item.name'), true) ?>
 </pre>
 <p><?= $item->get('item.name') ?></p>
