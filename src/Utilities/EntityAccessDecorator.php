@@ -17,18 +17,28 @@ class EntityAccessDecorator
         $this->_paths = array_keys(Hash::flatten($this->_array));
     }
 
-    public function get(string $path): string
+    /**
+     * Decorator pass-through for calling Entity functions
+     *
+     * <pre>
+     *      $instance = new EntityAccessDecorator($entity);
+     *      $instance()->hasErrors();
+     *      $instance()->isDirty();
+     *
+     *      return $instance;   //EntityAccessDecorator
+     *      return $instance(); //Entity
+     * </pre>
+     *
+     * @return Entity
+     */
+    public function __invoke(): Entity
     {
-        return Hash::get($this->_array, $path);
+        return $this->_entity;
     }
 
-    public function collate(...$paths)
+    public function get(string $path): string
     {
-        return \Cake\Collection\collection($paths)
-            ->map(function ($path) {
-                return $this->get($path);
-            })
-            ->toArray();
+        return Hash::get($this->_array, $path) ?? '';
     }
 
     public function extract(string $path): array
@@ -37,27 +47,26 @@ class EntityAccessDecorator
     }
 
     /**
-     * Convenience for calling Entity functions
+     * Name the paths, get an array of path values
      *
-     * <pre>
-     *      $instance = new EntityAccessDecorator($entity);
-     *      $instance()->hasErrors();
-     *      $instance()->set($field, $value);
-     * </pre>
-     *
-     * @return Entity
+     * @param ...$paths
+     * @return array
      */
-    public function __invoke()
+    public function collate(...$paths): array
     {
-        return $this->_entity;
+        return \Cake\Collection\collection($paths)
+            ->map(function ($path) {
+                return $this->get($path);
+            })
+            ->toArray();
     }
 
     /**
-     * Enumerate all dot-paths to the data
+     * List all valid dot-paths for this entity
      *
-     * @return array|string[]
+     * @return string[]
      */
-    public function paths()
+    public function paths(): array
     {
         return $this->_paths;
     }
