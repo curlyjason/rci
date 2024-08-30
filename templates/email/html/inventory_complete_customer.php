@@ -6,14 +6,12 @@
 use App\Constants\CISRCon;
 
 //var_dump($statusReporter);
-
 ?>
-<!--<pre>-->
-<!--    --><?php //debug($statusReporter->getItems(CISRCon::COMPLETE)) ?>
+<table>
+    <?= $this->Html->tableHeaders(['name', 'quantity', 'PAR', 'order_amount']) ?>
     <?php
-//        debug($statusReporter->getItems(CISRCon::COMPLETE));
     foreach ($statusReporter->getItems(CISRCon::COMPLETE) as $index => $completeCustomersItem) {
         echo $this->element('email/html/item_reporter', ['completeCustomersItem' => $completeCustomersItem]);
         }
     ?>
-<!--</pre>-->
+</table>
