@@ -19,7 +19,7 @@ use Cake\TestSuite\TestEmailTransport;
 use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
 use CakephpTestSuiteLight\Fixture\TruncateDirtyTables;
 
-class AccountManagementListenersTestx extends TestCase
+class NotificationListenersTest extends TestCase
 {
 
     use TruncateDirtyTables;
@@ -65,6 +65,7 @@ class AccountManagementListenersTestx extends TestCase
             CustomerInventoryStatusReporterScenario::class,
             variant: CISRCon::COMPLETE
         );
+        $to = $customerInventoryStatusReporter->getUserEmails();
 
         $this->setupTransports();
 
@@ -76,6 +77,11 @@ class AccountManagementListenersTestx extends TestCase
         $listener = new NotificationListeners();
 
         $listener->inventoryComplete($event);
+
+        debug($to);
+        $msg = TestEmailTransport::getMessages()[0];
+        debug($msg->getTo());
+        debug($msg->getBcc());
 
         $this->writeEmails(TestEmailTransport::getMessages());
 
