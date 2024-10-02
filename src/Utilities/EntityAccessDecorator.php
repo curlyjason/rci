@@ -10,6 +10,9 @@ class EntityAccessDecorator
     protected Entity $_entity;
     protected array $_array;
     protected array $_paths;
+
+    const ITEM_NAME = 'item.name';
+
     public function __construct(Entity $entity)
     {
         $this->_entity = $entity;

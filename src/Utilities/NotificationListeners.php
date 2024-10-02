@@ -19,7 +19,7 @@ class NotificationListeners implements EventListenerInterface
 
     public function __construct()
     {
-        $this->Mailer = ProvideMailer::instance();
+        $this->Mailer = new Mailer('default');
     }
 
     /**
