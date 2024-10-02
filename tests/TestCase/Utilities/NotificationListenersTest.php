@@ -78,10 +78,10 @@ class NotificationListenersTest extends TestCase
 
         $listener->inventoryComplete($event);
 
-        debug($to);
+//        debug($to);
         $msg = TestEmailTransport::getMessages()[0];
-        debug($msg->getTo());
-        debug($msg->getBcc());
+//        debug($msg->getTo());
+//        debug($msg->getBcc());
 
         $this->writeEmails(TestEmailTransport::getMessages());
 
