@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use Cake\I18n\DateTime;
+use Cake\I18n\FrozenTime;
 
 /**
  * Encapsulate the tools to make dates
@@ -55,5 +56,19 @@ trait DateUtilityTrait
     {
         $datetime = DateTime::now();
         return $datetime->modify('-1 day');
+    }
+
+    /**
+     * Is the date 20 or more hours ago
+     *
+     * @param $dateToCheck
+     * @return bool
+     */
+    public function aboutADayOld($dateToCheck)
+    {
+        return new FrozenTime($dateToCheck)
+            <
+            (new FrozenTime(time()))
+                ->modify('-20 hours');
     }
 }
