@@ -9,6 +9,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 class CustomerInventoryStatusReporter
 {
     use LocatorAwareTrait;
+    use DateUtilityTrait;
 
     protected Customer $_customer;
     protected array $_completeItems = [];
@@ -19,6 +20,50 @@ class CustomerInventoryStatusReporter
         'email' => '',
         'order_quantity' => [],
         'id' => [],
+    ];
+
+    protected $ruleWhenNotComplete =             [
+        '' => [
+            'triggerInterval' => 'thisMonthsInventoryDateHasCome',
+            'nextNotice' => 'firstPrompt',
+        ],
+        'firstPrompt' => [
+            'triggerInterval' => 'aboutADayOld',
+            'nextNotice' => 'secondPrompt',
+        ],
+        'secondPrompt' => [
+            'triggerInterval' => 'aboutADayOld',
+            'nextNotice' => 'autoReOrerPrompt',
+        ],
+        'autoReOrderPrompt' => [
+            'triggerInterval' => 'aboutADayOld',
+            'nextNotice' => 'confirmThisOrderPrompt', //adjust counts, set inventory to complete
+        ],
+    ];
+
+    protected $ruleWhenComplete = [
+        /**
+         * Customer takes inventory before the system can prompt them.
+         * firstDayOfCycle test insures we don't order again later in the month
+         */
+        '' => [
+            'triggerInterval' => 'firstDayOfCycle',
+            'nextNotice' => 'confirmThisOrder',
+        ],
+        /**
+         * Somehow, inventory was done after any one of the 'Prompts' were sent
+         */
+        '*Prompt' => [
+            'triggerInterval' => 'aboutADayOld',
+            'nextNotice' => 'confirmThisOrder',
+        ],
+        /**
+         * We gave the customer one day to intervene. Make this order!
+         */
+        'confirmThisOrder*' => [
+            'triggerInterval' => 'aboutADayOld',
+            'nextNotice' => '',//make order, send Stephanie (and client?) the order data
+        ],
     ];
 
     public function __construct(Customer $customer)
