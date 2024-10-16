@@ -28,7 +28,7 @@ class CustomerInventoryStatusReporterTest extends \Cake\TestSuite\TestCase
     {
         parent::setUp();
         $this->loadFixtureScenario('IntegrationData');
-        $this->DataStructure = new CustomerInventoryStatusReporter($this->getLast('Customers'));
+        $this->DataStructure = new mockReporter($this->getLast('Customers'));
     }
 
     protected function tearDown(): void
@@ -59,5 +59,33 @@ class CustomerInventoryStatusReporterTest extends \Cake\TestSuite\TestCase
             ->toArray();
         CustomersItemFactory::make()->getTable()->saveMany($updatedItems);
         $this->DataStructure = new CustomerInventoryStatusReporter($this->getLast('Customers'));
+    }
+
+    public function test_lastNoticeWas()
+    {
+        //array of last_notice strings with regex
+        $notices = [
+            '' => '^$',
+            'anythingPrompt' => '(?i)prompt$',
+            null => '^$',
+        ];
+
+        foreach ($notices as $literal => $pattern) {
+            $this->DataStructure->customer()->set('last_notice', $literal);
+            debug($this->DataStructure->customer()->last_notice);
+            $this->assertTrue($this->DataStructure->lastNoticeWas($pattern));
+        }
+    }
+}
+
+class mockReporter extends CustomerInventoryStatusReporter {
+    public function __construct($customer)
+    {
+        parent::__construct($customer);
+    }
+
+    public function lastNoticeWas(string $notice) : bool
+    {
+        return parent::lastNoticeWas($notice);
     }
 }
