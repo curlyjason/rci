@@ -44,15 +44,15 @@ class CustomerInventoryStatusReporter
             'nextNotice' => 'firstPrompt',
         ],
         'firstPrompt' => [
-            'lastNoticeDateTrigger' => 'aboutADayOld',
+            'lastNoticeDateTrigger' => 'atLeastADayOld',
             'nextNotice' => 'secondPrompt',
         ],
         'secondPrompt' => [
-            'lastNoticeDateTrigger' => 'aboutADayOld',
+            'lastNoticeDateTrigger' => 'atLeastADayOld',
             'nextNotice' => 'autoReOrerPrompt',
         ],
         'autoReOrderPrompt' => [
-            'lastNoticeDateTrigger' => 'aboutADayOld',
+            'lastNoticeDateTrigger' => 'atLeastADayOld',
             'nextNotice' => 'confirmThisOrderPrompt', //adjust counts, set inventory to complete
         ],
     ];
@@ -86,14 +86,14 @@ class CustomerInventoryStatusReporter
          * Somehow, inventory was done after any one of the 'Prompts' were sent
          */
         '*Prompt' => [
-            'lastNoticeDateTrigger' => 'aboutADayOld',
+            'lastNoticeDateTrigger' => 'atLeastADayOld',
             'nextNotice' => 'confirmThisOrder',
         ],
         /**
          * We gave the customer one day to intervene. Make this order!
          */
         'confirmThisOrder*' => [
-            'lastNoticeDateTrigger' => 'aboutADayOld',
+            'lastNoticeDateTrigger' => 'atLeastADayOld',
             'nextNotice' => '',//make order, send Stephanie (and client?) the order data
         ],
     ];
