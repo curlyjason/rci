@@ -234,4 +234,15 @@ class CustomerInventoryStatusReporter
 
         return false;
     }
+
+    public function ruleWhenNotComplete(): array
+    {
+        return $this->ruleWhenNotComplete;
+    }
+
+    public function ruleWhenComplete(): array
+    {
+        return $this->ruleWhenComplete;
+    }
+
 }
