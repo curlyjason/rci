@@ -36,7 +36,7 @@ final class AddCustomerLastNoticeField extends AbstractMigration
     public function change(): void
     {
         $c = $this->table('customers');
-        $c->addColumn('last_notice', 'char', ['limit' => 128, 'after' => 'last_inventory_notification'])
+        $c->addColumn('last_notice', 'char', ['limit' => 128, 'after' => 'last_inventory_notification', 'default' => ''])
             ->update();
     }
 
