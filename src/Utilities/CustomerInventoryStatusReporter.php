@@ -25,11 +25,11 @@ class CustomerInventoryStatusReporter
     /**
      * <pre>
      * [
-     *   'key' => [
+     *   'key' => [ //regex pattern
      *     'interval' node (callable),
      *     'result' node
      *   ]
-     * [
+     * ]
      *
      * 'key' is compared to customers->last_notification.
      * 'interval' runs against customers->last_inventory_notification (datetime).
@@ -39,7 +39,7 @@ class CustomerInventoryStatusReporter
      * @var array
      */
     protected $ruleWhenNotComplete =             [
-        '' => [
+        '^$' => [
             'lastNoticeDateTrigger' => 'duringLastCycle',
             'nextNotice' => 'firstPrompt',
         ],
@@ -60,11 +60,11 @@ class CustomerInventoryStatusReporter
     /**
      * <pre>
      * [
-     *   'key' => [
+     *   'key' => [ //regex pattern
      *     'interval' node (callable),
      *     'result' node
      *   ]
-     * [
+     * ]
      *
      * 'key' is compared to customers->last_notification.
      * 'interval' runs against customers->last_inventory_notification (datetime).
@@ -78,21 +78,21 @@ class CustomerInventoryStatusReporter
          * Customer takes inventory before the system can prompt them.
          * firstDayOfCycle test insures we don't order again later in the month
          */
-        '' => [
+        '^$' => [
             'lastNoticeDateTrigger' => 'firstDayOfCycle',
             'nextNotice' => 'confirmThisOrder',
         ],
         /**
          * Somehow, inventory was done after any one of the 'Prompts' were sent
          */
-        '*Prompt' => [
+        '(?i)prompt$' => [
             'lastNoticeDateTrigger' => 'atLeastADayOld',
             'nextNotice' => 'confirmThisOrder',
         ],
         /**
          * We gave the customer one day to intervene. Make this order!
          */
-        'confirmThisOrder*' => [
+        'confirmThisOrder' => [
             'lastNoticeDateTrigger' => 'atLeastADayOld',
             'nextNotice' => '',//make order, send Stephanie (and client?) the order data
         ],
