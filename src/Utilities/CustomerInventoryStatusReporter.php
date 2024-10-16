@@ -190,7 +190,9 @@ class CustomerInventoryStatusReporter
      */
 
     protected function lastNoticeWas(string $notice): bool {
-        return true;
+
+        return preg_match("/$notice/", $this->customer()->last_notice)===1;
+//        return true;
     }
 
     protected function readyForNoticeAfter(string $notice, $callable, $next) {
