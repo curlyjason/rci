@@ -35,27 +35,68 @@ trait DateUtilityTrait
 
     public const DATE_FORMAT_YYYY_MM_DD = 'Y-m-d';
 
-    public function nextMonthsInventoryDate($format = self::DATE_FORMAT_SQL): string
+    /**
+     * @param false|string $format false = object, string = formatted date/time
+     * @return DateTime|string
+     */
+    public function nextMonthsInventoryDate($format = self::DATE_FORMAT_SQL): DateTime|string
     {
-        return /*$this->lookForSpecialRule()
+        $dt = /*$this->lookForSpecialRule()
             ? $this->propertyThatGotSet
             :*/  (new DateTime())
                 ->firstOfMonth()
-                ->modify('first day of next month')
-                ->format($format);
+                ->modify('first day of next month');
+        return $dt->format($format);
     }
 
-    public function thisMonthsInventoryDate($format = self::DATE_FORMAT_SQL): string
+    /**
+     * @param false|string $format false = object, string = formatted date/time
+     * @return DateTime|string
+     */
+    public function thisMonthsInventoryDate($format = self::DATE_FORMAT_SQL): DateTime|string
     {
-        return (new DateTime())
-            ->firstOfMonth()
-            ->format($format);
+        $dt = (new DateTime())
+            ->firstOfMonth();
+        return $dt->format($format);
     }
 
+    /**
+     * @param false|string $format false = object, string = formatted date/time
+     * @return DateTime|string
+     */
+    public function lastMonthsInventoryDate($format = self::DATE_FORMAT_SQL): DateTime|string
+    {
+        $dt = (new DateTime())
+            ->firstOfMonth()
+            ->modify('first day of last month');
+        return $dt->format($format);
+    }
+
+    protected function format(DateTime $obj, false|string $format)
+    {
+        return $format ? $obj->format($format) : $obj;
+    }
+
+    //<editor-fold desc="NOTIFICATION RULES - DATE TRIGGER CALLABLES">
     public function twentyfourHoursAgo(): DateTime
     {
         $datetime = DateTime::now();
         return $datetime->modify('-1 day');
+    }
+
+    public function firstDayOfCycle()
+    {
+
+    }
+
+    public function duringLastCycle($dateToCheck)
+    {
+        $dateObjToCheck = new FrozenTime($dateToCheck);
+//        debug($this->lastMonthsInventoryDate());
+//        debug($dateObjToCheck);
+//        debug($this->thisMonthsInventoryDate());
+        return $this->lastMonthsInventoryDate(false) < $dateObjToCheck
+            && $dateObjToCheck < $this->thisMonthsInventoryDate(false);
     }
 
     /**
@@ -71,4 +112,5 @@ trait DateUtilityTrait
             (new FrozenTime(time()))
                 ->modify('-20 hours');
     }
+    //</editor-fold>
 }
