@@ -2,6 +2,7 @@
 
 namespace App\Utilities;
 
+use Cake\I18n\Date;
 use Cake\I18n\DateTime;
 use Cake\I18n\FrozenTime;
 
@@ -35,6 +36,7 @@ trait DateUtilityTrait
 
     public const DATE_FORMAT_YYYY_MM_DD = 'Y-m-d';
 
+    //<editor-fold desc="GET INVENTORY DATES (AND FORMAT THEM)">
     /**
      * @param false|string $format false = object, string = formatted date/time
      * @return DateTime|string
@@ -46,7 +48,7 @@ trait DateUtilityTrait
             :*/  (new DateTime())
                 ->firstOfMonth()
                 ->modify('first day of next month');
-        return $dt->format($format);
+        return $this->chooseFormat($dt, $format);
     }
 
     /**
@@ -57,7 +59,7 @@ trait DateUtilityTrait
     {
         $dt = (new DateTime())
             ->firstOfMonth();
-        return $dt->format($format);
+        return $this->chooseFormat($dt, $format);
     }
 
     /**
@@ -69,32 +71,33 @@ trait DateUtilityTrait
         $dt = (new DateTime())
             ->firstOfMonth()
             ->modify('first day of last month');
-        return $dt->format($format);
+        return $this->chooseFormat($dt, $format);
     }
 
-    protected function format(DateTime $obj, false|string $format)
+    protected function chooseFormat(DateTime $obj, false|string $format)
     {
         return $format ? $obj->format($format) : $obj;
     }
+    //</editor-fold>
 
-    //<editor-fold desc="NOTIFICATION RULES - DATE TRIGGER CALLABLES">
+    //<editor-fold desc="NOTIFICATION RULES - DATE CHECK CALLABLES">
     public function twentyfourHoursAgo(): DateTime
     {
         $datetime = DateTime::now();
         return $datetime->modify('-1 day');
     }
 
-    public function firstDayOfCycle()
+    public function firstDayOfCycle($dateToCheck)
     {
+        $dateStringToCheck = (new DateTime($dateToCheck))->format($this::DATE_FORMAT_YYYY_MM_DD);
 
+        return $dateStringToCheck === $this->thisMonthsInventoryDate($this::DATE_FORMAT_YYYY_MM_DD);
     }
 
     public function duringLastCycle($dateToCheck)
     {
-        $dateObjToCheck = new FrozenTime($dateToCheck);
-//        debug($this->lastMonthsInventoryDate());
-//        debug($dateObjToCheck);
-//        debug($this->thisMonthsInventoryDate());
+        $dateObjToCheck = new DateTime($dateToCheck);
+
         return $this->lastMonthsInventoryDate(false) < $dateObjToCheck
             && $dateObjToCheck < $this->thisMonthsInventoryDate(false);
     }
@@ -105,7 +108,7 @@ trait DateUtilityTrait
      * @param $dateToCheck
      * @return bool
      */
-    public function aboutADayOld($dateToCheck)
+    public function atLeastADayOld($dateToCheck)
     {
         return new FrozenTime($dateToCheck)
             <
