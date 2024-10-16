@@ -22,46 +22,78 @@ class CustomerInventoryStatusReporter
         'id' => [],
     ];
 
+    /**
+     * <pre>
+     * [
+     *   'key' => [
+     *     'interval' node (callable),
+     *     'result' node
+     *   ]
+     * [
+     *
+     * 'key' is compared to customers->last_notification.
+     * 'interval' runs against customers->last_inventory_notification (datetime).
+     * 'result' sets customers->last_notification (if rule is satisfied).
+     * </pre>
+     *
+     * @var array
+     */
     protected $ruleWhenNotComplete =             [
         '' => [
-            'triggerInterval' => 'thisMonthsInventoryDateHasCome',
+            'lastNoticeDateTrigger' => 'duringLastCycle',
             'nextNotice' => 'firstPrompt',
         ],
         'firstPrompt' => [
-            'triggerInterval' => 'aboutADayOld',
+            'lastNoticeDateTrigger' => 'aboutADayOld',
             'nextNotice' => 'secondPrompt',
         ],
         'secondPrompt' => [
-            'triggerInterval' => 'aboutADayOld',
+            'lastNoticeDateTrigger' => 'aboutADayOld',
             'nextNotice' => 'autoReOrerPrompt',
         ],
         'autoReOrderPrompt' => [
-            'triggerInterval' => 'aboutADayOld',
+            'lastNoticeDateTrigger' => 'aboutADayOld',
             'nextNotice' => 'confirmThisOrderPrompt', //adjust counts, set inventory to complete
         ],
     ];
 
+    /**
+     * <pre>
+     * [
+     *   'key' => [
+     *     'interval' node (callable),
+     *     'result' node
+     *   ]
+     * [
+     *
+     * 'key' is compared to customers->last_notification.
+     * 'interval' runs against customers->last_inventory_notification (datetime).
+     * 'result' sets customers->last_notification (if rule is satisfied).
+     * </pre>
+     *
+     * @var array
+     */
     protected $ruleWhenComplete = [
         /**
          * Customer takes inventory before the system can prompt them.
          * firstDayOfCycle test insures we don't order again later in the month
          */
         '' => [
-            'triggerInterval' => 'firstDayOfCycle',
+            'lastNoticeDateTrigger' => 'firstDayOfCycle',
             'nextNotice' => 'confirmThisOrder',
         ],
         /**
          * Somehow, inventory was done after any one of the 'Prompts' were sent
          */
         '*Prompt' => [
-            'triggerInterval' => 'aboutADayOld',
+            'lastNoticeDateTrigger' => 'aboutADayOld',
             'nextNotice' => 'confirmThisOrder',
         ],
         /**
          * We gave the customer one day to intervene. Make this order!
          */
         'confirmThisOrder*' => [
-            'triggerInterval' => 'aboutADayOld',
+            'lastNoticeDateTrigger' => 'aboutADayOld',
             'nextNotice' => '',//make order, send Stephanie (and client?) the order data
         ],
     ];
@@ -74,6 +106,11 @@ class CustomerInventoryStatusReporter
         foreach ($customerItems as $customerItem) {
             $this->insert($customerItem);
         }
+    }
+
+    protected function lastNotificationDate()
+    {
+        return $this->_customer->last_inventory_notification;
     }
 
     protected function insert(CustomersItem $item):void
@@ -147,4 +184,48 @@ class CustomerInventoryStatusReporter
         }
         return $ar;
     }
+
+    /**
+     * =================================================================================================
+     */
+
+    protected function lastNoticeWas(string $notice): bool {
+        return true;
+    }
+
+    protected function readyForNoticeAfter(string $notice, $callable, $next) {
+        if ($this->lastNoticeWas($notice) && $callable()) {
+            $result = $next;
+        }
+        return $result ?? null;
+    }
+
+    protected function nextNoticeAfter(string $notice): string {
+        return 'eventName';
+    }
+
+
+
+    public function chooseNotification()
+    {
+        if($this->inventoryComplete()) {
+            return $this->enactRules(new \ArrayIterator($this->_completeItems));
+        }
+        else {
+            return $this->enactRules(new \ArrayIterator($this->_incompleteItems));
+        }
+    }
+
+    public function enactRules(\ArrayIterator $ruleSet)
+    {
+        while ($ruleSet->valid()) {
+            extract($ruleSet->current()); //lastNoticeDateTrigger, nextNotice
+            if ($this->lastNoticeWas( notice: $ruleSet->key()) && $lastNoticeDateTrigger($this->lastNotificationDate())) {
+                return $nextNotice;
+            }
+            $ruleSet->next();
+        }
+        return false;
+    }
+
 }
