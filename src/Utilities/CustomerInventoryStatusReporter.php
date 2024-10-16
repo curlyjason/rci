@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Utilities;
 
 use App\Model\Entity\Customer;
 use App\Model\Entity\CustomersItem;
+use ArrayIterator;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 class CustomerInventoryStatusReporter
@@ -38,7 +40,7 @@ class CustomerInventoryStatusReporter
      *
      * @var array
      */
-    protected $ruleWhenNotComplete =             [
+    protected array $ruleWhenNotComplete =             [
         '^$' => [
             'lastNoticeDateTrigger' => 'duringLastCycle',
             'nextNotice' => 'firstPrompt',
@@ -73,7 +75,7 @@ class CustomerInventoryStatusReporter
      *
      * @var array
      */
-    protected $ruleWhenComplete = [
+    protected array $ruleWhenComplete = [
         /**
          * Customer takes inventory before the system can prompt them.
          * firstDayOfCycle test insures we don't order again later in the month
@@ -113,12 +115,11 @@ class CustomerInventoryStatusReporter
         return $this->_customer->last_inventory_notification;
     }
 
-    protected function insert(CustomersItem $item):void
+    protected function insert(CustomersItem $item): void
     {
         if ($item->hasBeenInventoried()) {
             $this->_completeItems[] = $item;
-        }
-        else {
+        } else {
             $this->_incompleteItems[] = $item;
         }
     }
@@ -138,9 +139,10 @@ class CustomerInventoryStatusReporter
         return $this->$status;
     }
 
-    public function getUserEmails(): array {
+    public function getUserEmails(): array
+    {
         return collection($this->customer()->users)
-            ->extract(function($user) {
+            ->extract(function ($user) {
                 return $user->email;
             })
             ->toArray();
@@ -151,17 +153,18 @@ class CustomerInventoryStatusReporter
      *
      * @return array
      */
-    public function getNewOrderPost($user)
+    public function getNewOrderPost($user): array
     {
         $this->_newOrderPost['email'] = $user->email;
         if ($this->inventoryComplete()) {
             $this->_newOrderPost['order_now'] = true;
-            /* @var CustomersItem $completeItem */
+            /** @var \App\Model\Entity\CustomersItem $completeItem */
             foreach ($this->_completeItems as $index => $completeItem) {
                 $this->_newOrderPost['order_quantity'][] = $completeItem->order_amount;
                 $this->_newOrderPost['id'][] = $completeItem->id;
             }
         }
+
         return $this->_newOrderPost;
     }
 
@@ -173,7 +176,6 @@ class CustomerInventoryStatusReporter
             '_complete (entity)' => $this->shortenPropertyForDebug($this->_completeItems, 'name'),
             '_incomplete (entity)' => $this->shortenPropertyForDebug($this->_incompleteItems, 'name'),
         ];
-
     }
 
     private function shortenPropertyForDebug($data, $field): array
@@ -182,6 +184,7 @@ class CustomerInventoryStatusReporter
         foreach ($data as $datum) {
             $ar[] = $datum->$field;
         }
+
         return $ar;
     }
 
@@ -189,45 +192,46 @@ class CustomerInventoryStatusReporter
      * =================================================================================================
      */
 
-    protected function lastNoticeWas(string $notice): bool {
+    protected function lastNoticeWas(string $notice): bool
+    {
 
-        return preg_match("/$notice/", $this->customer()->last_notice)===1;
+        return preg_match("/$notice/", $this->customer()->last_notice) === 1;
 //        return true;
     }
 
-    protected function readyForNoticeAfter(string $notice, $callable, $next) {
+    protected function readyForNoticeAfter(string $notice, $callable, $next)
+    {
         if ($this->lastNoticeWas($notice) && $callable()) {
             $result = $next;
         }
+
         return $result ?? null;
     }
 
-    protected function nextNoticeAfter(string $notice): string {
+    protected function nextNoticeAfter(string $notice): string
+    {
         return 'eventName';
     }
 
-
-
     public function chooseNotification()
     {
-        if($this->inventoryComplete()) {
-            return $this->enactRules(new \ArrayIterator($this->ruleWhenComplete));
-        }
-        else {
-            return $this->enactRules(new \ArrayIterator($this->ruleWhenNotComplete));
+        if ($this->inventoryComplete()) {
+            return $this->enactRules(new ArrayIterator($this->ruleWhenComplete));
+        } else {
+            return $this->enactRules(new ArrayIterator($this->ruleWhenNotComplete));
         }
     }
 
-    public function enactRules(\ArrayIterator $ruleSet)
+    public function enactRules(ArrayIterator $ruleSet)
     {
         while ($ruleSet->valid()) {
             extract($ruleSet->current()); //lastNoticeDateTrigger, nextNotice
-            if ($this->lastNoticeWas( notice: $ruleSet->key()) && $lastNoticeDateTrigger($this->lastNotificationDate())) {
+            if ($this->lastNoticeWas(notice: $ruleSet->key()) && $lastNoticeDateTrigger($this->lastNotificationDate())) {
                 return $nextNotice;
             }
             $ruleSet->next();
         }
+
         return false;
     }
-
 }
