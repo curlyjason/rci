@@ -209,10 +209,10 @@ class CustomerInventoryStatusReporter
     public function chooseNotification()
     {
         if($this->inventoryComplete()) {
-            return $this->enactRules(new \ArrayIterator($this->_completeItems));
+            return $this->enactRules(new \ArrayIterator($this->ruleWhenComplete));
         }
         else {
-            return $this->enactRules(new \ArrayIterator($this->_incompleteItems));
+            return $this->enactRules(new \ArrayIterator($this->ruleWhenNotComplete));
         }
     }
 
