@@ -19,7 +19,7 @@ class DateUtilityTraitTest extends \Cake\TestSuite\TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->SUT = new SUT();
+        $this->SUT = new SUT(); //class using the DateUtilityTrait
     }
 
     protected function tearDown(): void
@@ -39,6 +39,16 @@ class DateUtilityTraitTest extends \Cake\TestSuite\TestCase
         $dateString = (new FrozenTime(time()))->modify('-15 hours');
 
         $this->assertFalse($this->SUT->aboutADayOld($dateString));
+    }
+
+    public function test_duringLastCycle_true ()
+    {
+        $dateToTest = (new \DateTime())
+            ->modify('-1 month')
+            ->format('Y-m-d h:i:s');
+        debug($dateToTest);
+
+        $this->assertTrue($this->SUT->duringLastCycle($dateToTest));
     }
 
 }
