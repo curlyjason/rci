@@ -6,6 +6,8 @@ namespace App\Utilities;
 use App\Model\Entity\Customer;
 use App\Model\Entity\CustomersItem;
 use ArrayIterator;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 class CustomerInventoryStatusReporter
@@ -24,6 +26,7 @@ class CustomerInventoryStatusReporter
         'order_quantity' => [],
         'id' => [],
     ];
+    protected $EventManager;
 
     /**
      * <pre>
@@ -117,6 +120,8 @@ class CustomerInventoryStatusReporter
         foreach ($customerItems as $customerItem) {
             $this->insert($customerItem);
         }
+        $this->EventManager = EventManager::instance();
+        $this->EventManager->on(new NotificationListeners());
     }
 
     protected function lastNotificationDate()
@@ -231,14 +236,16 @@ class CustomerInventoryStatusReporter
         }
     }
 
-    public function enactRules(ArrayIterator $ruleSet)
+    public function enactRules(ArrayIterator $ruleSet): bool
     {
         while ($ruleSet->valid()) {
             extract($ruleSet->current()); //lastNoticeDateTrigger, nextNotice, notificationEvent
-            if ($this->lastNoticeWas(notice: $ruleSet->key()) && $lastNoticeDateTrigger($this->lastNotificationDate())) {
-//                return $nextNotice;
-                $this->trigger($notificationEvent, $ruleSet);
-            }
+            if ($this->lastNoticeWas(notice: $ruleSet->key()) && $this->$lastNoticeDateTrigger($this->lastNotificationDate())) {
+                $event = new Event($notificationEvent, $this, $ruleSet->current());
+                $this->EventManager->dispatch($event);
+                $this->fetchTable('Customers')->updateCustomerNotificationFields($nextNotice, $this->customer());
+                return true;
+        }
             $ruleSet->next();
         }
 

@@ -11,6 +11,8 @@ use App\Test\Traits\AuthTrait;
 use App\Test\Traits\RetrievalTrait;
 use App\Utilities\CustomerInventoryStatusReporter;
 use App\Utilities\DateUtilityTrait;
+use Cake\I18n\Date;
+use Cake\I18n\DateTime;
 use Cake\TestSuite\IntegrationTestTrait;
 use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
 use CakephpTestSuiteLight\Fixture\TruncateDirtyTables;
@@ -73,6 +75,13 @@ class CustomerInventoryStatusReporterTest extends \Cake\TestSuite\TestCase
             $this->DataStructure->customer()->set('last_notice', $literal);
             $this->assertTrue($this->DataStructure->lastNoticeWas($pattern));
         }
+    }
+
+    public function test_chooseNotification()
+    {
+        $this->DataStructure->customer()->set('last_inventory_notification', $this->DataStructure->lastMonthsInventoryDate());
+        $this->DataStructure->chooseNotification();
+        $this->assertTrue(true);
     }
 }
 

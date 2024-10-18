@@ -32,6 +32,7 @@ class NotificationListeners implements EventListenerInterface
             'resetPasswordNotification' => 'resetPasswordNotification',
             'inventoryComplete' => 'inventoryComplete',
             'inventoryDue' => 'inventoryDue',
+            'sendFirstInventoryPrompt' => 'sendInventoryPrompt',
         ];
     }
 
@@ -88,6 +89,13 @@ class NotificationListeners implements EventListenerInterface
             $event->getData('statusReporter'),
             'inventory_complete_customer'
         );
+    }
+
+    public function sendInventoryPrompt(Event $event)
+    {
+        debug($event);
+        $this->inventoryStatusEmailSender($event->getSubject(), $event->getData('notificationEvent'));
+
     }
 
     public function orderToBePlaced(Event $event)

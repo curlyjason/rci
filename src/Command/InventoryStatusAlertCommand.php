@@ -28,21 +28,16 @@ class InventoryStatusAlertCommand extends Command
         EventManager::instance()->on(new NotificationListeners());
     }
 
-    public function execute(Arguments $args, ConsoleIo $io)
+    public function execute(Arguments $args, ConsoleIo $io): void
     {
         parent::execute($args, $io);
 
-        collection(collection($this->Customers->withIncompleteInventory()))
+        collection($this->Customers->find()->contain(['Users'])->all())
             ->map(function ($customer) {
                 $statusReport = new CustomerInventoryStatusReporter($customer);
-                $eventHandler = $statusReport->inventoryComplete()
-                    ? 'inventoryComplete'
-                    : 'inventoryDue';
-
-                $this->trigger($eventHandler, ['statusReporter' => $statusReport]);
+                $statusReport->chooseNotification();
             })
             ->toArray();
-
     }
 
 }
