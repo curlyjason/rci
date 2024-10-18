@@ -12,6 +12,7 @@ class CustomerInventoryStatusReporter
 {
     use LocatorAwareTrait;
     use DateUtilityTrait;
+    use EventTrigger;
 
     protected Customer $_customer;
     protected array $_completeItems = [];
@@ -44,18 +45,24 @@ class CustomerInventoryStatusReporter
         '^$' => [
             'lastNoticeDateTrigger' => 'duringLastCycle',
             'nextNotice' => 'firstPrompt',
+            'notificationEvent' => 'sendFirstInventoryPrompt',
         ],
         'firstPrompt' => [
             'lastNoticeDateTrigger' => 'atLeastADayOld',
             'nextNotice' => 'secondPrompt',
+            'notificationEvent' => 'sendSecondInventoryPrompt',
         ],
         'secondPrompt' => [
             'lastNoticeDateTrigger' => 'atLeastADayOld',
             'nextNotice' => 'autoReOrerPrompt',
+            'notificationEvent' => 'sendAutoReorderWarningPrompt',
         ],
         'autoReOrderPrompt' => [
             'lastNoticeDateTrigger' => 'atLeastADayOld',
-            'nextNotice' => 'confirmThisOrderPrompt', //adjust counts, set inventory to complete
+            'nextNotice' => 'confirmThisOrder',
+            // adjust counts, set inventory to complete
+            // also sendOrderConfirmation
+            'notificationEvent' => 'doAutomaticInventory',
         ],
     ];
 
@@ -83,6 +90,7 @@ class CustomerInventoryStatusReporter
         '^$' => [
             'lastNoticeDateTrigger' => 'firstDayOfCycle',
             'nextNotice' => 'confirmThisOrder',
+            'notificationEvent' => 'sendOrderConfirmation',
         ],
         /**
          * Somehow, inventory was done after any one of the 'Prompts' were sent
@@ -90,13 +98,15 @@ class CustomerInventoryStatusReporter
         '(?i)prompt$' => [
             'lastNoticeDateTrigger' => 'atLeastADayOld',
             'nextNotice' => 'confirmThisOrder',
+            'notificationEvent' => 'sendOrderConfirmation',
         ],
         /**
          * We gave the customer one day to intervene. Make this order!
          */
         'confirmThisOrder' => [
             'lastNoticeDateTrigger' => 'atLeastADayOld',
-            'nextNotice' => '',//make order, send Stephanie (and client?) the order data
+            'nextNotice' => '',
+            'notificationEvent' => 'makeAndPlaceOrder', //make order, send Stephanie (and client?) the order data
         ],
     ];
 
@@ -225,9 +235,10 @@ class CustomerInventoryStatusReporter
     public function enactRules(ArrayIterator $ruleSet)
     {
         while ($ruleSet->valid()) {
-            extract($ruleSet->current()); //lastNoticeDateTrigger, nextNotice
+            extract($ruleSet->current()); //lastNoticeDateTrigger, nextNotice, notificationEvent
             if ($this->lastNoticeWas(notice: $ruleSet->key()) && $lastNoticeDateTrigger($this->lastNotificationDate())) {
-                return $nextNotice;
+//                return $nextNotice;
+                $this->trigger($notificationEvent, $ruleSet);
             }
             $ruleSet->next();
         }
