@@ -4,7 +4,7 @@ namespace App\Test\Traits;
 
 
 use Cake\Mailer\Message;
-use File;
+require_once(CONFIG . DS . 'conv.php');
 
 trait DebugTrait
 {
@@ -13,7 +13,8 @@ trait DebugTrait
         $file_name = "$name.html";
         $file = fopen(WWW_ROOT . $file_name, 'w');
         $result = fwrite($file,$this->_getBodyAsString());
-        debug($result ? 'http://localhost:8015/' . $file_name : "failed to write $file_name");
+        $web_port = WEB_PORT;
+        debug($result ? "http://localhost:$web_port/" . $file_name : "failed to write $file_name");
         fclose($file);
     }
 
@@ -28,7 +29,7 @@ trait DebugTrait
             $file_name = "message$index.html";
             $file = fopen(WWW_ROOT . $file_name, 'w');
             $result = fwrite($file,$message->getBodyString());
-            $web_port = 8035;
+            $web_port = WEB_PORT;
             debug($result ? "http://localhost:$web_port/" . $file_name : "failed to write $file_name");
             fclose($file);
         }
