@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Entity\Customer;
 use App\Utilities\CustomerFocus;
 use App\Utilities\DateUtilityTrait;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
+use Cake\I18n\DateTime;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -98,5 +100,12 @@ class CustomersTable extends Table
         return $this->find()
             ->where(['modified <' => $this->thisMonthsInventoryDate()])
             ->contain(['Users']);
+    }
+
+    public function updateCustomerNotificationFields(string $notice, Customer $customer): Customer|false
+    {
+        $customer->set('last_notice', $notice);
+        $customer->set('last_inventory_notification', DateTime::now());
+        return $this->save($customer);
     }
 }
