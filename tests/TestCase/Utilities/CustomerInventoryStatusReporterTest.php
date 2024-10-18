@@ -67,12 +67,10 @@ class CustomerInventoryStatusReporterTest extends \Cake\TestSuite\TestCase
         $notices = [
             '' => '^$',
             'anythingPrompt' => '(?i)prompt$',
-            null => '^$',
         ];
 
         foreach ($notices as $literal => $pattern) {
             $this->DataStructure->customer()->set('last_notice', $literal);
-            debug($this->DataStructure->customer()->last_notice);
             $this->assertTrue($this->DataStructure->lastNoticeWas($pattern));
         }
     }
