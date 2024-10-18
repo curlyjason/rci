@@ -57,3 +57,4 @@ yarn-error.log
 !/webroot/bulk-import/.gitkeep
 /webroot/bulk-import/archive/*
 !/webroot/bulk-import/archive/.gitkeep
+/webroot/message0.html
