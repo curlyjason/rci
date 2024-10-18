@@ -54,15 +54,14 @@ class CustomerInventoryStatusReporter
         ],
         'secondPrompt' => [
             'lastNoticeDateTrigger' => 'atLeastADayOld',
-            'nextNotice' => 'autoReOrerPrompt',
-            'notificationEvent' => 'sendAutoReorderWarningPrompt',
+            'nextNotice' => 'thirdPrompt',
+            'notificationEvent' => 'sendThirdInventoryPrompt',
         ],
-        'autoReOrderPrompt' => [
+        'thirdPrompt' => [
             'lastNoticeDateTrigger' => 'atLeastADayOld',
-            'nextNotice' => 'confirmThisOrder',
-            // adjust counts, set inventory to complete
-            // also sendOrderConfirmation
-            'notificationEvent' => 'doAutomaticInventory',
+            'nextNotice' => '',
+            // set inventory to complete
+            'notificationEvent' => 'skipMonthlyInventory',
         ],
     ];
 
